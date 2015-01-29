@@ -2,5 +2,5 @@
 TCSS 491 Group Project
 Welcome, let's make a great game!s
 
-Dylan is testing his git access!
 Kirsten is testing her git access! :-D
+Duncan is testing his git access :(
