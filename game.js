@@ -220,8 +220,49 @@ ASSET_MANAGER.downloadAll(function () {
     var gameEngine = new GameEngine();
     var gameboard = new GameBoard();
 
+    var mapArray = [
+
+      [0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0]
+
+    ];
+
+    var grass = new Image();
+    var brick = new Image();
+
+    grass.src = 'grass.png';
+    brick.src = 'brick.png';
+
+    var posX = 0;
+    var posY = 0;
+
+    for(var i = 0; i < mapArray.length; i++) {
+      for(var j = 0; j < mapArray[i].length; j++) {
+        if(mapArray[i][j] == 0) {
+          ctx.drawImage(grass, posX, posY, 32, 32);
+          console.log('I should draw grass');
+        }
+        if(mapArray[i][j] == 1) {
+          ctx.drawImage(brick, posX, posY, 32, 32);
+          console.log('I should draw brick');
+        }
+        posX += 32;
+
+
+      }
+      posX = 0;
+      posY += 32;
+    }
+
+
     gameEngine.addEntity(gameboard);
- 
+
     gameEngine.init(ctx);
     gameEngine.start();
 });
