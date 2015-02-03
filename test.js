@@ -28,6 +28,7 @@
     [1,1,1,1,1,1,1,1,1,1,1]
   ];
 
+
   var playerYPos=playerRow*tileSize;				// converting Y player position from tiles to pixels
   var playerXPos=playerCol*=tileSize;               // converting X player position from tiles to pixels
 
