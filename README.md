@@ -1,3 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>2D Map</title>
+<link rel="stylesheet" href="css/style.css" media="screen" type="text/css" />
+</head>
+<body>
+<script src="js/index.js"></script>
+</body>
+</html>
 # UWeTech!
 TCSS 491 Group Project
 
