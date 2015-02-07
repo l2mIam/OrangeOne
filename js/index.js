@@ -14,8 +14,39 @@ var canvas = document.createElement('canvas'),
 
 canvas.width = 640;
 canvas.height = 352;
+canvas.backgroundColor = "black";
 
 document.body.appendChild(canvas);
+
+var sign_screen_bounds = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                          [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                          [1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0],
+                          [0,0,0,0,0,0,0,0,1,0,0,0,0,1,1,1,1,1,1],
+                          [0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
+                          [0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
+                          [0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
+                          [0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
+                          [0,0,0,0,0,0,1,1,1,0,0,0,0,1,0,0,0,0,0],
+                          [0,1,1,1,1,1,1,0,0,0,0,0,0,1,0,0,0,0,0],
+                          [0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],
+                          [0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],
+                          [0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],
+                          [0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],
+                          [0,1,1,1,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0],
+                          [0,0,0,0,1,1,1,1,1,0,0,0,0,1,0,0,0,0,0],
+                          [0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
+                          [0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
+                          [0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
+                          [0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
+                          [0,0,0,0,0,0,0,0,1,0,0,0,0,1,1,1,1,1,0],
+                          [0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,1,0],
+                          [0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0],
+                          [0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0],
+                          [0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0],
+                          [1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
+                          [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                          [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                          [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]];
 
 // Movement stuff
 
@@ -71,32 +102,44 @@ var ent = function() {
     this.render = function() {
         ctx.drawImage(this.image, this.srcX, this.srcY, this.dtx, this.dty, this.x, this.y, this.width, this.height);
       }
+
     }
 
     this.update = function() {
     }
 
     this.move = function() {
-        if(87 in keys) { // W
-            this.spriteRoll(512, 8);
+      var x = Math.floor(player.x/32) + 1;
+      var y = Math.floor(player.y/32) + 1;
+
+
+      if(87 in keys) { // W
+          this.spriteRoll(512, 8);
+          if (y > 0 && sign_screen_bounds[y - 1][x] === 0) {
             this.y -= this.speed;
-        }
+          }
+      }
 
-        if(83 in keys) { // S
-            this.spriteRoll(640, 8);
+      if(83 in keys) { // S
+          this.spriteRoll(640, 8);
+          if (y < 28 && sign_screen_bounds[y + 1][x] === 0) {
             this.y += this.speed;
-        }
+          }
+      }
 
-        if(65 in keys) { // A
-            this.spriteRoll(576, 8);
+      if(65 in keys) { // A
+          this.spriteRoll(576, 8);
+          if (x > 0 && sign_screen_bounds[y][x - 1] === 0) {
             this.x -= this.speed;
-        }
+          }
+      }
 
-        if(68 in keys) { // D
-            this.spriteRoll(704, 8);
+      if(68 in keys) { // D
+          this.spriteRoll(704, 8);
+          if (x < 18 && sign_screen_bounds[y][x + 1] === 0) {
             this.x += this.speed;
-        }
-
+          }
+      }
     }
 
     this.spriteRoll = function(srY, maxLength) {
@@ -111,8 +154,8 @@ var ent = function() {
     }
 
     this.bounds = function() {
-    this.x = m.clamp(this.x, 0 - this.width/2 + 20, 30000 - this.width/2);
-    this.y = m.clamp(this.y, 0 - this.height/2 + 20, 30000 - this.height/2);
+    this.x = m.clamp(this.x, 0 - this.width/2 + 20, 608 - 18 - this.width/2);
+    this.y = m.clamp(this.y, 0 - this.height/2 + 20, 928 - 35 - this.height/2);
   }
 }
 
@@ -120,8 +163,15 @@ var player = new ent();
               // src, srcX, srcY, dtx, dty, x, y, width, height, speed
 player.sprite("http://opengameart.org/sites/default/files/red_orc.png", 0, 640, 64, 64, 300, 300, 62, 62, 5);
 
+var background = new ent();
+background.sprite("./UWTmap1.png", 0, 0, 608, 928, 0, 0, 608, 928, 0);
+
 player.image.onload = function() {
-        player.load = true;
+  player.load = true;
+}
+
+background.image.onload = function() {
+  background.load = true;
 }
 
 var tiles = function() {
@@ -185,7 +235,7 @@ var Map = function() {
 				   )
 				{
             // draw tile
-					this.tilesArray[y*this.COLS + x].draw();
+					//this.tilesArray[y*this.COLS + x].draw();
 				}
       }
     }
@@ -213,6 +263,7 @@ var game = function() {
       this.cam.getPosition(player);
       player.bounds();
       player.move();
+      console.log(Math.floor((player.x/32) + 1) + " " + Math.floor((player.y/32) + 1));
     }
 
     this.render = function() {
@@ -222,6 +273,9 @@ var game = function() {
 
      ctx.translate(this.cam.x, this.cam.y);
      this.m.tiles(this.cam, this.t.TILE_WIDTH, this.t.TILE_HEIGHT);
+      if (background.load) {
+        background.render();
+      }
       if (player.load) {
         player.render();
       }
