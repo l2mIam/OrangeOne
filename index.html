@@ -7,14 +7,49 @@
 
   <title>2D Map</title>
 
-    <link rel="stylesheet" href="css/style.css" media="screen" type="text/css" />
+    <!--<link rel="stylesheet" href="css/style.css" media="screen" type="text/css" />-->
 
 </head>
 
-<body>
+<body onload="loadController();">
 
   <script src="js/index.js"></script>
+  <!--<script src="js/overlay.js"></script>-->
+  <script type='text/javascript' src='js/gamecontroller.js'></script>
+  <!-- <script type='text/javascript'>
+    $( function() { // jQuery *not* required - just be to call onload
+      GameController.init();
+    } );
+  </script>
+-->
+
+  <script type='text/javascript'>
+    function loadController () {
+      GameController.init( {
+        left: {
+          type: 'dpad'
+        },
+        right: {
+          position: {
+            right: '5%'
+          },
+          type: 'buttons',
+          buttons: [
+            {
+              label: 'jump', fontSize: 13, touchStart: function() {
+              // do something
+            }
+            },
+            false, false, false
+          ]
+        }
+      } );
+
+    }
+
+  </script>
 
 </body>
+
 
 </html>
