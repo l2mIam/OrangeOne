@@ -11,8 +11,8 @@ window.requestAnimFrame = (function () {
         };
 }());
 
-var canvas = document.getElementsByName('canvas');
-var ctx = canvas.getContext('2d');
+var topcanvas = document.getElementsByName('toplayer');
+var topctx = topcanvas.getContext('2d');
 
 /* Listen for key presses */
 var keys = {};
@@ -54,7 +54,7 @@ var Button = function () {
                 this.dty = 0;
             }
 
-            ctx.drawImage(this.image, this.srcX, this.srcY, this.dtx, this.dty, this.x, this.y, this.width, this.height);
+            topctx.drawImage(this.image, this.srcX, this.srcY, this.dtx, this.dty, this.x, this.y, this.width, this.height);
         };
     };
 };

@@ -7,13 +7,41 @@
 
   <title>2D Map</title>
 
-    <!--<link rel="stylesheet" href="css/style.css" media="screen" type="text/css" />-->
+    <link rel="stylesheet" href="css/style.css" media="screen" type="text/css" />
 
 </head>
 
 <body onload="loadController();">
-<canvas id="mainCanvas" width="560" height="352" backgroundColor="black" ></canvas> <!--640 width-->
 
+
+  <canvas id="bottomlayer"
+      style="z-index: 1;
+      position:absolute;
+      left:0px;
+      top:0px;"
+      height="352" width="560">
+      This text is displayed if your browser does not support HTML5 Canvas.
+  </canvas>
+
+  <canvas id="middlelayer"
+      style="z-index: 2;
+      position:absolute;
+      left:0px;
+      top:0px;"
+      height="352" width="560">
+      This text is displayed if your browser does not support HTML5 Canvas.
+  </canvas>
+  <canvas id="toplayer"
+      style="z-index: 3;
+      position:absolute;
+      left:0px;
+      top:0px;"
+      height="352" width="560"
+      tag="canvas">
+      This text is displayed if your browser does not support HTML5 Canvas.
+  </canvas>
+
+<!--<canvas id="mainCanvas" width="560" height="352" backgroundColor="black" ></canvas> &lt;!&ndash;640 width&ndash;&gt;-->
 
 <script src="js/modernizr.js"></script>
 <script src="js/uwetech.loader.js"></script>
