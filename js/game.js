@@ -1,23 +1,18 @@
-// shim layer with setTimeout fallback
-window.requestAnimFrame = (function(){
-  return  window.requestAnimationFrame       ||
-          window.webkitRequestAnimationFrame ||
-          window.mozRequestAnimationFrame    ||
-          function( callback ){
-            window.setTimeout(callback, 1000/60);
-          };
-})()
+// Relate animation drawing to window frame rate
+window.requestAnimFrame = (function () {
+    return window.requestAnimationFrame  ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame    ||
+          function (callback) {
+            window.setTimeout(callback, 1000 / 60)
+        };
+}());
 
-// Setup the canvas
-var canvas = document.createElement('canvas'),
+// Assign the main canvas variables
+var canvas = document.getElementById('mainCanvas'),
     ctx = canvas.getContext('2d');
 
-canvas.width = 640;
-canvas.height = 352;
-canvas.backgroundColor = "black";
-
-document.body.appendChild(canvas);
-
+// zone #1's off limit areas
 var sign_screen_bounds = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                           [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                           [1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0],
@@ -48,44 +43,65 @@ var sign_screen_bounds = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                           [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                           [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]];
 
-// Movement stuff
-
-var keys = {};
-
-window.addEventListener('keydown', function(e) {
-    keys[e.keyCode] = true;
-
-});
-window.addEventListener('keyup', function(e) {
-    delete keys[e.keyCode];
-});
-
+var keys = window.uwetech.Input.keys;
 
 // Keeps the player in bounds
 var math = function() {
   this.clamp = function(i, min, max) {
     return Math.max(Math.min(i, max),min);
-  }
-}
+  };
+};
+
 
 var Camera = function() {
-  this.camera = function(entity) {
-    this.x = (canvas.width / 2) - entity.x;
-    this.y = (canvas.height / 2) - entity.y;
-  }
+  this.setup = function(entity) {
+      //
+      //this.x = (canvas.width / 2) - entity.x;
+      //this.y = (canvas.height / 2) - entity.y;
 
-  this.getPosition = function(entity) {
-    this.x = (canvas.width / 2) - entity.x;
-    this.y = (canvas.height / 2) - entity.y;
+      // these variables determine where the camera starts
+      this.x = (canvas.width / 2) - entity.x;
+      this.y = (canvas.height / 2) - entity.y;
+
+      // these if elseif blocks prevent the camera from moving
+      // off the edge of the map
+
+      // if the right side of the camera would go off the side...
+      if (entity.x + (canvas.width / 2) > background.image.width) {
+        // set it to the rightmost legal position
+        this.x = canvas.width - background.image.width;
+      } // if the left side would go off...
+      else if(entity.x - (canvas.width / 2) < 0) {
+        // set it to the leftmost legal position
+        this.x = 0;
+      }
+      // if the top of the camera would scroll off
+      if (entity.y - (canvas.height / 2) < 0 ) { //sign_screen_bounds.length * 32) {
+          // set it to the bottommost legal position
+          this.y = 0;
+        } // if the bottom of the camera would scroll off
+        else if((canvas.height / 2) + entity.y > background.image.height) {
+          // set it to the topmost legal position
+          this.y = canvas.height - background.image.height;
+        }
+  };
+
+  this.getPosition = function (entity) {
+      this.setup(entity);
   }
-}
+  //    function(entity) {
+  //  this.x = (canvas.width / 2) - entity.x;
+  //  this.y = (canvas.height / 2) - entity.y;
+  //};
+};
+
+
 
 var ent = function() {
     this.load = false;
     this.imgX = 0;
 
     this.sprite = function(src, srcX, srcY, dtx, dty, x, y, width, height, speed) {
-            this.src = src;
             this.srcX = srcX;
             this.srcY = srcY;
             this.dtx = dtx;
@@ -98,6 +114,7 @@ var ent = function() {
 
             this.image = new Image();
             this.image.src = src;
+            console.log(" " + src + "=" + this.image.height);
 
     this.render = function() {
         ctx.drawImage(this.image, this.srcX, this.srcY, this.dtx, this.dty, this.x, this.y, this.width, this.height);
@@ -164,9 +181,10 @@ var player = new ent();
 player.sprite("http://opengameart.org/sites/default/files/red_orc.png", 0, 640, 64, 64, 300, 300, 62, 62, 5);
 
 var background = new ent();
-background.sprite("./UWTmap1.png", 0, 0, 608, 928, 0, 0, 608, 928, 0);
+background.sprite("./img/UWTmap1.png", 0, 0, 608, 928, 0, 0, 608, 928, 0);
 
 player.image.onload = function() {
+    console.log("player.image.width=" + player.image.width);
   player.load = true;
 }
 
@@ -249,7 +267,7 @@ var game = function() {
 
     this.start = function() {
       this.m.map();
-      this.cam.camera(player);
+      this.cam.setup(player);
       this.loop();
     }
 
@@ -263,7 +281,7 @@ var game = function() {
       this.cam.getPosition(player);
       player.bounds();
       player.move();
-      console.log(Math.floor((player.x/32) + 1) + " " + Math.floor((player.y/32) + 1));
+      //console.log(Math.floor((player.x/32) + 1) + " " + Math.floor((player.y/32) + 1));
     }
 
     this.render = function() {
@@ -271,7 +289,7 @@ var game = function() {
 
      ctx.save();
 
-     ctx.translate(this.cam.x, this.cam.y);
+    ctx.translate(this.cam.x, this.cam.y);
      this.m.tiles(this.cam, this.t.TILE_WIDTH, this.t.TILE_HEIGHT);
       if (background.load) {
         background.render();
@@ -279,8 +297,7 @@ var game = function() {
       if (player.load) {
         player.render();
       }
-
-     ctx.restore();
+      ctx.restore();
     }
 }
 
