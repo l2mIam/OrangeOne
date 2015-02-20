@@ -11,6 +11,7 @@ window.requestAnimFrame = (function () {
 //// Assign the main canvas variables
 //var canvas = document.getElementById('mainCanvas'),
 //    ctx = canvas.getContext('2d');
+var dialogs = [];
 
 var keys = window.uwetech.Input.keys;
 
@@ -30,7 +31,7 @@ var sign_screen_bounds = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                           [0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
                           [0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
                           [0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
-                          [0,0,0,0,0,1,1,1,1,0,0,0,0,1,0,0,0,0,0],
+                          [0,0,0,0,0,0,0,1,1,0,0,0,0,1,0,0,0,0,0],
                           [0,1,1,1,1,1,1,0,0,0,0,0,0,1,0,0,0,0,0],
                           [0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],
                           [0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],
@@ -115,6 +116,46 @@ var Camera = function() {
       //};
 };
 
+var Dialog = function() {
+  this.load = false;
+  this.imgX = 0;
+
+  this.setOptions = function(src, srcX, srcY, dtx, dty, x, y, width, height) {
+          this.srcX = srcX;
+          this.srcY = srcY;
+          this.dtx = dtx;
+          this.dty = dty;
+          this.x = x;
+          this.y = y;
+          this.width = width;
+          this.height = height;
+          this.draw = false;
+
+          this.image = new Image();
+          this.image.src = src;
+          console.log(" " + src + "=" + this.image.height); // announce resource height
+
+      /**
+       * Renders this sprite (using the correct animation step previously "rolled").
+       */
+      this.render = function() {
+          midctx.drawImage(this.image, this.srcX, this.srcY, this.dtx, this.dty,
+              this.x, this.y, this.width, this.height);
+        };
+      /**
+       * Special function to render the background image.
+       * @param xoffset
+       * @param yoffset
+       */
+      this.renderBackground = function(xoffset, yoffset) {
+          btmctx.drawImage(this.image, this.srcX + xoffset, this.srcY + yoffset,
+                                          this.dtx, this.dty,
+              this.x, this.y, this.width, this.height);
+      };
+  };
+
+
+}
 
 /**
  * Creates a new sprite. What is a sprite? A sprite is an object that has a visual
@@ -204,6 +245,7 @@ var Sprite = function() {
 
       if(32 in keys) { // Spacebar
         this.interact();
+        console.log("space");
       }
 
     };
@@ -211,6 +253,17 @@ var Sprite = function() {
     this.interact = function() {
       if(this.facing === "north") {
         var space = this.y * 32 + 32
+      } else if (this.facing === "south") {
+        var space = this.y * 32 - 32
+      } else if (this.facing === "west") {
+        var space = this.x * 32 + 32
+      } else {
+        var space = this.x * 32 - 32
+      }
+      if(dialogs[0].draw) {
+        dialogs[0].draw = false;
+      } else {
+        dialogs[0].draw = true;
       }
     }
 
@@ -237,11 +290,14 @@ var Sprite = function() {
 var player = new Sprite();
 var npc_Mobus = new Sprite();
 var npc_Chin = new Sprite();
+var alden_por = new Dialog();
+
               // src, srcX, srcY, dtx, dty, x, y, width, height, speed
 player.setOptions("./img/purple_orc.png", 0, 640, 64, 64,
                                     300, 300, 62, 62, 5);
 npc_Mobus.setOptions("./img/mobus.png", 0, 640, 64, 64, 300, 10, 62, 62, 2);
 npc_Chin.setOptions("./img/chin.png", 0, 140, 64, 64, 10,10, 62, 62, 2);
+alden_por.setOptions("./img/Alden-plain.png", 0, 0, 480, 638, 100, 100, 480, 638);
 
 var background = new Sprite();
 background.setOptions("./img/UWTmap1.png", 0, 0, btmcanvas.width, btmcanvas.height,
@@ -252,6 +308,8 @@ player.image.onload = function() {
   player.load = true;
   npc_Mobus.load = true;
   npc_Chin.load = true;
+  alden_por.load = true;
+  dialogs.push(alden_por);
 };
 
 background.image.onload = function() {
@@ -312,6 +370,11 @@ var Game = function() {
             npc_Mobus.render();
             npc_Chin.render();
         }
+
+        if(alden_por.draw) {
+          alden_por.render();
+        }
+
         midctx.restore();
     };
 };
