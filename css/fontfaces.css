@@ -1,0 +1,17 @@
+@font-face {
+  font-family: "AlphaSlab";
+  font-weight: normal;
+  font-style: normal;
+  src: url("../fonts/AlfaSlabOne-Regular.ttf") format("truetype");
+}
+@font-face {
+  font-family: "IndieFlower";
+  font-weight: normal;
+  font-style: normal;
+  src: url("../fonts/IndieFlower.ttf") format("truetype");
+}@font-face {
+  font-family: "Orbitron-Black";
+  font-weight: normal;
+  font-style: normal;
+  src: url("../fonts/Orbitron-Black.ttf") format("truetype");
+}
