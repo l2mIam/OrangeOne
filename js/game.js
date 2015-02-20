@@ -30,13 +30,13 @@ var sign_screen_bounds = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                           [0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
                           [0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
                           [0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
-                          [0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
-                          [0,0,0,0,0,0,1,1,1,0,0,0,0,1,0,0,0,0,0],
+                          [0,0,0,0,0,1,1,1,1,0,0,0,0,1,0,0,0,0,0],
                           [0,1,1,1,1,1,1,0,0,0,0,0,0,1,0,0,0,0,0],
-                          [0,1,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],
-                          [0,1,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],
-                          [0,1,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],
-                          [0,1,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],
+                          [0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],
+                          [0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],
+                          [0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],
+                          [0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],
+                          [0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],
                           [0,1,1,1,1,1,1,1,1,0,0,0,0,1,0,0,0,0,0],
                           [0,0,0,0,1,1,1,1,1,0,0,0,0,1,0,0,0,0,0],
                           [0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
@@ -140,6 +140,7 @@ var Sprite = function() {
             this.width = width;
             this.height = height;
             this.speed = speed;
+            this.facing = "south";
 
             this.image = new Image();
             this.image.src = src;
@@ -174,6 +175,7 @@ var Sprite = function() {
           if (y > 0 && sign_screen_bounds[y - 1][x] === 0) {
             this.y -= this.speed;
           }
+          this.facing = "north";
       }
 
       if(83 in keys) { // S
@@ -181,6 +183,7 @@ var Sprite = function() {
           if (y < 28 && sign_screen_bounds[y + 1][x] === 0) {
             this.y += this.speed;
           }
+          this.facing = "south";
       }
 
       if(65 in keys) { // A
@@ -188,6 +191,7 @@ var Sprite = function() {
           if (x > 0 && sign_screen_bounds[y][x - 1] === 0) {
             this.x -= this.speed;
           }
+          this.facing = "west";
       }
 
       if(68 in keys) { // D
@@ -195,8 +199,20 @@ var Sprite = function() {
           if (x < 18 && sign_screen_bounds[y][x + 1] === 0) {
             this.x += this.speed;
           }
+          this.facing = "east";
       }
+
+      if(32 in keys) { // Spacebar
+        this.interact();
+      }
+
     };
+
+    this.interact = function() {
+      if(this.facing === "north") {
+        var space = this.y * 32 + 32
+      }
+    }
 
     this.spriteRoll = function(srY, maxLength) {
         this.srcY = srY;
