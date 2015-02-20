@@ -264,14 +264,14 @@ var Game = function() {
       console.log(npc_Mobus.y);
       if(mobusCounter === 0) {
         npc_Mobus.spriteRoll(640, 8);
-        npc_Mobus.y += 2;
+        npc_Mobus.y += npc_Mobus.speed;
         if(npc_Mobus.y === mobusMax) {
           mobusCounter = 1;
         }
       }
       if(mobusCounter === 1) {
         npc_Mobus.spriteRoll(512, 8);
-        npc_Mobus.y -= 2;
+        npc_Mobus.y -= npc_Mobus.speed;
         if(npc_Mobus.y === mobusMin) {
           mobusCounter = 0;
         }
