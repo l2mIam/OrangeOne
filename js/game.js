@@ -219,9 +219,11 @@ var Sprite = function() {
 };
 
 var player = new Sprite();
+var npc_Mobus = new Sprite();
               // src, srcX, srcY, dtx, dty, x, y, width, height, speed
 player.setOptions("./img/purple_orc.png", 0, 640, 64, 64,
                                     300, 300, 62, 62, 5);
+npc_Mobus.setOptions("./img/mobus.png", 0, 640, 64, 64, 300, 10, 62, 62, 2);
 
 var background = new Sprite();
 background.setOptions("./img/UWTmap1.png", 0, 0, btmcanvas.width, btmcanvas.height,
@@ -230,6 +232,7 @@ background.setOptions("./img/UWTmap1.png", 0, 0, btmcanvas.width, btmcanvas.heig
 player.image.onload = function() {
     console.log("player.image.width=" + player.image.width);
   player.load = true;
+  npc_Mobus.load = true;
 };
 
 background.image.onload = function() {
@@ -238,6 +241,9 @@ background.image.onload = function() {
 
 
 var Game = function() {
+  var mobusMin = 10;
+  var mobusMax = 650;
+  var mobusCounter = 0;
     this.cam  = new Camera();
 
     this.start = function() {
@@ -255,7 +261,22 @@ var Game = function() {
       this.cam.getPosition(player);
       player.bounds();
       player.move();
-      //console.log(Math.floor((player.x/32) + 1) + " " + Math.floor((player.y/32) + 1));
+      console.log(npc_Mobus.y);
+      if(mobusCounter === 0) {
+        npc_Mobus.spriteRoll(640, 8);
+        npc_Mobus.y += 2;
+        if(npc_Mobus.y === mobusMax) {
+          mobusCounter = 1;
+        }
+      }
+      if(mobusCounter === 1) {
+        npc_Mobus.spriteRoll(512, 8);
+        npc_Mobus.y -= 2;
+        if(npc_Mobus.y === mobusMin) {
+          mobusCounter = 0;
+        }
+      }
+
     };
 
     this.render = function() {
@@ -268,6 +289,7 @@ var Game = function() {
         }
         if (player.load) {
             player.render();
+            npc_Mobus.render();
         }
         midctx.restore();
     };
