@@ -236,10 +236,12 @@ var Sprite = function() {
 
 var player = new Sprite();
 var npc_Mobus = new Sprite();
+var npc_Chin = new Sprite();
               // src, srcX, srcY, dtx, dty, x, y, width, height, speed
 player.setOptions("./img/purple_orc.png", 0, 640, 64, 64,
                                     300, 300, 62, 62, 5);
 npc_Mobus.setOptions("./img/mobus.png", 0, 640, 64, 64, 300, 10, 62, 62, 2);
+npc_Chin.setOptions("./img/chin.png", 0, 140, 64, 64, 10,10, 62, 62, 2);
 
 var background = new Sprite();
 background.setOptions("./img/UWTmap1.png", 0, 0, btmcanvas.width, btmcanvas.height,
@@ -249,6 +251,7 @@ player.image.onload = function() {
     console.log("player.image.width=" + player.image.width);
   player.load = true;
   npc_Mobus.load = true;
+  npc_Chin.load = true;
 };
 
 background.image.onload = function() {
@@ -277,7 +280,8 @@ var Game = function() {
       this.cam.getPosition(player);
       player.bounds();
       player.move();
-      console.log(npc_Mobus.y);
+      npc_Chin.spriteRoll(140, 8);
+    //  console.log(npc_Mobus.y);
       if(mobusCounter === 0) {
         npc_Mobus.spriteRoll(640, 8);
         npc_Mobus.y += npc_Mobus.speed;
@@ -306,6 +310,7 @@ var Game = function() {
         if (player.load) {
             player.render();
             npc_Mobus.render();
+            npc_Chin.render();
         }
         midctx.restore();
     };
