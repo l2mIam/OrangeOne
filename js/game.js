@@ -236,6 +236,7 @@ background.image.onload = function() {
   background.load = true;
 };
 
+var sign_screen_bounds = window.uwetech.zones[1].bounds;
 
 var Game = function() {
     this.cam  = new Camera();
