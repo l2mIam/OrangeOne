@@ -303,7 +303,7 @@ var Sprite = function() {
 };
 
 var player = new Sprite();
-var npc_Mobus = new Sprite();
+//var npc_Mobus = new Sprite();
 var npc_Chin = new Sprite();
 var npc_Alden = new Sprite();
 var background = new Sprite();
@@ -316,7 +316,7 @@ var alden_por = new Dialog();
 // NPC's
 player.setOptions("./img/purple_orc.png", 0, 640, 64, 64,
                                     300, 300, 62, 62, 2);
-npc_Mobus.setOptions("./img/mobus.png", 0, 640, 64, 64, 300, 10, 62, 62, 1);
+//npc_Mobus.setOptions("./img/mobus.png", 0, 640, 64, 64, 300, 10, 62, 62, 1);
 npc_Chin.setOptions("./img/chin.png", 0, 140, 64, 64, 150,10, 62, 62, 2);
 npc_Alden.setOptions("./img/alden.png", 0, 140, 64, 64, 540, 875, 62, 62, 2);
 
@@ -328,35 +328,35 @@ alden_por.setOptions("./img/Alden-plain.png", 0, 0, 480, 638, 100, 100, 480, 638
 // Backgrounds
 background.setOptions("./img/UWTmap1.png", 0, 0, btmcanvas.width, btmcanvas.height,
                                         0, 0, btmcanvas.width, btmcanvas.height, 0);
-
-npc_Mobus.image.onload = function() {
-  npc_Mobus.load = true;
-}
-
-
-npc_Mobus.update = function(clockTick) {
-  var mobusMin = 10;
-  var mobusMax = 650;
-  var mobusCounter = 0;
-
-  if(mobusCounter === 0) {
-    this.spriteRoll(640, 9, clockTick, 0.15);
-    this.y += this.speed;
-    if(this.y === mobusMax) {
-      console.log(this.y);
-      mobusCounter = 1;
-    }
-  }
-  if(mobusCounter === 1) {
-    this.spriteRoll(512, 9, clockTick, 0.15);
-    this.y -= this.speed;
-    if(this.y === mobusMin) {
-      mobusCounter = 0;
-    }
-  }
-
-
-}
+// 
+// npc_Mobus.image.onload = function() {
+//   npc_Mobus.load = true;
+// }
+//
+//
+// npc_Mobus.update = function(clockTick) {
+//   var mobusMin = 10;
+//   var mobusMax = 650;
+//   var mobusCounter = 0;
+//
+//   if(mobusCounter === 0) {
+//     this.spriteRoll(640, 9, clockTick, 0.15);
+//     this.y += this.speed;
+//     if(this.y === mobusMax) {
+//       console.log(this.y);
+//       mobusCounter = 1;
+//     }
+//   }
+//   if(mobusCounter === 1) {
+//     this.spriteRoll(512, 9, clockTick, 0.15);
+//     this.y -= this.speed;
+//     if(this.y === mobusMin) {
+//       mobusCounter = 0;
+//     }
+//   }
+//
+//
+// }
 
 npc_Chin.image.onload = function() {
   npc_Chin.load = true;
@@ -445,7 +445,7 @@ var Game = function() {
         }
         if (player.load) {
             player.render();
-            npc_Mobus.render();
+          //  npc_Mobus.render();
             npc_Chin.render();
             npc_Alden.render();
         }
