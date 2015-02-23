@@ -464,5 +464,5 @@ var g = new Game();
 var m = new math();
 g.start();
 g.addEntity(npc_Chin);
-g.addEntity(npc_Mobus);
+//g.addEntity(npc_Mobus);
 g.addEntity(npc_Alden);
