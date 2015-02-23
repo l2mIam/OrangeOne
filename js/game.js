@@ -318,7 +318,7 @@ player.setOptions("./img/purple_orc.png", 0, 640, 64, 64,
                                     300, 300, 62, 62, 2);
 npc_Mobus.setOptions("./img/mobus.png", 0, 640, 64, 64, 350, 10, 62, 62, 1);
 npc_Chin.setOptions("./img/chin.png", 0, 140, 64, 64, 150,10, 62, 62, 2);
-npc_Alden.setOptions("./img/alden.png", 0, 140, 64, 64,300, 10, 62, 62, 2);
+npc_Alden.setOptions("./img/alden.png", 0, 140, 64, 64, 300, 850, 62, 62, 2);
 
 
 //Faces
@@ -333,9 +333,25 @@ npc_Mobus.image.onload = function() {
   npc_Mobus.load = true;
 }
 
-
+var mobusCounter = 0;
 npc_Mobus.update = function(clockTick) {
-  npc_Mobus.spriteRoll(140, 2, clockTick, 2);
+  if(mobusCounter === 0) {
+    this.spriteRoll(640, 8,  clockTick, 0.1);
+    this.y += this.speed;
+
+    if(this.y >= 700) {
+      mobusCounter = 1;
+    }
+
+  }
+  if(mobusCounter === 1) {
+    this.spriteRoll(512, 8, clockTick, 0.1);
+    this.y -= this.speed;
+
+    if(this.y <= 10) {
+      mobusCounter = 0;
+    }
+  }
 
 }
 
@@ -349,8 +365,26 @@ npc_Chin.update = function(clockTick) {
 npc_Alden.image.onload = function() {
   npc_Alden.load = true;
 }
+
+var aldenCounter = 0;
 npc_Alden.update = function(clockTick) {
-  npc_Alden.spriteRoll(140, 2, clockTick, 1);
+  if(aldenCounter === 0) {
+    this.spriteRoll(704, 8,  clockTick, 0.1);
+    this.x += this.speed;
+
+    if(this.x >= 500) {
+      aldenCounter = 1;
+    }
+
+  }
+  if(aldenCounter === 1) {
+    this.spriteRoll(576, 8,  clockTick, 0.1);
+    this.x -= this.speed;
+
+    if(this.x <= 10) {
+      aldenCounter = 0;
+    }
+  }
 }
 
 player.image.onload = function() {
