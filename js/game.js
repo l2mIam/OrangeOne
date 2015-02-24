@@ -371,7 +371,8 @@ var chinCounter = 0; // Checks to see if you have incountered him.
 var chinDirection = 0;
 npc_Chin.update = function(clockTick) {
   var dist = distance(this, player);
-
+  var chinX = Math.floor(this.x/32) + 1;
+  var chinY = Math.floor(this.y/32) + 1
   //Checks to see if you are next to chin
   if(dist <= 50 && chinCounter === 0) {
     chinDirection = chinFlip;
@@ -384,11 +385,23 @@ npc_Chin.update = function(clockTick) {
     this.y += 0;
     if(chinDirection === 0) {
       this.spriteRoll(640, 1,  clockTick, 0.5);
+      sign_screen_bounds[chinY][chinX] = 1;
+      sign_screen_bounds[chinY + 1][chinX] = 1;
+      sign_screen_bounds[chinY][chinX + 1] = 1;
+      sign_screen_bounds[chinY + 1][chinX + 1] = 1;
     }
     if(chinDirection === 1) {
       this.spriteRoll(512, 1, clockTick, 0.5);
+      sign_screen_bounds[chinY][chinX] = 1;
+      sign_screen_bounds[chinY + 1][chinX] = 1;
+      sign_screen_bounds[chinY][chinX + 1] = 1;
+      sign_screen_bounds[chinY + 1][chinX + 1] = 1;
     }
     if(dist >= 50) {
+      sign_screen_bounds[chinY][chinX] = 0;
+      sign_screen_bounds[chinY + 1][chinX] = 0;
+      sign_screen_bounds[chinY][chinX + 1] = 0;
+      sign_screen_bounds[chinY + 1][chinX + 1] = 0;
       chinFlip = chinDirection;
     }
   }
@@ -427,6 +440,9 @@ var aldenDirection = 0;
 npc_Alden.update = function(clockTick) {
   var dist = distance(this, player);
 
+  var aldenX = Math.floor(this.x/32) + 1;
+  var aldenY = Math.floor(this.y/32) + 1
+
   //Checks to see if you are next to alden
   if(dist <= 50 && aldenCounter === 0) {
     aldenDirection = aldenFlip;
@@ -439,11 +455,23 @@ npc_Alden.update = function(clockTick) {
     this.y += 0;
     if(aldenDirection === 0) {
       this.spriteRoll(704, 1,  clockTick, 0.5);
+      sign_screen_bounds[aldenY][aldenX] = 1;
+      sign_screen_bounds[aldenY + 1][aldenX] = 1;
+      sign_screen_bounds[aldenY][aldenX + 1] = 1;
+      sign_screen_bounds[aldenY + 1][aldenX + 1] = 1;
     }
     if(aldenDirection === 1) {
       this.spriteRoll(576, 1, clockTick, 0.5);
+      sign_screen_bounds[aldenY][aldenX] = 1;
+      sign_screen_bounds[aldenY + 1][aldenX] = 1;
+      sign_screen_bounds[aldenY][aldenX + 1] = 1;
+      sign_screen_bounds[aldenY + 1][aldenX + 1] = 1;
     }
     if(dist >= 50) {
+      sign_screen_bounds[aldenY][aldenX] = 0;
+      sign_screen_bounds[aldenY + 1][aldenX] = 0;
+      sign_screen_bounds[aldenY][aldenX + 1] = 0;
+      sign_screen_bounds[aldenY + 1][aldenX + 1] = 0;
       aldenFlip = aldenDirection;
     }
   }
