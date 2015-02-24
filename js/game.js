@@ -13,6 +13,8 @@ window.requestAnimFrame = (function () {
 //    ctx = canvas.getContext('2d');
 var dialogs = [];
 
+
+
 var keys = window.uwetech.Input.keys;
 
 // Assign the bottom canvas variables
@@ -60,6 +62,11 @@ var math = function() {
     return Math.max(Math.min(i, max),min);
   };
 };
+function distance(a, b) {
+    var dx = a.x - b.x;
+    var dy = a.y - b.y;
+    return Math.sqrt(dx * dx + dy * dy);
+}
 
 /**
  *  The camera will control what part of a map we're viewing and where
@@ -182,6 +189,7 @@ var Sprite = function() {
             this.height = height;
             this.speed = speed;
             this.facing = "south";
+            this.visualRadius = 50;
 
             this.elapsedTime = 0;
             this.image = new Image();
@@ -303,7 +311,6 @@ var Sprite = function() {
 };
 
 var player = new Sprite();
-//var npc_Mobus = new Sprite();
 var npc_Chin = new Sprite();
 var npc_Alden = new Sprite();
 var background = new Sprite();
@@ -359,23 +366,53 @@ npc_Chin.image.onload = function() {
   npc_Chin.load = true;
 }
 
-var chinCounter = 0;
+var chinFlip = 0; // Flips between north and south.
+var chinCounter = 0; // Checks to see if yo
+var chinDirection = 0;
 npc_Chin.update = function(clockTick) {
-  if(chinCounter === 0) {
+  var dist = distance(this, player);
+
+  //Checks to see if you are next to chin
+  if(dist <= 50 && chinCounter === 0) {
+    chinDirection = chinFlip;
+    chinFlip = 3;
+    chinCounter = 1;
+  }
+
+  //If you are next to chin then this happens.
+  if(chinFlip === 3) {
+    this.y += 0;
+    if(chinDirection === 0) {
+      this.spriteRoll(640, 1,  clockTick, 0.5);
+    }
+    if(chinDirection === 1) {
+      this.spriteRoll(512, 1, clockTick, 0.5);
+    }
+    if(dist >= 50) {
+      chinFlip = chinDirection;
+    }
+  }
+
+  // You are not next to chin and he is walking south
+  if(chinFlip === 0) {
+    chinCounter = 0;
     this.spriteRoll(640, 8,  clockTick, 0.1);
     this.y += this.speed;
 
     if(this.y >= 700) {
-      chinCounter = 1;
+      chinFlip = 1;
     }
 
   }
-  if(chinCounter === 1) {
+
+  // You are not next to chin and he is walking north
+  if(chinFlip === 1) {
+    chinCounter = 0;
     this.spriteRoll(512, 8, clockTick, 0.1);
     this.y -= this.speed;
 
     if(this.y <= 10) {
-      chinCounter = 0;
+      chinFlip = 0;
     }
   }
 }
