@@ -1,5 +1,5 @@
 /**
- * Created by Kirsten on 2/11/2015. Straight copy of jewel's
+ * Created by Kirsten on 2/11/2015. Straight copy of uwetech's
  * Modernizr.js code. Seemed important.
  */
 /* Modernizr 2.0.6 (Custom Build) | MIT & BSD

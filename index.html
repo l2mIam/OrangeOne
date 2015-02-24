@@ -1,88 +1,37 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html>
-
 <head>
-
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, height=device-height, user-scalable=no">
+  <title>UWeTech</title>
 
-  <title>2D Map</title>
-
-    <link rel="stylesheet" href="css/style.css" media="screen" type="text/css" />
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/fontfaces.css" />
+  <link rel="stylesheet" href="css/mobile.css" />
+  <media="screen and (max-device-width: 768px) and (orientation: portrait),
+  screen and (max-device-width: 1024px) and (orientation: landscape)"/>
 
 </head>
+<body>
+  <!-- <img src="img/uwt.jpg" alt="UWT image" width="640px" style="padding-bottom:0;"/> -->
 
-<body onload="loadController();">
-
-
-  <canvas id="bottomlayer"
-      style="z-index: 1;
-      position:absolute;
-      left:0px;
-      top:0px;"
-      height="352" width="560">
-      This text is displayed if your browser does not support HTML5 Canvas.
-  </canvas>
-
-  <canvas id="middlelayer"
-      style="z-index: 2;
-      position:absolute;
-      left:0px;
-      top:0px;"
-      height="352" width="560">
-      This text is displayed if your browser does not support HTML5 Canvas.
-  </canvas>
-  <canvas id="toplayer"
-      style="z-index: 3;
-      position:absolute;
-      left:0px;
-      top:0px;"
-      height="352" width="560"
-      tag="canvas">
-      This text is displayed if your browser does not support HTML5 Canvas.
-  </canvas>
-
-<!--<canvas id="mainCanvas" width="560" height="352" backgroundColor="black" ></canvas> &lt;!&ndash;640 width&ndash;&gt;-->
-
-<script src="js/modernizr.js"></script>
-<script src="js/uwetech.loader.js"></script>
-<script src="js/input.js"></script>
-<script src="js/game.js"></script>
-  <!--<script src="js/overlay.js"></script>-->
-  <script type='text/javascript' src='js/gamecontroller.js'></script>
-  <!-- <script type='text/javascript'>
-    $( function() { // jQuery *not* required - just be to call onload
-      GameController.init();
-    } );
-  </script>
--->
-
-  <script type='text/javascript'>
-    function loadController () {
-      GameController.init( {
-        left: {
-          type: 'dpad'
-        },
-        right: {
-          position: {
-            right: '5%'
-          },
-          type: 'buttons',
-          buttons: [
-            {
-              label: 'jump', fontSize: 13, touchStart: function() {
-              // do something
-            }
-            },
-            false, false, false
-          ]
-        }
-      } );
-
-    }
-
-  </script>
-
+    <!-- <DIV STYLE="position:absolute; top:250px; left:20px; width:200px; height:25px">
+      <CENTER><FONT SIZE="+2" COLOR="00ff00">Looking Into The Future</FONT></CENTER>
+    </DIV> -->
+  <div id="container">
+    <div id="game">
+      <img id="image" src="img/uwt.jpg" alt="UWT image"width=100% style="padding-bottom:0;"/>
+      <div style="position:absolute; top:50px; left:10%; width:30%; height:100px">
+        <h1 class="logo">U<br/>We<br/>Tech</h1>
+      </div>
+      <div style="position:absolute; top:50px; left:60%; width:30%; height:100px">
+        <ul class="menu">
+          <li><form method="get" action="game.html"><button name="game">Play Game</button></form>
+          <li><form method="get" action=""><button name="hiscore">Highscores</button></form>
+          <li><form method="get" action="about.html"><button name="about">About</button></form>
+        </ul>
+      </div>
+    </div>
+  </div>
 </body>
-
-
 </html>
