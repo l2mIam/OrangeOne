@@ -371,7 +371,8 @@ var chinCounter = 0; // Checks to see if you have incountered him.
 var chinDirection = 0;
 npc_Chin.update = function(clockTick) {
   var dist = distance(this, player);
-
+  var chinX = Math.floor(this.x/32) + 1;
+  var chinY = Math.floor(this.y/32) + 1
   //Checks to see if you are next to chin
   if(dist <= 50 && chinCounter === 0) {
     chinDirection = chinFlip;
@@ -384,11 +385,23 @@ npc_Chin.update = function(clockTick) {
     this.y += 0;
     if(chinDirection === 0) {
       this.spriteRoll(640, 1,  clockTick, 0.5);
+      sign_screen_bounds[chinY][chinX] = 1;
+      sign_screen_bounds[chinY + 1][chinX] = 1;
+      sign_screen_bounds[chinY][chinX + 1] = 1;
+      sign_screen_bounds[chinY + 1][chinX + 1] = 1;
     }
     if(chinDirection === 1) {
       this.spriteRoll(512, 1, clockTick, 0.5);
+      sign_screen_bounds[chinY][chinX] = 1;
+      sign_screen_bounds[chinY + 1][chinX] = 1;
+      sign_screen_bounds[chinY][chinX + 1] = 1;
+      sign_screen_bounds[chinY + 1][chinX + 1] = 1;
     }
     if(dist >= 50) {
+      sign_screen_bounds[chinY][chinX] = 0;
+      sign_screen_bounds[chinY + 1][chinX] = 0;
+      sign_screen_bounds[chinY][chinX + 1] = 0;
+      sign_screen_bounds[chinY + 1][chinX + 1] = 0;
       chinFlip = chinDirection;
     }
   }
