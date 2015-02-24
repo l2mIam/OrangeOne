@@ -367,7 +367,7 @@ npc_Chin.image.onload = function() {
 }
 
 var chinFlip = 0; // Flips between north and south.
-var chinCounter = 0; // Checks to see if yo
+var chinCounter = 0; // Checks to see if you have incountered him.
 var chinDirection = 0;
 npc_Chin.update = function(clockTick) {
   var dist = distance(this, player);
@@ -421,23 +421,52 @@ npc_Alden.image.onload = function() {
   npc_Alden.load = true;
 }
 
+var aldenFlip = 0;
 var aldenCounter = 0;
+var aldenDirection = 0;
 npc_Alden.update = function(clockTick) {
-  if(aldenCounter === 0) {
+  var dist = distance(this, player);
+
+  //Checks to see if you are next to alden
+  if(dist <= 50 && aldenCounter === 0) {
+    aldenDirection = aldenFlip;
+    aldenFlip = 3;
+    aldenCounter = 1;
+  }
+
+  //If you are next to alden then this happens.
+  if(aldenFlip === 3) {
+    this.y += 0;
+    if(aldenDirection === 0) {
+      this.spriteRoll(704, 1,  clockTick, 0.5);
+    }
+    if(aldenDirection === 1) {
+      this.spriteRoll(576, 1, clockTick, 0.5);
+    }
+    if(dist >= 50) {
+      aldenFlip = aldenDirection;
+    }
+  }
+
+  // You are not next to alden and he is walking west
+  if(aldenFlip === 0) {
+    aldenCounter = 0;
     this.spriteRoll(704, 8,  clockTick, 0.1);
     this.x += this.speed;
 
     if(this.x >= 500) {
-      aldenCounter = 1;
+      aldenFlip = 1;
     }
 
   }
-  if(aldenCounter === 1) {
+  // You are not next to alden and he is walking east
+  if(aldenFlip === 1) {
+    aldenCounter = 0;
     this.spriteRoll(576, 8,  clockTick, 0.1);
     this.x -= this.speed;
 
     if(this.x <= 10) {
-      aldenCounter = 0;
+      aldenFlip = 0;
     }
   }
 }
