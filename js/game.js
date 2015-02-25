@@ -184,6 +184,7 @@ var Sprite = function() {
             this.speed = speed;
             this.facing = "south";
 
+            this.elapsedTime = 0;
             this.image = new Image();
             this.image.src = src;
             console.log(" " + src + "=" + this.image.height); // announce resource height
@@ -207,13 +208,13 @@ var Sprite = function() {
         };
     };
 
-    this.move = function() {
+    this.move = function(clockTick) {
       var x = Math.floor(player.x/32) + 1;
       var y = Math.floor(player.y/32) + 1;
 
 
       if(87 in keys) { // W
-          this.spriteRoll(512, 8);
+          this.spriteRoll(512, 8, clockTick, 0.1);
           if (y > 0 && sign_screen_bounds[y - 1][x] === 0) {
             this.y -= this.speed;
           }
@@ -221,7 +222,7 @@ var Sprite = function() {
       }
 
       if(83 in keys) { // S
-          this.spriteRoll(640, 8);
+          this.spriteRoll(640, 8,  clockTick, 0.1);
           if (y < 28 && sign_screen_bounds[y + 1][x] === 0) {
             this.y += this.speed;
           }
@@ -229,7 +230,7 @@ var Sprite = function() {
       }
 
       if(65 in keys) { // A
-          this.spriteRoll(576, 8);
+          this.spriteRoll(576, 8,  clockTick, 0.1);
           if (x > 0 && sign_screen_bounds[y][x - 1] === 0) {
             this.x -= this.speed;
           }
@@ -237,7 +238,7 @@ var Sprite = function() {
       }
 
       if(68 in keys) { // D
-          this.spriteRoll(704, 8);
+          this.spriteRoll(704, 8,  clockTick, 0.1);
           if (x < 18 && sign_screen_bounds[y][x + 1] === 0) {
             this.x += this.speed;
           }
@@ -268,16 +269,30 @@ var Sprite = function() {
       }
     }
 
-    this.spriteRoll = function(srY, maxLength) {
+    this.spriteRoll = function(srY, maxLength, tick, frameDuration) {
+        this.elapsedTime += tick;
+        this.frameDuration = frameDuration;
+        this.totalTime = frameDuration*maxLength;
+
+        if ((this.elapsedTime >= this.totalTime)) {
+          this.elapsedTime = 0;
+        }
+
         this.srcY = srY;
         this.imgX += 1;
 
-        this.srcX = this.dtx * this.imgX;
+
+
+        this.srcX = this.dtx * Math.floor(this.elapsedTime / this.frameDuration);
 
         if (this.imgX >= maxLength) {
             this.imgX = 0;
         }
     };
+
+    this.currentFrame = function () {
+        return Math.floor(this.elapsedTime / this.frameDuration);
+    }
 
     this.update = function() {
     };
@@ -289,26 +304,115 @@ var Sprite = function() {
 };
 
 var player = new Sprite();
-var npc_Mobus = new Sprite();
+//var npc_Mobus = new Sprite();
 var npc_Chin = new Sprite();
+var npc_Alden = new Sprite();
+var background = new Sprite();
+
 var alden_por = new Dialog();
 
-              // src, srcX, srcY, dtx, dty, x, y, width, height, speed
+
+// src, srcX, srcY, dtx, dty, x, y, width, height, speed
+
+// NPC's
 player.setOptions("./img/purple_orc.png", 0, 640, 64, 64,
-                                    300, 300, 62, 62, 5);
-npc_Mobus.setOptions("./img/mobus.png", 0, 640, 64, 64, 300, 10, 62, 62, 2);
-npc_Chin.setOptions("./img/chin.png", 0, 140, 64, 64, 10,10, 62, 62, 2);
+                                    300, 300, 62, 62, 3);
+//npc_Mobus.setOptions("./img/mobus.png", 0, 640, 64, 64, 350, 10, 62, 62, 1);
+npc_Chin.setOptions("./img/chin.png", 0, 140, 64, 64, 350,10, 62, 62, 1);
+npc_Alden.setOptions("./img/alden.png", 0, 140, 64, 64, 300, 850, 62, 62, 2);
+
+
+//Faces
 alden_por.setOptions("./img/Alden-plain.png", 0, 0, 480, 638, 100, 100, 480, 638);
 
+<<<<<<< HEAD
 var background = new Sprite();
 background.setOptions("./img/UWTmap1.jpg", 0, 0, btmcanvas.width, btmcanvas.height,
+=======
+
+// Backgrounds
+background.setOptions("./img/UWTmap1.png", 0, 0, btmcanvas.width, btmcanvas.height,
+>>>>>>> gh-pages
                                         0, 0, btmcanvas.width, btmcanvas.height, 0);
 
-player.image.onload = function() {
-    console.log("player.image.width=" + player.image.width);
-  player.load = true;
-  npc_Mobus.load = true;
+// npc_Mobus.image.onload = function() {
+//   npc_Mobus.load = true;
+// }
+
+// var mobusCounter = 0;
+// npc_Mobus.update = function(clockTick) {
+//   if(mobusCounter === 0) {
+//     this.spriteRoll(640, 8,  clockTick, 0.1);
+//     this.y += this.speed;
+//
+//     if(this.y >= 700) {
+//       mobusCounter = 1;
+//     }
+//
+//   }
+//   if(mobusCounter === 1) {
+//     this.spriteRoll(512, 8, clockTick, 0.1);
+//     this.y -= this.speed;
+//
+//     if(this.y <= 10) {
+//       mobusCounter = 0;
+//     }
+//   }
+//
+// }
+
+npc_Chin.image.onload = function() {
   npc_Chin.load = true;
+}
+
+var chinCounter = 0;
+npc_Chin.update = function(clockTick) {
+  if(chinCounter === 0) {
+    this.spriteRoll(640, 8,  clockTick, 0.1);
+    this.y += this.speed;
+
+    if(this.y >= 700) {
+      chinCounter = 1;
+    }
+
+  }
+  if(chinCounter === 1) {
+    this.spriteRoll(512, 8, clockTick, 0.1);
+    this.y -= this.speed;
+
+    if(this.y <= 10) {
+      chinCounter = 0;
+    }
+  }
+}
+
+npc_Alden.image.onload = function() {
+  npc_Alden.load = true;
+}
+
+var aldenCounter = 0;
+npc_Alden.update = function(clockTick) {
+  if(aldenCounter === 0) {
+    this.spriteRoll(704, 8,  clockTick, 0.1);
+    this.x += this.speed;
+
+    if(this.x >= 500) {
+      aldenCounter = 1;
+    }
+
+  }
+  if(aldenCounter === 1) {
+    this.spriteRoll(576, 8,  clockTick, 0.1);
+    this.x -= this.speed;
+
+    if(this.x <= 10) {
+      aldenCounter = 0;
+    }
+  }
+}
+
+player.image.onload = function() {
+  player.load = true;
   alden_por.load = true;
   dialogs.push(alden_por);
 };
@@ -318,42 +422,54 @@ background.image.onload = function() {
 };
 
 
+function Timer() {
+    this.gameTime = 0;
+    this.maxStep = 0.05;
+    this.wallLastTimestamp = 0;
+}
+
+Timer.prototype.tick = function () {
+    var wallCurrent = Date.now();
+    var wallDelta = (wallCurrent - this.wallLastTimestamp) / 1000;
+    this.wallLastTimestamp = wallCurrent;
+
+    var gameDelta = Math.min(wallDelta, this.maxStep);
+    this.gameTime += gameDelta;
+    return gameDelta;
+}
+
 var Game = function() {
-  var mobusMin = 10;
-  var mobusMax = 650;
-  var mobusCounter = 0;
-    this.cam  = new Camera();
+    this.entities = [];
 
     this.start = function() {
+      this.cam  = new Camera();
       this.cam.setup(player);
+      this.timer = new Timer();
       this.loop();
     };
 
     this.loop = function() {
-        this.update();
+        this.update(this.timer.tick());
         this.render();
         requestAnimFrame(this.loop.bind(this));
     };
 
-    this.update = function() {
+
+    this.addEntity = function (entity) {
+
+        this.entities.push(entity);
+    }
+
+    this.update = function(clockTick) {
       this.cam.getPosition(player);
       player.bounds();
-      player.move();
-      npc_Chin.spriteRoll(140, 8);
-    //  console.log(npc_Mobus.y);
-      if(mobusCounter === 0) {
-        npc_Mobus.spriteRoll(640, 8);
-        npc_Mobus.y += npc_Mobus.speed;
-        if(npc_Mobus.y === mobusMax) {
-          mobusCounter = 1;
-        }
-      }
-      if(mobusCounter === 1) {
-        npc_Mobus.spriteRoll(512, 8);
-        npc_Mobus.y -= npc_Mobus.speed;
-        if(npc_Mobus.y === mobusMin) {
-          mobusCounter = 0;
-        }
+      player.move(clockTick);
+
+      var entitiesCount = this.entities.length;
+      for (var i = 0; i < entitiesCount; i++) {
+          var entity = this.entities[i];
+
+          entity.update(clockTick);
       }
 
     };
@@ -362,14 +478,20 @@ var Game = function() {
         midctx.clearRect(0, 0, midcanvas.width, midcanvas.height);
         midctx.save();
         midctx.translate(this.cam.x, this.cam.y);
+        var entitiesCount = this.entities.length;
+
+        for (var i = 0; i < entitiesCount; i++) {
+            var entity = this.entities[i];
+            if(entity.load) {
+              entity.render();
+            }
+        }
         if (background.load) {
             //btmctx.clearRect(0, 0, btmcanvas.width, btmcanvas.height);
             background.renderBackground(this.cam.x * - 1, this.cam.y * - 1);
         }
         if (player.load) {
             player.render();
-            npc_Mobus.render();
-            npc_Chin.render();
         }
 
         if(alden_por.draw) {
@@ -385,3 +507,6 @@ var Game = function() {
 var g = new Game();
 var m = new math();
 g.start();
+g.addEntity(npc_Chin);
+//g.addEntity(npc_Mobus);
+g.addEntity(npc_Alden);
