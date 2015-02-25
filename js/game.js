@@ -13,6 +13,8 @@ window.requestAnimFrame = (function () {
 //    ctx = canvas.getContext('2d');
 var dialogs = [];
 
+
+
 var keys = window.uwetech.Input.keys;
 
 // Assign the bottom canvas variables
@@ -60,6 +62,11 @@ var math = function() {
     return Math.max(Math.min(i, max),min);
   };
 };
+function distance(a, b) {
+    var dx = a.x - b.x;
+    var dy = a.y - b.y;
+    return Math.sqrt(dx * dx + dy * dy);
+}
 
 /**
  *  The camera will control what part of a map we're viewing and where
@@ -182,6 +189,7 @@ var Sprite = function() {
             this.height = height;
             this.speed = speed;
             this.facing = "south";
+            this.visualRadius = 50;
 
             this.elapsedTime = 0;
             this.image = new Image();
@@ -303,7 +311,6 @@ var Sprite = function() {
 };
 
 var player = new Sprite();
-//var npc_Mobus = new Sprite();
 var npc_Chin = new Sprite();
 var npc_Alden = new Sprite();
 var background = new Sprite();
@@ -359,23 +366,66 @@ npc_Chin.image.onload = function() {
   npc_Chin.load = true;
 }
 
-var chinCounter = 0;
+var chinFlip = 0; // Flips between north and south.
+var chinCounter = 0; // Checks to see if you have incountered him.
+var chinDirection = 0;
 npc_Chin.update = function(clockTick) {
-  if(chinCounter === 0) {
+  var dist = distance(this, player);
+  var chinX = Math.floor(this.x/32) + 1;
+  var chinY = Math.floor(this.y/32) + 1
+  //Checks to see if you are next to chin
+  if(dist <= 50 && chinCounter === 0) {
+    chinDirection = chinFlip;
+    chinFlip = 3;
+    chinCounter = 1;
+  }
+
+  //If you are next to chin then this happens.
+  if(chinFlip === 3) {
+    this.y += 0;
+    if(chinDirection === 0) {
+      this.spriteRoll(640, 1,  clockTick, 0.5);
+      sign_screen_bounds[chinY][chinX] = 1;
+      sign_screen_bounds[chinY + 1][chinX] = 1;
+      sign_screen_bounds[chinY][chinX + 1] = 1;
+      sign_screen_bounds[chinY + 1][chinX + 1] = 1;
+    }
+    if(chinDirection === 1) {
+      this.spriteRoll(512, 1, clockTick, 0.5);
+      sign_screen_bounds[chinY][chinX] = 1;
+      sign_screen_bounds[chinY + 1][chinX] = 1;
+      sign_screen_bounds[chinY][chinX + 1] = 1;
+      sign_screen_bounds[chinY + 1][chinX + 1] = 1;
+    }
+    if(dist >= 50) {
+      sign_screen_bounds[chinY][chinX] = 0;
+      sign_screen_bounds[chinY + 1][chinX] = 0;
+      sign_screen_bounds[chinY][chinX + 1] = 0;
+      sign_screen_bounds[chinY + 1][chinX + 1] = 0;
+      chinFlip = chinDirection;
+    }
+  }
+
+  // You are not next to chin and he is walking south
+  if(chinFlip === 0) {
+    chinCounter = 0;
     this.spriteRoll(640, 8,  clockTick, 0.1);
     this.y += this.speed;
 
     if(this.y >= 700) {
-      chinCounter = 1;
+      chinFlip = 1;
     }
 
   }
-  if(chinCounter === 1) {
+
+  // You are not next to chin and he is walking north
+  if(chinFlip === 1) {
+    chinCounter = 0;
     this.spriteRoll(512, 8, clockTick, 0.1);
     this.y -= this.speed;
 
     if(this.y <= 10) {
-      chinCounter = 0;
+      chinFlip = 0;
     }
   }
 }
@@ -384,23 +434,67 @@ npc_Alden.image.onload = function() {
   npc_Alden.load = true;
 }
 
+var aldenFlip = 0;
 var aldenCounter = 0;
+var aldenDirection = 0;
 npc_Alden.update = function(clockTick) {
-  if(aldenCounter === 0) {
+  var dist = distance(this, player);
+
+  var aldenX = Math.floor(this.x/32) + 1;
+  var aldenY = Math.floor(this.y/32) + 1
+
+  //Checks to see if you are next to alden
+  if(dist <= 50 && aldenCounter === 0) {
+    aldenDirection = aldenFlip;
+    aldenFlip = 3;
+    aldenCounter = 1;
+  }
+
+  //If you are next to alden then this happens.
+  if(aldenFlip === 3) {
+    this.y += 0;
+    if(aldenDirection === 0) {
+      this.spriteRoll(704, 1,  clockTick, 0.5);
+      sign_screen_bounds[aldenY][aldenX] = 1;
+      sign_screen_bounds[aldenY + 1][aldenX] = 1;
+      sign_screen_bounds[aldenY][aldenX + 1] = 1;
+      sign_screen_bounds[aldenY + 1][aldenX + 1] = 1;
+    }
+    if(aldenDirection === 1) {
+      this.spriteRoll(576, 1, clockTick, 0.5);
+      sign_screen_bounds[aldenY][aldenX] = 1;
+      sign_screen_bounds[aldenY + 1][aldenX] = 1;
+      sign_screen_bounds[aldenY][aldenX + 1] = 1;
+      sign_screen_bounds[aldenY + 1][aldenX + 1] = 1;
+    }
+    if(dist >= 50) {
+      sign_screen_bounds[aldenY][aldenX] = 0;
+      sign_screen_bounds[aldenY + 1][aldenX] = 0;
+      sign_screen_bounds[aldenY][aldenX + 1] = 0;
+      sign_screen_bounds[aldenY + 1][aldenX + 1] = 0;
+      aldenFlip = aldenDirection;
+    }
+  }
+
+  // You are not next to alden and he is walking west
+  if(aldenFlip === 0) {
+    aldenCounter = 0;
     this.spriteRoll(704, 8,  clockTick, 0.1);
     this.x += this.speed;
 
     if(this.x >= 500) {
-      aldenCounter = 1;
+      aldenFlip = 1;
     }
 
   }
-  if(aldenCounter === 1) {
+  // You are not next to alden and he is walking east
+  if(aldenFlip === 1) {
+    aldenCounter = 0;
     this.spriteRoll(576, 8,  clockTick, 0.1);
     this.x -= this.speed;
 
     if(this.x <= 10) {
-      aldenCounter = 0;
+      aldenFlip = 0;
     }
   }
 }
