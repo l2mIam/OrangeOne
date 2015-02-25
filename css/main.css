@@ -126,6 +126,19 @@ abandon this for a message telling use to flip orientation*/
 .no-textshadow .logo {
     filter : dropshadow(color=#000000,offX=3,offY=3);
 }
+.dialog {
+  font-family : IndieFlower;
+  margin : 0;
+  opacity: 1;
+  text-align : left;
+  color : #39275B;
+  font-size : .75em;
+  line-height : 1em;
+  text-shadow : 0.025em  0.025em  0.025em #DFDDE8 ,
+  -0.025em -0.025em  0.025em #DFDDE8 ,
+  0.025em -0.025em  0.025em #DFDDE8 ,
+  -0.025em 0.025em  0.025em #DFDDE8;
+}
 
 
 /* Main menu styles */

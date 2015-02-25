@@ -6,8 +6,8 @@
 }
 @font-face {
   font-family: "IndieFlower";
-  font-weight: normal;
-  font-style: normal;
+  font-weight: bold;
+  font-style: bold;
   src: url("../fonts/IndieFlower.ttf") format("truetype");
 }@font-face {
   font-family: "Orbitron-Black";
