@@ -242,20 +242,25 @@
 			this.performanceFriendly = ( userAgent.indexOf( 'iphone' ) !== -1 || userAgent.indexOf( 'android' ) !== -1 || this.options.forcePerformanceFriendly );
 
 			// Grab the canvas if one wasn't passed
-			var ele;
-			if( !this.options.canvas || !( ele = document.getElementById( this.options.canvas ) ) )
-			{
-				this.options.canvas = document.getElementsByTagName( 'canvas' )[0];
-			}
-			else if( ele )
-			{
-				this.options.canvas = ele;
-			}
+			//var ele;
+			//if( !this.options.canvas || !( ele = document.getElementById( this.options.canvas ) ) )
+			//{
+			//	this.options.canvas = document.getElementsByTagName( 'canvas' )[0];
+			//}
+			//else if( ele )
+			//{
+			//	this.options.canvas = ele;
+			//}
+            //
+			//this.options.ctx = this.options.canvas.getContext( '2d' );
+            //
+			//// Create a canvas that goes directly on top of the game canvas
+			//this.createOverlayCanvas();
 
+			// Force GameController to use the canvas I want -- Kirsten
+			this.options.canvas = document.getElementById('controllerlayer');
 			this.options.ctx = this.options.canvas.getContext( '2d' );
-
-			// Create a canvas that goes directly on top of the game canvas
-			this.createOverlayCanvas();
+			this.createOverlayCanvas();  // we sure??
 		},
 
 		/**
@@ -302,20 +307,23 @@
 		 * Creates the canvas that sits on top of the game's canvas and holds game controls
 		 */
 		createOverlayCanvas: function() {
-			this.canvas = document.createElement( 'canvas' );
+			//this.canvas = document.createElement( 'canvas' );  // Kirsten commented out
+
+			this.canvas = this.options.canvas; // kirsten added this in
 
 			// Scale to same size as original canvas
 			this.resize( true );
 
-			document.getElementsByTagName( 'body' )[0].appendChild( this.canvas );
-			this.ctx = this.canvas.getContext( '2d' );
+			//document.getElementsByTagName( 'body' )[0].appendChild( this.canvas ); // Kirsten comment out
+			//this.ctx = this.canvas.getContext( '2d' ); // Kirsten comment out
+
+			this.ctx = this.options.ctx; // kirsten added this in
 
 			var _this = this;
 			window.addEventListener( 'resize', function() {
 				// Wait for any other events to finish
 				setTimeout( function() { GameController.resize.call( _this ); }, 1 );
 			} );
-
 
 			// Set the touch events for this new canvas
 			this.setTouchEvents();
@@ -334,8 +342,8 @@
 		pixelRatio: 1,
 		resize: function( firstTime ) {
 			// Scale to same size as original canvas
-			this.canvas.width = this.options.canvas.width;
-			this.canvas.height = this.options.canvas.height;
+			//this.canvas.width = this.options.canvas.width;  // Kirsten comment out
+			//this.canvas.height = this.options.canvas.height; // Kirsten comment out
 
 			this.offsetX = GameController.options.canvas.offsetLeft + document.body.scrollLeft;
 			this.offsetY = GameController.options.canvas.offsetTop + document.body.scrollTop;
@@ -348,12 +356,15 @@
 				this.pixelRatio = this.canvas.width / parseInt( this.canvas.style.width );
 			}
 
-			this.canvas.style.position = 'absolute';
-			this.canvas.style.zIndex = '5';
-			this.canvas.style.left = this.options.canvas.offsetLeft + 'px';
-			this.canvas.style.top = this.options.canvas.offsetTop + 'px';
-			this.canvas.setAttribute( 'style', this.canvas.getAttribute( 'style' ) +' -ms-touch-action: none;' );
+			/** Kirsten comment out - this stuff is already set up in game.html
+			//this.canvas.style.position = 'absolute';
+			//this.canvas.style.zIndex = '5';
+			//this.canvas.style.left = this.options.canvas.offsetLeft + 'px';
+			//this.canvas.style.top = this.options.canvas.offsetTop + 'px';
+			//this.canvas.setAttribute( 'style', this.canvas.getAttribute( 'style' ) +' -ms-touch-action: none;' );
+			 */
 
+			/** Kirsten comment out the resizing stuffs
 			if( !firstTime )
 			{
 				// Remove all current buttons
@@ -364,6 +375,7 @@
 				this.reloadSide( 'left' );
 				this.reloadSide( 'right' );
 			}
+			 */
 		},
 
 		/**
@@ -641,7 +653,7 @@
 		 */
 		reloadSide: function( side ) {
 			// Load in new ones
-			this.loadSide( side );
+			//this.loadSide( side ); // turning off by Kirsten
 		},
 
 		loadSide: function( side ) {
@@ -803,7 +815,8 @@
 				}
 			}
 
-			// Render if the game isn't paused, or we're not in performanceFriendly mode (running when not paused keeps the semi-transparent gradients looking better for some reason)
+			// Render if the game isn't paused, or we're not in performanceFriendly mode (running when not paused keeps
+			// the semi-transparent gradients looking better for some reason)
 			if( ! this.paused || ! this.performanceFriendly )
 			{
 				// Process all the info for each touchable area
