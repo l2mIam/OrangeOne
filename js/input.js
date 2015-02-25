@@ -1,6 +1,7 @@
 /**
- * Created by Kirsten on 2/11/2015. Holds an array of all currently pressed keys.
+ * Created by Kirsten on 2/11/2015. Adds input functionality to the game.
  *
+
  */
 
 window.uwetech.Input = (function () {
