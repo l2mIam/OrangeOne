@@ -13,8 +13,6 @@ window.requestAnimFrame = (function () {
 //    ctx = canvas.getContext('2d');
 var dialogs = [];
 
-
-
 var keys = window.uwetech.Input.keys;
 
 // Assign the bottom canvas variables
@@ -24,6 +22,10 @@ var btmcanvas = document.getElementById('bottomlayer'),
 // Assign the middle canvas variables
 var midcanvas = document.getElementById('middlelayer'),
     midctx = midcanvas.getContext('2d');
+
+// Assign the top canvas variables
+var topcanvas = document.getElementById('toplayer'),
+    topctx = topcanvas.getContext('2d');
 
 // zone #1's off limit areas
 var sign_screen_bounds = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -127,6 +129,7 @@ var Dialog = function() {
   this.load = false;
   this.imgX = 0;
 
+
   this.setOptions = function(src, srcX, srcY, dtx, dty, x, y, width, height) {
           this.srcX = srcX;
           this.srcY = srcY;
@@ -140,13 +143,13 @@ var Dialog = function() {
 
           this.image = new Image();
           this.image.src = src;
-          console.log(" " + src + "=" + this.image.height); // announce resource height
+          //console.log(" " + src + "=" + this.image.height); // announce resource height
 
       /**
        * Renders this sprite (using the correct animation step previously "rolled").
        */
       this.render = function() {
-          midctx.drawImage(this.image, this.srcX, this.srcY, this.dtx, this.dty,
+          topctx.drawImage(this.image, this.srcX, this.srcY, this.dtx, this.dty,
               this.x, this.y, this.width, this.height);
         };
       /**
@@ -155,7 +158,7 @@ var Dialog = function() {
        * @param yoffset
        */
       this.renderBackground = function(xoffset, yoffset) {
-          btmctx.drawImage(this.image, this.srcX + xoffset, this.srcY + yoffset,
+          btmctx.drawImage(that.image, this.srcX + xoffset, this.srcY + yoffset,
                                           this.dtx, this.dty,
               this.x, this.y, this.width, this.height);
       };
@@ -194,7 +197,7 @@ var Sprite = function() {
             this.elapsedTime = 0;
             this.image = new Image();
             this.image.src = src;
-            console.log(" " + src + "=" + this.image.height); // announce resource height
+            //console.log(" " + src + "=" + this.image.height); // announce resource height
 
         /**
          * Renders this sprite (using the correct animation step previously "rolled").
@@ -256,7 +259,6 @@ var Sprite = function() {
         this.interact();
         console.log("space");
       }
-
     };
 
     this.interact = function() {
@@ -271,8 +273,15 @@ var Sprite = function() {
       }
       if(dialogs[0].draw) {
         dialogs[0].draw = false;
+          window.uwetech.dialog.hide(); // kirsten test code
+          topctx.clearRect(0, 0, topcanvas.width, topcanvas.height);
       } else {
         dialogs[0].draw = true;
+          console.log(alden_por.image);
+          window.uwetech.dialog.show(
+              "I am testing the length requirements for this section of all of the awesome " +
+              "stuff we are doing it is quite amazing yes?!",
+              "foobar!", alden_por.image); // kirsten test code
       }
     }
 
