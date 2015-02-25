@@ -127,6 +127,17 @@ abandon this for a message telling use to flip orientation*/
     filter : dropshadow(color=#000000,offX=3,offY=3);
 }
 
+.dialog {
+  font-family : IndieFlower;
+  margin : 0;
+  opacity: 1;
+  text-align : left;
+  color : #39275B;
+  font-size : 1em;
+  line-height : 1em;
+  text-shadow : 0.075em  0.075em  0.075em #DFDDE8;
+}
+
 
 /* Main menu styles */
 #main-menu {
