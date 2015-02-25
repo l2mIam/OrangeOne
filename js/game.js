@@ -24,17 +24,17 @@ var midcanvas = document.getElementById('middlelayer'),
     midctx = midcanvas.getContext('2d');
 
 // zone #1's off limit areas
-var sign_screen_bounds = [[2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                          [2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                          [1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+var sign_screen_bounds = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                          [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                          [1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
                           [1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1],
                           [0,0,0,0,0,0,0,0,1,0,0,0,0,1,1,1,1,1,1],
                           [0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
                           [0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
                           [0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
-                          [0,0,0,0,0,0,0,1,1,0,0,0,0,1,0,0,0,0,0],
-                          [0,1,1,1,1,1,1,1,1,0,0,0,0,1,0,0,0,0,0],
-                          [0,1,1,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
+                          [0,0,1,1,1,1,1,1,1,0,0,0,0,1,0,0,0,0,0],
+                          [0,1,1,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
+                          [0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],
                           [0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],
                           [0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],
                           [0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],
@@ -326,6 +326,7 @@ npc_Alden.setOptions("./img/alden.png", 0, 140, 64, 64, 300, 850, 62, 62, 2);
 alden_por.setOptions("./img/Alden-plain.png", 0, 0, 480, 638, 100, 100, 480, 638);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 var background = new Sprite();
 background.setOptions("./img/UWTmap1.jpg", 0, 0, btmcanvas.width, btmcanvas.height,
 =======
@@ -334,6 +335,13 @@ background.setOptions("./img/UWTmap1.jpg", 0, 0, btmcanvas.width, btmcanvas.heig
 background.setOptions("./img/UWTmap1.png", 0, 0, btmcanvas.width, btmcanvas.height,
 >>>>>>> gh-pages
                                         0, 0, btmcanvas.width, btmcanvas.height, 0);
+=======
+var background = new Sprite();
+
+// Backgrounds
+background.setOptions("./img/UWTmap1.jpg", 0, 0, btmcanvas.width, btmcanvas.height,
+0, 0, btmcanvas.width, btmcanvas.height, 0);
+>>>>>>> 3c2076435ba4882d91518668a5fc902445444c26
 
 // npc_Mobus.image.onload = function() {
 //   npc_Mobus.load = true;
