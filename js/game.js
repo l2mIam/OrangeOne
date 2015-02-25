@@ -509,6 +509,7 @@ background.image.onload = function() {
   background.load = true;
 };
 
+//var sign_screen_bounds = window.uwetech.zones[1].bounds;
 
 function Timer() {
     this.gameTime = 0;
