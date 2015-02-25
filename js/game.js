@@ -342,7 +342,7 @@ alden_por.setOptions("./img/Alden-plain.png", 0, 0, 480, 638, 100, 100, 480, 638
 
 
 // Backgrounds
-background.setOptions("./img/UWTmap1.png", 0, 0, btmcanvas.width, btmcanvas.height,
+background.setOptions("./img/UWTmap1.jpg", 0, 0, btmcanvas.width, btmcanvas.height,
                                         0, 0, btmcanvas.width, btmcanvas.height, 0);
 
 // npc_Mobus.image.onload = function() {
