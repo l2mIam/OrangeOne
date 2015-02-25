@@ -1,6 +1,8 @@
 /**
  * Created by Kirsten on 2/12/2015. Storage for zone data (since 2D arrays
  * tend to get really messy really quick.) Enter at own risk!
+ *
+ * Work in progress as of 2/24/15!
  */
 var zones = {};
 window.uwetech.zones = zones; // declare it as a global variable

@@ -1,6 +1,8 @@
 /**
  * Assignment #2 : Created by Kirsten.
  *
+ * Eventually will be merged into the game as a puzzle. Under construction!
+ *
  * ==References==
  * Finite Linear Games: An Exploration of the Math Behind the Puzzles by Kirsten Grace & Lisa Smith
  * https://docs.google.com/document/d/1bYxHJp1v97sBxqMzl9X7AzpVWA3LSbGlUoexEK1IyxU/edit?usp=sharing
