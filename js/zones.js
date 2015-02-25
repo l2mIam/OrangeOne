@@ -18,6 +18,9 @@ var Exit = function (x_exit, y_exit, go_to_zone, x_entrance, y_entrance) {
 
 var Zone = function (id, name, image_src, height, width, exit_array, bounds) {
 
+    var image = new Image();
+    image.src = image_src;
+
     console.log(exit_array);
     var exits = null;
     if (exit_array) {
@@ -31,7 +34,7 @@ var Zone = function (id, name, image_src, height, width, exit_array, bounds) {
     return {
         id : id,
         name : name,
-        image_src : image_src,
+        image : image,
         height : height,
         width : width,
         exits : exits,
