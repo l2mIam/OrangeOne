@@ -587,6 +587,7 @@ var Game = function() {
         if (background.load) {
             //btmctx.clearRect(0, 0, btmcanvas.width, btmcanvas.height);
             background.renderBackground(this.cam.x * - 1, this.cam.y * - 1);
+
         }
         if (player.load) {
             player.render();
@@ -608,3 +609,33 @@ g.start();
 g.addEntity(npc_Chin);
 //g.addEntity(npc_Mobus);
 g.addEntity(npc_Alden);
+
+
+
+/**
+ * Kirsten's Background Object
+ *
+*/
+
+var Background_display = function() {
+    this.load = false;
+
+    this.srcX = 0;
+    this.srcY = 0;
+    this.dtx = btmcanvas.width;
+    this.dty = btmcanvas.height;
+    this.x = 0;
+    this.y = 0;
+    this.width = btmcanvas.width;
+    this.height = btmcanvas.height;
+
+    this.set = function(image_object) {
+        this.image = image_object;
+
+        this.renderBackground = function(xoffset, yoffset) {
+            btmctx.drawImage(this.image, this.srcX + xoffset, this.srcY + yoffset,
+                this.dtx, this.dty,
+                this.x, this.y, this.width, this.height);
+        };
+    };
+};
