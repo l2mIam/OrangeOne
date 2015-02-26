@@ -116,4 +116,4 @@ zones[2] = new Zone(2, "book_store", book_store_image, 608, 352,
             [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
 );
 
-//window.uwetech.zones = zones; // declare it as a global variable
+window.uwetech.zones = zones; // declare it as a global variable

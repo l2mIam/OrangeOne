@@ -8,26 +8,27 @@ window.requestAnimFrame = (function () {
         };
 }());
 
-//// Assign the main canvas variables
-//var canvas = document.getElementById('mainCanvas'),
-//    ctx = canvas.getContext('2d');
-var dialogs = [];
 
-var keys = window.uwetech.Input.keys;
+var dialogs = []; // TODO: What is this?
 
-// Assign the bottom canvas variables
+/** Array containing all currently pressed keys. */
+var keys = window.uwetech.Input.keys; // code is in input.js
+
+/** Bottom canvas is for the background. NO ANIMATIONS. */
 var btmcanvas = document.getElementById('bottomlayer'),
     btmctx = btmcanvas.getContext('2d');
 
-// Assign the middle canvas variables
+/** Middle canvas is for drawing sprites & other animated stuff. */
 var midcanvas = document.getElementById('middlelayer'),
     midctx = midcanvas.getContext('2d');
 
-// Assign the top canvas variables
+/** Top canvas will draw on top of bottom and middle canvas. */
 var topcanvas = document.getElementById('toplayer'),
     topctx = topcanvas.getContext('2d');
 
-// zone #1's off limit areas
+/** BTW: Other canvases exist you don't know about are in the HTML file. */
+
+// zone #1's off limit areas TODO: Keep as local variable, move array to zones.js
 var sign_screen_bounds = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                           [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                           [1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0],
@@ -64,6 +65,7 @@ var math = function() {
     return Math.max(Math.min(i, max),min);
   };
 };
+// TODO: What is this for?
 function distance(a, b) {
     var dx = a.x - b.x;
     var dy = a.y - b.y;
@@ -79,6 +81,9 @@ var Camera = function() {
     /**
      * Recalculate camera position based entirely on the passed
      * entity's x and y location. (entity should be player!!)
+     *
+     * Requires background.image.width/height and midcanvas.width/height
+     * to determine edges of map and center the player correctly.
      * @param entity Should be player.
      */
     this.setup = function(entity) {
@@ -125,10 +130,10 @@ var Camera = function() {
       //};
 };
 
+// TODO: Remove Dialog and instead use window.uwetech.show/hide in dialoghelper.js
 var Dialog = function() {
   this.load = false;
   this.imgX = 0;
-
 
   this.setOptions = function(src, srcX, srcY, dtx, dty, x, y, width, height) {
           this.srcX = srcX;
@@ -158,14 +163,12 @@ var Dialog = function() {
        * @param yoffset
        */
       this.renderBackground = function(xoffset, yoffset) {
-          btmctx.drawImage(that.image, this.srcX + xoffset, this.srcY + yoffset,
+          btmctx.drawImage(this.image, this.srcX + xoffset, this.srcY + yoffset,
                                           this.dtx, this.dty,
               this.x, this.y, this.width, this.height);
       };
   };
-
-
-}
+};
 
 /**
  * Creates a new sprite. What is a sprite? A sprite is an object that has a visual
@@ -192,9 +195,9 @@ var Sprite = function() {
             this.height = height;
             this.speed = speed;
             this.facing = "south";
-            this.visualRadius = 50;
+            this.visualRadius = 50; // TODO: What is this?
 
-            this.elapsedTime = 0;
+            this.elapsedTime = 0; // TODO: What is this? How does it relate to sprite?
             this.image = new Image();
             this.image.src = src;
             //console.log(" " + src + "=" + this.image.height); // announce resource height
@@ -211,13 +214,19 @@ var Sprite = function() {
          * @param xoffset
          * @param yoffset
          */
+        // TODO: Will be removed once zones are working! Yay!
         this.renderBackground = function(xoffset, yoffset) {
             btmctx.drawImage(this.image, this.srcX + xoffset, this.srcY + yoffset,
                                             this.dtx, this.dty,
                 this.x, this.y, this.width, this.height);
         };
     };
-
+    // TODO: This references player.x, is the move method ONLY for players?
+    // TODO: Add a description about the move method.
+    /**
+     *
+     * @param clockTick
+     */
     this.move = function(clockTick) {
       var x = Math.floor(player.x/32) + 1;
       var y = Math.floor(player.y/32) + 1;
@@ -255,6 +264,7 @@ var Sprite = function() {
           this.facing = "east";
       }
 
+        // TODO: Checks for spacebar everytime move() is called, is spacebar for moving?
       if(32 in keys) { // Spacebar
         this.interact();
         console.log("space");
@@ -277,14 +287,21 @@ var Sprite = function() {
           topctx.clearRect(0, 0, topcanvas.width, topcanvas.height);
       } else {
         dialogs[0].draw = true;
-          console.log(alden_por.image);
+          console.log(alden_por.image); // kirsten test code
           window.uwetech.dialog.show(
               "I am testing the length requirements for this section of all of the awesome " +
               "stuff we are doing it is quite amazing yes?!",
               "foobar!", alden_por.image); // kirsten test code
       }
-    }
+    };
 
+    /**
+     * TODO: Add comments about what spriteRoll is.
+     * @param srY
+     * @param maxLength
+     * @param tick
+     * @param frameDuration
+     */
     this.spriteRoll = function(srY, maxLength, tick, frameDuration) {
         this.elapsedTime += tick;
         this.frameDuration = frameDuration;
@@ -308,21 +325,57 @@ var Sprite = function() {
 
     this.currentFrame = function () {
         return Math.floor(this.elapsedTime / this.frameDuration);
-    }
+    };
 
     this.update = function() {
     };
 
+    /**
+     * TODO: Add description.
+     */
     this.bounds = function() {
-    this.x = m.clamp(this.x, 0 - this.width/2 + 20, 608 - 18 - this.width/2);
-    this.y = m.clamp(this.y, 0 - this.height/2 + 20, 928 - 35 - this.height/2);
+        this.x = m.clamp(this.x, 0 - this.width/2 + 20, 608 - 18 - this.width/2);
+        this.y = m.clamp(this.y, 0 - this.height/2 + 20, 928 - 35 - this.height/2);
     };
 };
+
+
+/**
+ * Kirsten's Code for Background Object
+ *
+ */
+var BackgroundObject = function() {
+    this.load = false;
+
+    this.srcX = 0;
+    this.srcY = 0;
+    this.dtx = btmcanvas.width;
+    this.dty = btmcanvas.height;
+    this.x = 0;
+    this.y = 0;
+    this.width = btmcanvas.width;
+    this.height = btmcanvas.height;
+
+    /**
+     * Sets the current background to the passed Image object.
+     * @param image_object
+     */
+    this.set = function(image_object) {
+        this.image = image_object;
+
+        this.renderBackground = function(xoffset, yoffset) {
+            btmctx.drawImage(this.image, this.srcX + xoffset, this.srcY + yoffset,
+                this.dtx, this.dty,
+                this.x, this.y, this.width, this.height);
+        };
+    };
+};
+
 
 var player = new Sprite();
 var npc_Chin = new Sprite();
 var npc_Alden = new Sprite();
-var background = new Sprite();
+//var background = new Sprite();
 
 var alden_por = new Dialog();
 
@@ -340,10 +393,15 @@ npc_Alden.setOptions("./img/alden.png", 0, 140, 64, 64, 300, 850, 62, 62, 2);
 //Faces
 alden_por.setOptions("./img/Alden-plain.png", 0, 0, 480, 638, 100, 100, 480, 638);
 
-
+/** Kirsten commented out
 // Backgrounds
 background.setOptions("./img/UWTmap1.jpg", 0, 0, btmcanvas.width, btmcanvas.height,
                                         0, 0, btmcanvas.width, btmcanvas.height, 0);
+*/
+var background =  new BackgroundObject();
+var initialBackground = new Image();
+initialBackground.src = "./img/UWTmap1.jpg";
+background.set(initialBackground);
 
 // npc_Mobus.image.onload = function() {
 //   npc_Mobus.load = true;
@@ -373,7 +431,7 @@ background.setOptions("./img/UWTmap1.jpg", 0, 0, btmcanvas.width, btmcanvas.heig
 
 npc_Chin.image.onload = function() {
   npc_Chin.load = true;
-}
+};
 
 var chinFlip = 0; // Flips between north and south.
 var chinCounter = 0; // Checks to see if you have incountered him.
@@ -437,7 +495,7 @@ npc_Chin.update = function(clockTick) {
       chinFlip = 0;
     }
   }
-}
+};
 
 npc_Alden.image.onload = function() {
   npc_Alden.load = true;
@@ -506,20 +564,27 @@ npc_Alden.update = function(clockTick) {
       aldenFlip = 0;
     }
   }
-}
+};
 
+/** When player's spritesheet loads in browser, sets player.load to true. */
 player.image.onload = function() {
   player.load = true;
-  alden_por.load = true;
+  alden_por.load = true; // TODO: Why is Alden in here?
   dialogs.push(alden_por);
 };
 
+/** When background's spritesheet loads in browser, sets background.load to true. */
+// TODO: Loading backgrounds will be zones.js responsibility soon.
 background.image.onload = function() {
   background.load = true;
 };
 
 //var sign_screen_bounds = window.uwetech.zones[1].bounds;
 
+/**
+ * TODO: Explain this object.
+ * @constructor
+ */
 function Timer() {
     this.gameTime = 0;
     this.maxStep = 0.05;
@@ -534,11 +599,18 @@ Timer.prototype.tick = function () {
     var gameDelta = Math.min(wallDelta, this.maxStep);
     this.gameTime += gameDelta;
     return gameDelta;
-}
+};
 
+/**
+ * TODO: Explain this object.
+ * @constructor
+ */
 var Game = function() {
-    this.entities = [];
+    this.entities = []; // Game or zone wide entities?
 
+    /**
+     * TODO: Describe this function.
+     */
     this.start = function() {
       this.cam  = new Camera();
       this.cam.setup(player);
@@ -546,18 +618,27 @@ var Game = function() {
       this.loop();
     };
 
+    /**
+     * TODO: Describe this function.
+     */
     this.loop = function() {
         this.update(this.timer.tick());
         this.render();
         requestAnimFrame(this.loop.bind(this));
     };
 
-
+    /**
+     * TODO: Describe this function.
+     * @param entity
+     */
     this.addEntity = function (entity) {
-
         this.entities.push(entity);
-    }
+    };
 
+    /**
+     * TODO: Describe this function.
+     * @param clockTick
+     */
     this.update = function(clockTick) {
       this.cam.getPosition(player);
       player.bounds();
@@ -572,6 +653,9 @@ var Game = function() {
 
     };
 
+    /**
+     * TODO: Describe this function.
+     */
     this.render = function() {
         midctx.clearRect(0, 0, midcanvas.width, midcanvas.height);
         midctx.save();
@@ -584,10 +668,10 @@ var Game = function() {
               entity.render();
             }
         }
+        /** Only render things whose image is loaded in browser! */
         if (background.load) {
             //btmctx.clearRect(0, 0, btmcanvas.width, btmcanvas.height);
             background.renderBackground(this.cam.x * - 1, this.cam.y * - 1);
-
         }
         if (player.load) {
             player.render();
@@ -602,7 +686,9 @@ var Game = function() {
 };
 
 
-
+/**
+ * TODO: Describe this stuff.
+ */
 var g = new Game();
 var m = new math();
 g.start();
@@ -613,11 +699,10 @@ g.addEntity(npc_Alden);
 
 
 /**
- * Kirsten's Background Object
+ * Kirsten's Code for Background Object
  *
 */
-
-var Background_display = function() {
+var BackgroundObject = function() {
     this.load = false;
 
     this.srcX = 0;
@@ -629,6 +714,10 @@ var Background_display = function() {
     this.width = btmcanvas.width;
     this.height = btmcanvas.height;
 
+    /**
+     * Sets the current background to the passed Image object.
+     * @param image_object
+     */
     this.set = function(image_object) {
         this.image = image_object;
 
@@ -639,3 +728,29 @@ var Background_display = function() {
         };
     };
 };
+
+// Things that a single gamestate object might  be useful for tracking
+// currentZone = window.uwetech.zones[1];
+// player.x, player.y
+// winning progress (booleans of passedChinn, passedAlden, etc)
+//
+
+/**
+// Steps to load a zone (and correctly update the game state)
+
+ 1 realize you've triggered an exit.
+ 2 determine what exit.     var exit = currrentZone[exits][player.x + "," player.y]
+ 3 identify zone id to go to.   var new_zone_id = exit[go_to_zone]
+ 4 set player's new x and y locations. player.x = exit[x_entrance] player.y = exit[y_entrance]
+ 5 call loadzone(new_zone_id) method.    loadzone(new_zone_id)
+ 5b. fetch zone object by it's id.     currentZone = window.uwetech.zones[id]
+ 6. update the following:
+        background.set(currentZone[image])
+        // height? width? what uses this?? bounds?
+        sign_screen_bounds = currentZone[bounds]
+        // somehow alert NPC stuff that the zone changed. Should they be checking? or should
+        // a zone somehow store who its npcs are? Does THEIR state need to reset too? Errrm...
+
+
+
+ */
