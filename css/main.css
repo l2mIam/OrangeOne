@@ -134,10 +134,14 @@ abandon this for a message telling use to flip orientation*/
   color : #39275B;
   font-size : .75em;
   line-height : 1em;
-  text-shadow : 0.025em  0.025em  0.025em #DFDDE8 ,
-  -0.025em -0.025em  0.025em #DFDDE8 ,
-  0.025em -0.025em  0.025em #DFDDE8 ,
-  -0.025em 0.025em  0.025em #DFDDE8;
+  text-shadow : 0.04em  0.04em  0.04em #DFDDE8 ,
+  -0.04em -0.04em  0.04em #DFDDE8 ,
+  0.04em -0.04em  0.04em #DFDDE8 ,
+  -0.04em 0.04em  0.04em #DFDDE8,
+  0.075em  0.1em  0.1em #19073B;
+}
+.no-textshadow .dialog {
+  filter : dropshadow(color=#000000,offX=3,offY=3);
 }
 
 
