@@ -8,6 +8,24 @@ window.requestAnimFrame = (function () {
         };
 }());
 
+var keys = {};
+
+window.addEventListener('keydown', function (e) {
+    keys[e.keyCode] = true;
+    g.handleKeyDown(e.keyCode);
+});
+
+window.addEventListener('keyup', function (e) {
+    delete keys[e.keyCode];
+    g.handleKeyUp(e.keyCode);
+});
+
+//  constants!     W 87, S 83, A 65, D 68, space 32
+var W_KEY = 87;
+var S_KEY = 83;
+var A_KEY = 65;
+var D_KEY = 68;
+var SPACE_KEY = 32;
 
 var dialogs = []; // TODO: What is this?
 
@@ -29,7 +47,7 @@ var topcanvas = document.getElementById('toplayer'),
 /** BTW: Other canvases exist you don't know about are in the HTML file. */
 
 // zone #1's off limit areas TODO: Keep as local variable, move array to zones.js
-var sign_screen_bounds = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+var sign_screen_bounds = null; /**[[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                           [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                           [1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0],
                           [0,0,0,0,0,0,0,0,1,0,0,0,0,1,1,1,1,1,1],
@@ -57,7 +75,7 @@ var sign_screen_bounds = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                           [1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
                           [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                           [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                          [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]];
+                          [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]; */
 
 // Keeps the player in bounds
 var math = function() {
@@ -197,6 +215,9 @@ var Sprite = function() {
             this.facing = "south";
             this.visualRadius = 50; // TODO: What is this?
 
+            this.x_hook = 0;
+            this.y_hook = 0;
+
             this.elapsedTime = 0; // TODO: What is this? How does it relate to sprite?
             this.image = new Image();
             this.image.src = src;
@@ -207,8 +228,9 @@ var Sprite = function() {
          */
         this.render = function() {
             midctx.drawImage(this.image, this.srcX, this.srcY, this.dtx, this.dty,
-                this.x, this.y, this.width, this.height);
-          };
+                this.x - this.x_hook, this.y - this.y_hook, this.width, this.height);
+
+        };
         /**
          * Special function to render the background image.
          * @param xoffset
@@ -227,48 +249,173 @@ var Sprite = function() {
      *
      * @param clockTick
      */
-    this.move = function(clockTick) {
-      var x = Math.floor(player.x/32) + 1;
-      var y = Math.floor(player.y/32) + 1;
+    //this.move = function(clockTick) {
+    //    console.log("(" + player.x + "," + player.y + ") [" + player.y/32 + "," + player.x/32 + "]");
+    //    //console.log(player.x/32);
+    //    //console.log(player.y);
+    //    //console.log(player.y/32);
+    //  var x = Math.floor(player.x/32) + 1;
+    //  var y = Math.floor(player.y/32) + 1;
+    //
+    //
+    //  if(87 in keys) { // W
+    //      this.spriteRoll(512, 8, clockTick, 0.1);
+    //      if (y > 0 && sign_screen_bounds[y - 1][x] === 0) {
+    //        this.y -= this.speed;
+    //      }
+    //      this.facing = "north";
+    //  }
+    //
+    //  if(83 in keys) { // S
+    //      this.spriteRoll(640, 8,  clockTick, 0.1);
+    //      if (y < 28 && sign_screen_bounds[y + 1][x] === 0) {
+    //        this.y += this.speed;
+    //      }
+    //      this.facing = "south";
+    //  }
+    //
+    //  if(65 in keys) { // A
+    //      this.spriteRoll(576, 8,  clockTick, 0.1);
+    //      if (x > 0 && sign_screen_bounds[y][x - 1] === 0) {
+    //        this.x -= this.speed;
+    //      }
+    //      this.facing = "west";
+    //  }
+    //
+    //  if(68 in keys) { // D
+    //      this.spriteRoll(704, 8,  clockTick, 0.1);
+    //      if (x < 18 && sign_screen_bounds[y][x + 1] === 0) {
+    //        this.x += this.speed;
+    //      }
+    //      this.facing = "east";
+    //  }
+    //
+    //    // TODO: Checks for spacebar everytime move() is called, is spacebar for moving?
+    //  if(32 in keys) { // Spacebar
+    //    this.interact();
+    //    console.log("space");
+    //
+    //      g.loadZone(2, 1, 8);
+    //  }
+    //};
 
+    this.movePlayer = function(clockTick) {
+        //console.log("(" + player.x + "," + player.y + ") [" + player.y/32 + "," + player.x/32 + "]");
+        //console.log(player.x/32);
+        //console.log(player.y);
+        //console.log(player.y/32);
+        var oldx = this.x; // kirsten debug code
+        var oldy = this.y; // kirsten debug code
 
-      if(87 in keys) { // W
-          this.spriteRoll(512, 8, clockTick, 0.1);
-          if (y > 0 && sign_screen_bounds[y - 1][x] === 0) {
-            this.y -= this.speed;
-          }
-          this.facing = "north";
-      }
+        var y_offset = 0; // tracks if moving player will cause them to enter new grid
+        var x_offset = 0; // tracks if moving player will cause them to enter new grid
 
-      if(83 in keys) { // S
-          this.spriteRoll(640, 8,  clockTick, 0.1);
-          if (y < 28 && sign_screen_bounds[y + 1][x] === 0) {
-            this.y += this.speed;
-          }
-          this.facing = "south";
-      }
+        var x = Math.floor(player.x/32); //+ 1;
+        var y = Math.floor(player.y/32); //+ 1;
 
-      if(65 in keys) { // A
-          this.spriteRoll(576, 8,  clockTick, 0.1);
-          if (x > 0 && sign_screen_bounds[y][x - 1] === 0) {
-            this.x -= this.speed;
-          }
-          this.facing = "west";
-      }
+        if (W_KEY in keys || S_KEY in keys || A_KEY in keys || D_KEY in keys) {
+            //this.bounds();
+        }
 
-      if(68 in keys) { // D
-          this.spriteRoll(704, 8,  clockTick, 0.1);
-          if (x < 18 && sign_screen_bounds[y][x + 1] === 0) {
-            this.x += this.speed;
-          }
-          this.facing = "east";
-      }
+        if(W_KEY in keys) { // W
+            this.spriteRoll(512, 8, clockTick, 0.1); // even if player doesn't move, animate them!
 
-        // TODO: Checks for spacebar everytime move() is called, is spacebar for moving?
-      if(32 in keys) { // Spacebar
-        this.interact();
-        console.log("space");
-      }
+            /** Determine if moving the player will result in entering a new grid location*/
+            y_offset = 0;
+            // if player would enter new grid and that grid isn't offscreen
+            if (Math.floor((player.y - this.speed) / 32) !== y && (y - 1 >= 0)) {
+                y_offset =  1;
+            }
+            //console.log("y=" + y + " player.y=" + player.y + " player.y-this.speed=" +
+            //                                    (player.y - this.speed)+ " y_offset=" + y_offset);
+            if ((player.y - (this.speed)) > 0) {
+                if (sign_screen_bounds[y - y_offset][x] === 0) {
+                    this.y -= this.speed;
+                }
+            } else { // if player would move off screen, move to edge if valid location
+                if (sign_screen_bounds[0][x] === 0) {
+                    this.y = 0;
+                }
+            }
+            this.facing = "north";
+        }
+
+        if(S_KEY in keys) { // S
+            //console.log("y=" + y);
+            this.spriteRoll(640, 8,  clockTick, 0.1); // even if player doesn't move, animate them!
+            /** Determine if moving the player will result in entering a new grid location*/
+            y_offset = 0;
+            // if player would enter new grid and that grid isn't offscreen
+            if (Math.floor((player.y + this.speed) / 32) + 1 !== y && ((y + 1) <= sign_screen_bounds.length - 1)) {
+                y_offset = 1;
+            }
+
+            if ((player.y + this.speed) < background.image.height) {
+                if (sign_screen_bounds[y + y_offset][x] === 0) {
+                    this.y += this.speed;
+                }
+            } else { // if player would move off screen, move to edge if valid location
+                if (sign_screen_bounds[sign_screen_bounds.length - 1][x] === 0) {
+                    this.y = background.image.height;
+                }
+            }
+            this.facing = "south";
+        }
+
+        if(A_KEY in keys) { // A
+            //console.log("x=" + x);
+            this.spriteRoll(576, 8, clockTick, 0.1); // even if player doesn't move, animate them!
+
+            /** Determine if moving the player will result in entering a new grid location*/
+            x_offset = 0;
+            // if player would enter new grid and that grid isn't offscreen
+            if (Math.floor((player.x - this.speed) / 32) !== x && (x - 1 >= 0)) {
+                x_offset = 1;
+                console.log("NOT EQUAL");
+            }
+            if ((player.x - this.speed) > 0) {
+                if (sign_screen_bounds[y][x - x_offset] === 0
+                //&& sign_screen_bounds[y]
+                 ) {
+                    this.x -= this.speed;
+                }
+            } else { // if player would move off screen, move to edge if valid location
+                if (sign_screen_bounds[y][0] === 0) {
+                    this.x = 0;
+                }
+            }
+            this.facing = "west";
+        }
+
+        if(D_KEY in keys) { // D
+            //console.log("x=" + x);
+            this.spriteRoll(704, 8, clockTick, 0.1); // even if player doesn't move, animate them!
+
+            /** Determine if moving the player will result in entering a new grid location*/
+            x_offset = 0;
+            // if player would enter new grid and that grid isn't offscreen
+            if (Math.floor((player.x + this.speed) / 32) + 1 !== x && ((x + 1) <= sign_screen_bounds[y].length - 1)) {
+                x_offset = 1;
+            }
+            if ((player.x + this.speed) < background.image.width) {
+                if (sign_screen_bounds[y][x + x_offset] === 0) {
+                    this.x += this.speed;
+                }
+            } else { // if player would move off screen, move to edge if valid location
+                if (sign_screen_bounds[y][sign_screen_bounds[y].length - 1] === 0) {
+                    this.x = background.image.width;
+                }
+            }
+            this.facing = "east";
+        }
+
+        /** Kirsten debug code */
+        if (Math.floor(oldx/32) !== Math.floor(this.x/32) ||
+            Math.floor(oldy/32) !== Math.floor(this.y/32)) {
+            console.log("(" + player.x + "," + player.y + ") [" +
+            /**Math.floor*/(player.x / 32)  + " , " + /** Math.floor*/(player.y / 32) + "]");
+        }
+
     };
 
     this.interact = function() {
@@ -328,14 +475,22 @@ var Sprite = function() {
     };
 
     this.update = function() {
+
     };
 
     /**
      * TODO: Add description.
      */
     this.bounds = function() {
+        var oldx = this.x;
+        var oldy = this.y;
         this.x = m.clamp(this.x, 0 - this.width/2 + 20, 608 - 18 - this.width/2);
         this.y = m.clamp(this.y, 0 - this.height/2 + 20, 928 - 35 - this.height/2);
+        if (Math.floor(oldx/32) !== Math.floor(this.x/32) ||
+            Math.floor(oldy/32) !== Math.floor(this.y/32)) {
+            console.log("(" + player.x + "," + player.y + ") [" +
+                        player.y / 32 + "," + player.x / 32 + "]");
+        }
     };
 };
 
@@ -384,7 +539,7 @@ var alden_por = new Dialog();
 
 // NPC's
 player.setOptions("./img/purple_orc.png", 0, 640, 64, 64,
-                                    300, 300, 62, 62, 3);
+                                    300, 300, 64, 64, 3);
 //npc_Mobus.setOptions("./img/mobus.png", 0, 640, 64, 64, 350, 10, 62, 62, 1);
 npc_Chin.setOptions("./img/chin.png", 0, 140, 64, 64, 350,10, 62, 62, 1);
 npc_Alden.setOptions("./img/alden.png", 0, 140, 64, 64, 300, 850, 62, 62, 2);
@@ -569,6 +724,9 @@ npc_Alden.update = function(clockTick) {
 /** When player's spritesheet loads in browser, sets player.load to true. */
 player.image.onload = function() {
   player.load = true;
+    console.log(player.dty);
+    player.y_hook = player.dty / 2;
+    player.x_hook = (player.dtx / 4) ;
   alden_por.load = true; // TODO: Why is Alden in here?
   dialogs.push(alden_por);
 };
@@ -607,6 +765,61 @@ Timer.prototype.tick = function () {
  */
 var Game = function() {
     this.entities = []; // Game or zone wide entities?
+    this.currentZone = window.uwetech.zones[1];
+
+    /**
+     * Fetches a zone's data by it's ID and loads it in. This will update the
+     * background's image and updates the sign_screen_bounds array. Optionally,
+     * you can pass the grid coordinates for the player and it will update that
+     * information as well.
+     * @param id The id of the zone to load in.
+     * @param new_player_x The new x grid location for the player.
+     * @param new_player_y The new y grid location for the player.
+     */
+    this.loadZone = function (id, new_player_x, new_player_y) {
+
+        if (new_player_x !== undefined) {
+            player.x = new_player_x * 32;
+        }
+        if (new_player_y !== undefined) {
+            player.y = new_player_y * 32;
+        }
+
+        if (id === undefined) {
+            console.log("ERROR: No zone id was passed. Unable to load zone!");
+        } else {
+
+            this.currentZone = window.uwetech.zones[id];
+            background.set(this.currentZone.image);
+            sign_screen_bounds = this.currentZone.bounds;
+            // alert the npcs of zone change?
+        }
+
+    };
+
+    /**
+     * Triggers when the window "hears" a key down event.
+     * @param key_id
+     */
+    this.handleKeyDown = function (key_id) {
+        // 87, 83, 65, 68, 32
+        if (key_id === SPACE_KEY) {
+
+            if(key_id === SPACE_KEY) { // Spacebar
+                player.interact();
+                console.log("space");
+                g.loadZone(2, 1, 8);
+            }
+        }
+    };
+
+    /**
+     * Triggers when the window "hears" a key up event.
+     * @param key_id
+     */
+    this.handleKeyUp = function (key_id) {
+
+    };
 
     /**
      * TODO: Describe this function.
@@ -615,6 +828,7 @@ var Game = function() {
       this.cam  = new Camera();
       this.cam.setup(player);
       this.timer = new Timer();
+      this.loadZone(1, 10, 23);
       this.loop();
     };
 
@@ -641,8 +855,8 @@ var Game = function() {
      */
     this.update = function(clockTick) {
       this.cam.getPosition(player);
-      player.bounds();
-      player.move(clockTick);
+      //player.bounds();
+      player.movePlayer(clockTick);
 
       var entitiesCount = this.entities.length;
       for (var i = 0; i < entitiesCount; i++) {
@@ -675,6 +889,7 @@ var Game = function() {
         }
         if (player.load) {
             player.render();
+            midctx.fillRect(player.x, player.y, 32, 32);
         }
 
         if(alden_por.draw) {
@@ -745,7 +960,7 @@ var BackgroundObject = function() {
  5 call loadzone(new_zone_id) method.    loadzone(new_zone_id)
  5b. fetch zone object by it's id.     currentZone = window.uwetech.zones[id]
  6. update the following:
-        background.set(currentZone[image])
+        background.set(currentZone.image)
         // height? width? what uses this?? bounds?
         sign_screen_bounds = currentZone[bounds]
         // somehow alert NPC stuff that the zone changed. Should they be checking? or should
