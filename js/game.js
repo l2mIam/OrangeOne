@@ -41,6 +41,11 @@ var midcanvas = document.getElementById('middlelayer'),
 var topcanvas = document.getElementById('toplayer'),
     topctx = topcanvas.getContext('2d');
 
+/** Loading screen canvas, or something. */
+var loadcanvas = document.getElementById('loadlayer'),
+    loadctx = loadcanvas.getContext('2d');
+
+
 /** BTW: Other canvases exist you don't know about are in the HTML file. */
 
 /** Represents the 2D array for the zone's boundaries.
@@ -743,7 +748,6 @@ player.image.onload = function() {
 };
 
 /** When background's spritesheet loads in browser, sets background.load to true. */
-// TODO: Loading backgrounds will be zones.js responsibility soon.
 background.image.onload = function() {
   background.load = true;
 };
@@ -776,7 +780,7 @@ Timer.prototype.tick = function () {
  */
 var Game = function() {
     this.entities = []; // Game or zone wide entities?
-    this.currentZone = window.uwetech.zones[1];
+    this.currentZone;
 
     /**
      * Fetches a zone's data by it's ID and loads it in. This will update the
@@ -799,6 +803,19 @@ var Game = function() {
         if (id === undefined) {
             console.log("ERROR: No zone id was passed. Unable to load zone!");
         } else {
+
+            /** insert cool code to go to black screen briefly here... */
+            if (this.currentZone !== undefined) { // don't show on the first load
+                loadctx.fillStyle = "#000000";
+                loadctx.fillRect(0, 0, topcanvas.width, topcanvas.height);
+                loadctx.font = "25px sans-serif";
+                loadctx.fillStyle = "#ffffff";
+                loadctx.fillText("Loading...", loadcanvas.width / 1.5,
+                                               loadcanvas.height - (loadcanvas.height / 5));
+                setTimeout(function () {
+                    loadctx.clearRect(0, 0, loadcanvas.width, loadcanvas.height);
+                }, 300);
+            }
 
             this.currentZone = window.uwetech.zones[id];
             background.set(this.currentZone.image);
