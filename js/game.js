@@ -8,17 +8,17 @@ window.requestAnimFrame = (function () {
         };
 }());
 
-var keys = {};
-
+/** NOT for animations/movement! This is strictly for single key press logic. */
 window.addEventListener('keydown', function (e) {
-    keys[e.keyCode] = true;
     g.handleKeyDown(e.keyCode);
 });
 
 window.addEventListener('keyup', function (e) {
-    delete keys[e.keyCode];
     g.handleKeyUp(e.keyCode);
 });
+
+/** Array containing all currently pressed keys. This is for animations/movement. */
+var keys = window.uwetech.Input.keys; // code is in input.js
 
 //  constants!     W 87, S 83, A 65, D 68, space 32
 var W_KEY = 87;
@@ -28,9 +28,6 @@ var D_KEY = 68;
 var SPACE_KEY = 32;
 
 var dialogs = []; // TODO: What is this?
-
-/** Array containing all currently pressed keys. */
-var keys = window.uwetech.Input.keys; // code is in input.js
 
 /** Bottom canvas is for the background. NO ANIMATIONS. */
 var btmcanvas = document.getElementById('bottomlayer'),
@@ -46,38 +43,15 @@ var topcanvas = document.getElementById('toplayer'),
 
 /** BTW: Other canvases exist you don't know about are in the HTML file. */
 
-// zone #1's off limit areas TODO: Keep as local variable, move array to zones.js
-var sign_screen_bounds = null; /**[[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                          [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                          [1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0],
-                          [0,0,0,0,0,0,0,0,1,0,0,0,0,1,1,1,1,1,1],
-                          [0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
-                          [0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
-                          [0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
-                          [0,0,0,0,0,0,0,1,1,0,0,0,0,1,0,0,0,0,0],
-                          [0,1,1,1,1,1,1,0,0,0,0,0,0,1,0,0,0,0,0],
-                          [0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],
-                          [0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],
-                          [0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],
-                          [0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],
-                          [0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],
-                          [0,1,1,1,1,1,1,1,1,0,0,0,0,1,0,0,0,0,0],
-                          [0,0,0,0,1,1,1,1,1,0,0,0,0,1,0,0,0,0,0],
-                          [0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
-                          [0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
-                          [0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
-                          [0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
-                          [0,0,0,0,0,0,0,0,1,0,0,0,0,1,1,1,1,1,0],
-                          [0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,1,0],
-                          [0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0],
-                          [0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0],
-                          [0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0],
-                          [1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
-                          [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                          [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-                          [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]; */
+/** Represents the 2D array for the zone's boundaries.
+ *  0 == walkable space
+ *  1 == non walkable space
+ *  2 == exit exists here
+ *  ___ == ????
+ */
+var sign_screen_bounds = null;
 
-// Keeps the player in bounds
+// Keeps the player in bounds -- Kirsten update: no longer being used.
 var math = function() {
   this.clamp = function(i, min, max) {
     return Math.max(Math.min(i, max),min);
@@ -196,7 +170,7 @@ var Dialog = function() {
  */
 var Sprite = function() {
     this.load = false;
-    this.imgX = 0;
+    this.imgX = 0; // TODO: What is imgX for?
 
     /**
      * Lots of parameter options! Yay! Seriously though, most of these parameters are
@@ -231,20 +205,8 @@ var Sprite = function() {
                 this.x - this.x_hook, this.y - this.y_hook, this.width, this.height);
 
         };
-        /**
-         * Special function to render the background image.
-         * @param xoffset
-         * @param yoffset
-         */
-        // TODO: Will be removed once zones are working! Yay!
-        this.renderBackground = function(xoffset, yoffset) {
-            btmctx.drawImage(this.image, this.srcX + xoffset, this.srcY + yoffset,
-                                            this.dtx, this.dty,
-                this.x, this.y, this.width, this.height);
-        };
     };
-    // TODO: This references player.x, is the move method ONLY for players?
-    // TODO: Add a description about the move method.
+    // TODO: OLD move code for reference only. New code is further down.
     /**
      *
      * @param clockTick
@@ -290,7 +252,7 @@ var Sprite = function() {
     //      this.facing = "east";
     //  }
     //
-    //    // TODO: Checks for spacebar everytime move() is called, is spacebar for moving?
+    //
     //  if(32 in keys) { // Spacebar
     //    this.interact();
     //    console.log("space");
@@ -304,8 +266,8 @@ var Sprite = function() {
         //console.log(player.x/32);
         //console.log(player.y);
         //console.log(player.y/32);
-        var oldx = this.x; // kirsten debug code
-        var oldy = this.y; // kirsten debug code
+        //var oldx = this.x; // kirsten debug code
+        //var oldy = this.y; // kirsten debug code
 
         /** Collision detection needs to consider the whole square the character occupies. */
         var x_leftmost = Math.floor(player.x/32);
@@ -318,13 +280,7 @@ var Sprite = function() {
 
         var exit; // tracks if the player's movement has triggered an exit and zone change
 
-        //if (W_KEY in keys || S_KEY in keys || A_KEY in keys || D_KEY in keys) {
-        //    //this.bounds();
-        //}
-
-        /**
-         * Checks which keys are being currently pressed and moves player if new location is valid.
-         */
+        /** Checks which keys are being currently pressed and moves player if new location is valid. */
         if(W_KEY in keys) { // W
             this.spriteRoll(512, 8, clockTick, 0.1); // even if player doesn't move, animate them!
 
@@ -335,8 +291,7 @@ var Sprite = function() {
                            (y_upmost - 1 >= 0)) {
                 y_new_grid =  1;
             }
-            //console.log("y=" + y + " player.y=" + player.y + " player.y-this.speed=" +
-            //                                    (player.y - this.speed)+ " y_offset=" + y_offset);
+
             /** If player would move off screen, move to edge instead, IF edge is a valid location */
             if ((player.y - (this.speed)) > 0) {
                 /** Check that the player can move based on left AND right bounding box */
@@ -466,7 +421,7 @@ var Sprite = function() {
         //    /**Math.floor*/(player.x / 32)  + " , " + /** Math.floor*/(player.y / 32) + "]");
         //}
 
-        if (exit !== undefined) {
+        if (exit !== undefined) { // if an exit was found...
             g.loadZone(exit.go_to_zone, exit.x_entrance, exit.y_entrance);
         }
 
@@ -533,24 +488,26 @@ var Sprite = function() {
     };
 
     /**
-     * TODO: Add description.
+     * TODO: No longer being used. Here for reference only.
      */
-    this.bounds = function() {
-        var oldx = this.x;
-        var oldy = this.y;
-        this.x = m.clamp(this.x, 0 - this.width/2 + 20, 608 - 18 - this.width/2);
-        this.y = m.clamp(this.y, 0 - this.height/2 + 20, 928 - 35 - this.height/2);
-        if (Math.floor(oldx/32) !== Math.floor(this.x/32) ||
-            Math.floor(oldy/32) !== Math.floor(this.y/32)) {
-            console.log("(" + player.x + "," + player.y + ") [" +
-                        player.y / 32 + "," + player.x / 32 + "]");
-        }
-    };
+    //this.bounds = function() {
+    //    var oldx = this.x;
+    //    var oldy = this.y;
+    //    this.x = m.clamp(this.x, 0 - this.width/2 + 20, 608 - 18 - this.width/2);
+    //    this.y = m.clamp(this.y, 0 - this.height/2 + 20, 928 - 35 - this.height/2);
+    //    if (Math.floor(oldx/32) !== Math.floor(this.x/32) ||
+    //        Math.floor(oldy/32) !== Math.floor(this.y/32)) {
+    //        console.log("(" + player.x + "," + player.y + ") [" +
+    //                    player.y / 32 + "," + player.x / 32 + "]");
+    //    }
+    //};
 };
 
 
 /**
- * Kirsten's Code for Background Object
+ * Kirsten's added this code for Background Object. This is really just to
+ * render the background of a zone. I just didn't want it as part of the
+ * Sprite code because it is so simple and doesn't really "do" stuff.
  *
  */
 var BackgroundObject = function() {
@@ -607,7 +564,7 @@ alden_por.setOptions("./img/Alden-plain.png", 0, 0, 480, 638, 100, 100, 480, 638
 background.setOptions("./img/UWTmap1.jpg", 0, 0, btmcanvas.width, btmcanvas.height,
                                         0, 0, btmcanvas.width, btmcanvas.height, 0);
 */
-var background =  new BackgroundObject();
+var background = new BackgroundObject();
 var initialBackground = new Image();
 initialBackground.src = "./img/UWTmap1.jpg";
 background.set(initialBackground);
@@ -853,7 +810,7 @@ var Game = function() {
 
     /**
      * Triggers when the window "hears" a key down event.
-     * @param key_id
+     * @param key_id The int value of the key that triggered this event.
      */
     this.handleKeyDown = function (key_id) {
 
@@ -861,7 +818,7 @@ var Game = function() {
         if (key_id === SPACE_KEY) { // Spacebar
             player.interact();
             console.log("space");
-            g.loadZone(2, 1, 8);
+            //g.loadZone(2, 1, 8); // kirsten debug, tested zone loading via button press
         } else if (key_id === W_KEY) {
             player.facing = "north";
         } else if (key_id === A_KEY) {
@@ -881,7 +838,7 @@ var Game = function() {
      * @param key_id
      */
     this.handleKeyUp = function (key_id) {
-
+        // did we want to track when a key is released??
     };
 
     /**
@@ -978,37 +935,7 @@ g.addEntity(npc_Alden);
 
 
 
-/**
- * Kirsten's Code for Background Object
- *
-*/
-var BackgroundObject = function() {
-    this.load = false;
-
-    this.srcX = 0;
-    this.srcY = 0;
-    this.dtx = btmcanvas.width;
-    this.dty = btmcanvas.height;
-    this.x = 0;
-    this.y = 0;
-    this.width = btmcanvas.width;
-    this.height = btmcanvas.height;
-
-    /**
-     * Sets the current background to the passed Image object.
-     * @param image_object
-     */
-    this.set = function(image_object) {
-        this.image = image_object;
-
-        this.renderBackground = function(xoffset, yoffset) {
-            btmctx.drawImage(this.image, this.srcX + xoffset, this.srcY + yoffset,
-                this.dtx, this.dty,
-                this.x, this.y, this.width, this.height);
-        };
-    };
-};
-
+/** Notes for Kirsten to keep track of stuff. */
 // Things that a single gamestate object might  be useful for tracking
 // currentZone = window.uwetech.zones[1];
 // player.x, player.y
@@ -1030,7 +957,5 @@ var BackgroundObject = function() {
         sign_screen_bounds = currentZone[bounds]
         // somehow alert NPC stuff that the zone changed. Should they be checking? or should
         // a zone somehow store who its npcs are? Does THEIR state need to reset too? Errrm...
-
-
 
  */
