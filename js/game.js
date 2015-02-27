@@ -894,6 +894,7 @@ var Game = function() {
       this.cam.getPosition(player);
       //player.bounds();
       player.movePlayer(clockTick);
+      console.log(Math.floor(player.x/32) + "= X " + Math.floor(player.y/32) + " = Y");
 
       var entitiesCount = this.entities.length;
       for (var i = 0; i < entitiesCount; i++) {
@@ -925,6 +926,7 @@ var Game = function() {
             background.renderBackground(this.cam.x * - 1, this.cam.y * - 1);
         }
         if (player.load) {
+
             player.render();
 
             /** draws the bounding box for the player sprite */
