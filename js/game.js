@@ -307,113 +307,167 @@ var Sprite = function() {
         var oldx = this.x; // kirsten debug code
         var oldy = this.y; // kirsten debug code
 
-        var y_offset = 0; // tracks if moving player will cause them to enter new grid
-        var x_offset = 0; // tracks if moving player will cause them to enter new grid
+        /** Collision detection needs to consider the whole square the character occupies. */
+        var x_leftmost = Math.floor(player.x/32);
+        var x_rightmost = Math.floor((player.x + 31) / 32); // + 32 is player width but 31 is smoother
+        var y_upmost = Math.floor(player.y/32);
+        var y_downmost = Math.floor((player.y + 31) / 32); // + 32 is height of player's box (ignores head collisions)
 
-        var x = Math.floor(player.x/32); //+ 1;
-        var y = Math.floor(player.y/32); //+ 1;
+        var y_new_grid = 0; // tracks if moving player will cause them to enter new grid
+        var x_new_grid = 0; // tracks if moving player will cause them to enter new grid
 
-        if (W_KEY in keys || S_KEY in keys || A_KEY in keys || D_KEY in keys) {
-            //this.bounds();
-        }
+        var exit; // tracks if the player's movement has triggered an exit and zone change
 
+        //if (W_KEY in keys || S_KEY in keys || A_KEY in keys || D_KEY in keys) {
+        //    //this.bounds();
+        //}
+
+        /**
+         * Checks which keys are being currently pressed and moves player if new location is valid.
+         */
         if(W_KEY in keys) { // W
             this.spriteRoll(512, 8, clockTick, 0.1); // even if player doesn't move, animate them!
 
-            /** Determine if moving the player will result in entering a new grid location*/
-            y_offset = 0;
+            /** Determine if moving the player will result in entering a new grid location. */
+            y_new_grid = 0;
             // if player would enter new grid and that grid isn't offscreen
-            if (Math.floor((player.y - this.speed) / 32) !== y && (y - 1 >= 0)) {
-                y_offset =  1;
+            if (Math.floor((player.y - this.speed) / 32) !== y_upmost &&
+                           (y_upmost - 1 >= 0)) {
+                y_new_grid =  1;
             }
             //console.log("y=" + y + " player.y=" + player.y + " player.y-this.speed=" +
             //                                    (player.y - this.speed)+ " y_offset=" + y_offset);
+            /** If player would move off screen, move to edge instead, IF edge is a valid location */
             if ((player.y - (this.speed)) > 0) {
-                if (sign_screen_bounds[y - y_offset][x] === 0) {
+                /** Check that the player can move based on left AND right bounding box */
+                if (sign_screen_bounds[y_upmost - y_new_grid][x_leftmost] === 0 &&
+                    sign_screen_bounds[y_upmost - y_new_grid][x_rightmost] === 0) {
                     this.y -= this.speed;
                 }
-            } else { // if player would move off screen, move to edge if valid location
-                if (sign_screen_bounds[0][x] === 0) {
+            } else { /** player is trying to move off screen, align them to edge if valid location. */
+                if (sign_screen_bounds[0][x_leftmost] === 0 &&
+                    sign_screen_bounds[0][x_rightmost] === 0) {
                     this.y = 0;
                 }
             }
-            this.facing = "north";
+
+            /** Check for exits to the north. */
+            if (sign_screen_bounds[y_upmost - y_new_grid][x_leftmost] === 2) {
+               // console.log("EXIT FOUND");
+                exit = g.currentZone.exits[x_leftmost + "," + (y_upmost - y_new_grid)];
+            } else if (sign_screen_bounds[y_upmost - y_new_grid][x_rightmost] === 2) {
+                exit = g.currentZone.exits[x_rightmost + "," + (y_upmost - y_new_grid)];
+            }
         }
 
         if(S_KEY in keys) { // S
-            //console.log("y=" + y);
             this.spriteRoll(640, 8,  clockTick, 0.1); // even if player doesn't move, animate them!
+
             /** Determine if moving the player will result in entering a new grid location*/
-            y_offset = 0;
+            y_new_grid = 0;
             // if player would enter new grid and that grid isn't offscreen
-            if (Math.floor((player.y + this.speed) / 32) + 1 !== y && ((y + 1) <= sign_screen_bounds.length - 1)) {
-                y_offset = 1;
+            if (Math.floor((player.y + 32 + this.speed) / 32) !== y_downmost &&
+                          ((y_downmost + 1) <= sign_screen_bounds.length - 1)) {
+                y_new_grid = 1;
             }
 
-            if ((player.y + this.speed) < background.image.height) {
-                if (sign_screen_bounds[y + y_offset][x] === 0) {
+            /** If player would move off screen, move to edge instead, IF edge is a valid location */
+            if ((player.y + 32 + this.speed) < background.image.height) { // "+32" player height no head
+                /** Check that the player can move based on left AND right bounding box */
+                if (sign_screen_bounds[y_downmost + y_new_grid][x_leftmost] === 0 &&
+                    sign_screen_bounds[y_downmost + y_new_grid][x_rightmost] === 0) {
                     this.y += this.speed;
                 }
-            } else { // if player would move off screen, move to edge if valid location
-                if (sign_screen_bounds[sign_screen_bounds.length - 1][x] === 0) {
-                    this.y = background.image.height;
+            } else { /** player is trying to move off screen, align them to edge if valid location. */
+                if (sign_screen_bounds[sign_screen_bounds.length - 1][x_leftmost] === 0 &&
+                    sign_screen_bounds[sign_screen_bounds.length - 1][x_rightmost] === 0) {
+                    this.y = background.image.height - 32; // "-32" is height of player minus head
                 }
             }
-            this.facing = "south";
+
+            /** Check for exits to the south. */
+            if (sign_screen_bounds[y_downmost + y_new_grid][x_leftmost] === 2) {
+                exit = g.currentZone.exits[x_leftmost + "," + (y_downmost + y_new_grid)];
+            } else if (sign_screen_bounds[y_downmost + y_new_grid][x_rightmost] === 2) {
+                exit = g.currentZone.exits[x_rightmost + "," + (y_downmost + y_new_grid)];
+            }
         }
 
         if(A_KEY in keys) { // A
-            //console.log("x=" + x);
             this.spriteRoll(576, 8, clockTick, 0.1); // even if player doesn't move, animate them!
 
             /** Determine if moving the player will result in entering a new grid location*/
-            x_offset = 0;
+            x_new_grid = 0;
             // if player would enter new grid and that grid isn't offscreen
-            if (Math.floor((player.x - this.speed) / 32) !== x && (x - 1 >= 0)) {
-                x_offset = 1;
-                console.log("NOT EQUAL");
+            if (Math.floor((player.x - this.speed) / 32) !== x_leftmost &&
+                           (x_leftmost - 1 >= 0)) {
+                x_new_grid = 1;
             }
+
+            /** If player would move off screen, move to edge instead, IF edge is a valid location */
             if ((player.x - this.speed) > 0) {
-                if (sign_screen_bounds[y][x - x_offset] === 0
-                //&& sign_screen_bounds[y]
-                 ) {
+                /** Check that the player can move based on top AND bottom bounding box */
+                if (sign_screen_bounds[y_upmost][x_leftmost - x_new_grid] === 0 &&
+                    sign_screen_bounds[y_downmost][x_leftmost - x_new_grid] === 0) {
                     this.x -= this.speed;
                 }
-            } else { // if player would move off screen, move to edge if valid location
-                if (sign_screen_bounds[y][0] === 0) {
+            } else { /** player is trying to move off screen, align them to edge if valid location. */
+                if (sign_screen_bounds[y_upmost][0] === 0 &&
+                    sign_screen_bounds[y_downmost][0]) {
                     this.x = 0;
                 }
             }
-            this.facing = "west";
+
+            /** Check for exits to the west. */
+            if (sign_screen_bounds[y_upmost][x_leftmost - x_new_grid] === 2) {
+                exit = g.currentZone.exits[(x_leftmost - x_new_grid) + "," + y_upmost];
+            } else if (sign_screen_bounds[y_downmost][x_leftmost - x_new_grid] === 2) {
+                exit = g.currentZone.exits[(x_leftmost - x_new_grid) + "," + y_downmost];
+            }
         }
 
         if(D_KEY in keys) { // D
-            //console.log("x=" + x);
             this.spriteRoll(704, 8, clockTick, 0.1); // even if player doesn't move, animate them!
 
             /** Determine if moving the player will result in entering a new grid location*/
-            x_offset = 0;
+            x_new_grid = 0;
             // if player would enter new grid and that grid isn't offscreen
-            if (Math.floor((player.x + this.speed) / 32) + 1 !== x && ((x + 1) <= sign_screen_bounds[y].length - 1)) {
-                x_offset = 1;
+            if (Math.floor((player.x + 32 + this.speed) / 32) !== x_rightmost &&
+                          ((x_rightmost + 1) <= sign_screen_bounds[y_upmost].length - 1)) {
+                x_new_grid = 1;
             }
-            if ((player.x + this.speed) < background.image.width) {
-                if (sign_screen_bounds[y][x + x_offset] === 0) {
+
+            /** If player would move off screen, move to edge instead, IF edge is a valid location */
+            if ((player.x + 32 + this.speed) < background.image.width) { // "+32" is width of player
+                /** Check that the player can move based on top AND bottom bounding box */
+                if (sign_screen_bounds[y_upmost][x_rightmost + x_new_grid] === 0 &&
+                    sign_screen_bounds[y_downmost][x_rightmost + x_new_grid] === 0) {
                     this.x += this.speed;
                 }
-            } else { // if player would move off screen, move to edge if valid location
-                if (sign_screen_bounds[y][sign_screen_bounds[y].length - 1] === 0) {
-                    this.x = background.image.width;
+            } else { /** player is trying to move off screen, align them to edge if valid location. */
+                if (sign_screen_bounds[y_upmost][sign_screen_bounds[y_upmost].length - 1] === 0 &&
+                    sign_screen_bounds[y_downmost][sign_screen_bounds[y_upmost].length - 1] === 0) {
+                    this.x = background.image.width - 32; // "-32" is width of player
                 }
             }
-            this.facing = "east";
+
+            /** Check for exits to the south. */
+            if (sign_screen_bounds[y_upmost][x_rightmost + x_new_grid] === 2) {
+                exit = g.currentZone.exits[(x_rightmost + x_new_grid) + "," + y_upmost];
+            } else if (sign_screen_bounds[y_downmost][x_rightmost + x_new_grid] === 2) {
+                exit = g.currentZone.exits[(x_rightmost + x_new_grid) + "," + y_downmost];
+            }
         }
 
         /** Kirsten debug code */
-        if (Math.floor(oldx/32) !== Math.floor(this.x/32) ||
-            Math.floor(oldy/32) !== Math.floor(this.y/32)) {
-            console.log("(" + player.x + "," + player.y + ") [" +
-            /**Math.floor*/(player.x / 32)  + " , " + /** Math.floor*/(player.y / 32) + "]");
+        //if (Math.floor(oldx/32) !== Math.floor(this.x/32) ||
+        //    Math.floor(oldy/32) !== Math.floor(this.y/32)) {
+        //    console.log("(" + player.x + "," + player.y + ") [" +
+        //    /**Math.floor*/(player.x / 32)  + " , " + /** Math.floor*/(player.y / 32) + "]");
+        //}
+
+        if (exit !== undefined) {
+            g.loadZone(exit.go_to_zone, exit.x_entrance, exit.y_entrance);
         }
 
     };
@@ -802,15 +856,24 @@ var Game = function() {
      * @param key_id
      */
     this.handleKeyDown = function (key_id) {
-        // 87, 83, 65, 68, 32
-        if (key_id === SPACE_KEY) {
 
-            if(key_id === SPACE_KEY) { // Spacebar
-                player.interact();
-                console.log("space");
-                g.loadZone(2, 1, 8);
-            }
+        // 87, 83, 65, 68, 32
+        if (key_id === SPACE_KEY) { // Spacebar
+            player.interact();
+            console.log("space");
+            g.loadZone(2, 1, 8);
+        } else if (key_id === W_KEY) {
+            player.facing = "north";
+        } else if (key_id === A_KEY) {
+            player.facing = "west";
+        } else if (key_id === S_KEY) {
+            player.facing = "south";
+        } else if (key_id === D_KEY) {
+            player.facing = "east";
+        } else {
+            // do nothing
         }
+
     };
 
     /**
@@ -889,7 +952,9 @@ var Game = function() {
         }
         if (player.load) {
             player.render();
-            midctx.fillRect(player.x, player.y, 32, 32);
+
+            /** draws the bounding box for the player sprite */
+            midctx.strokeRect(player.x, player.y, 32, 32);
         }
 
         if(alden_por.draw) {
@@ -954,7 +1019,7 @@ var BackgroundObject = function() {
 // Steps to load a zone (and correctly update the game state)
 
  1 realize you've triggered an exit.
- 2 determine what exit.     var exit = currrentZone[exits][player.x + "," player.y]
+ 2 determine what exit.     var exit = currentZone[exits][player.x + "," + player.y]
  3 identify zone id to go to.   var new_zone_id = exit[go_to_zone]
  4 set player's new x and y locations. player.x = exit[x_entrance] player.y = exit[y_entrance]
  5 call loadzone(new_zone_id) method.    loadzone(new_zone_id)
