@@ -551,6 +551,7 @@ var BackgroundObject = function() {
 var player = new Sprite();
 var npc_Chin = new Sprite();
 var npc_Alden = new Sprite();
+
 var npc_Map1C = new Sprite();
 var npc_Map1A = new Sprite();
 var npc_Map2C = new Sprite();
@@ -567,12 +568,10 @@ player.setOptions("./img/purple_orc.png", 0, 640, 64, 64,
                                     300, 300, 64, 64, 3);
 //npc_Mobus.setOptions("./img/mobus.png", 0, 640, 64, 64, 350, 10, 62, 62, 1);
 
-npc_Chin.setOptions("./img/chin.png", 0, 140, 64, 64, 350,10, 62, 62, 1);
-npc_Alden.setOptions("./img/alden.png", 0, 140, 64, 64, 300, 850, 62, 62, 2);
-npc_Map1C.setOptions("./img/chin.png", 0, 140, 64, 64, 300,10, 62, 62, 1);
-npc_Map1A.setOptions("./img/alden.png", 0, 140, 64, 64, 300, 850, 62, 62, 2);
-npc_Map2C.setOptions("./img/chin.png", 0, 140, 64, 64, 350,10, 62, 62, 1);
-npc_Map2A.setOptions("./img/alden.png", 0, 140, 64, 64, 300, 40, 62, 62, 2);
+npc_Map1C.setOptions("./img/chin.png", 0, 140, 64, 64, 350,10, 62, 62, 1);
+npc_Map1A.setOptions("./img/alden.png", 0, 140, 64, 64, 300, 880, 62, 62, 2);
+npc_Map2C.setOptions("./img/chin.png", 0, 140, 64, 64, -15,155, 62, 62, 0);
+npc_Map2A.setOptions("./img/alden.png", 0, 140, 64, 64, 450, 40, 62, 62, 0);
 
 npc_Alden.face = (function () {
     var temp = new Image();
@@ -620,74 +619,25 @@ background.set(initialBackground);
 //
 // }
 
-npc_Chin.image.onload = function() {
-  npc_Chin.load = false;
+npc_Map1C.image.onload = function() {
   npc_Map1C.load = true;
   npc_Map2C.load = true;
+  npc_Map1A.load = true;
+  npc_Map2A.load = true;
 };
 
-var chinFlip = 0; // Flips between north and south.
-var chinCounter = 0; // Checks to see if you have incountered him.
+var chinFlip = 0;
+var chinCounter = 0;
 var chinDirection = 0;
 npc_Map2C.update = function(clockTick) {
   var dist = distance(this, player);
-  var chinX = Math.floor(this.x/32) + 1;
-  var chinY = Math.floor(this.y/32) + 1
-  //Checks to see if you are next to chin
-  if(dist <= 50 && chinCounter === 0) {
-    chinDirection = chinFlip;
-    chinFlip = 3;
-    chinCounter = 1;
+  console.log(dist);
+  if(dist <= 100) {
+    this.spriteRoll(460, 8,  clockTick, 0.3);
+  } else {
+    this.spriteRoll(460, 1,  clockTick, 0.3);
   }
 
-  //If you are next to chin then this happens.
-  if(chinFlip === 3) {
-    this.y += 0;
-    if(chinDirection === 0) {
-      this.spriteRoll(640, 1,  clockTick, 0.5);
-      sign_screen_bounds[chinY][chinX] = 1;
-      sign_screen_bounds[chinY + 1][chinX] = 1;
-      sign_screen_bounds[chinY][chinX + 1] = 1;
-      sign_screen_bounds[chinY + 1][chinX + 1] = 1;
-    }
-    if(chinDirection === 1) {
-      this.spriteRoll(512, 1, clockTick, 0.5);
-      sign_screen_bounds[chinY][chinX] = 1;
-      sign_screen_bounds[chinY + 1][chinX] = 1;
-      sign_screen_bounds[chinY][chinX + 1] = 1;
-      sign_screen_bounds[chinY + 1][chinX + 1] = 1;
-    }
-    if(dist >= 50) {
-      sign_screen_bounds[chinY][chinX] = 0;
-      sign_screen_bounds[chinY + 1][chinX] = 0;
-      sign_screen_bounds[chinY][chinX + 1] = 0;
-      sign_screen_bounds[chinY + 1][chinX + 1] = 0;
-      chinFlip = chinDirection;
-    }
-  }
-
-  // You are not next to chin and he is walking south
-  if(chinFlip === 0) {
-    chinCounter = 0;
-    this.spriteRoll(640, 8,  clockTick, 0.1);
-    this.y += this.speed;
-
-    if(this.y >= 700) {
-      chinFlip = 1;
-    }
-
-  }
-
-  // You are not next to chin and he is walking north
-  if(chinFlip === 1) {
-    chinCounter = 0;
-    this.spriteRoll(512, 8, clockTick, 0.1);
-    this.y -= this.speed;
-
-    if(this.y <= 10) {
-      chinFlip = 0;
-    }
-  }
 };
 
 npc_Map1C.update = function(clockTick) {
@@ -751,11 +701,6 @@ npc_Map1C.update = function(clockTick) {
   }
 };
 
-npc_Alden.image.onload = function() {
-  npc_Alden.load = false;
-  npc_Map1A.load = true;
-  npc_Map2A.load = true;
-}
 
 var aldenFlip = 0;
 var aldenCounter = 0;
