@@ -438,6 +438,31 @@ var Sprite = function() {
     };
 
     this.interact = function() {
+
+        /** Kirsten testing queued actions for multiple text pop-ups.*/
+        if (npc_Alden.talking === undefined) {
+            npc_Alden.talking = true;
+        }
+        if (npc_Alden.talking === true) {
+            //console.log(npc_Alden.face); // kirsten test code
+            g.queuedActions.push(function (){window.uwetech.dialog.show(
+                "I am testing the length requirements for this section of all of the awesome " +
+                "stuff we are doing it is quite amazing yes?!", npc_Alden.face);}); // kirsten test code
+
+            g.queuedActions.push(function (){window.uwetech.dialog.show(
+                "I'm a little teappot, short and stout. Here is my handle and here is my stout." +
+                " When I get all steamed up, here me shout! Tip me over and pour me out. This is a " +
+                "test of the second dialog while talking to same npc trick. Yay for queues!!!", npc_Alden.face);});
+            g.queuedActions.push(function () {window.uwetech.dialog.hide();}); // kirsten test code
+            //console.log(g.queuedActions[0]);
+            npc_Alden.talking = false;
+        } else if (npc_Alden.talking === false) {
+            // topctx.clearRect(0, 0, topcanvas.width, topcanvas.height);
+            if (g.queuedActions.length <= 1) {
+                npc_Alden.talking = true; // make him talk on next spacebar press
+            }
+        }
+
         if(this.facing === "north") {
             var space = this.y * 32 + 32
         } else if (this.facing === "south") {
@@ -448,21 +473,17 @@ var Sprite = function() {
             var space = this.x * 32 - 32
         }
 
-        if (npc_Alden.talking === undefined) {
-            npc_Alden.talking = true;
+        if (g.queuedActions.length > 0) {
+            g.isPaused = true;
+            g.queuedActions.shift()();
+
+            if (g.queuedActions.length === 0) {
+                g.isPaused = false;
+            }
+            //action();
         }
-        if (npc_Alden.talking === true) {
-            //console.log(npc_Alden.face); // kirsten test code
-            window.uwetech.dialog.show(
-                "I am testing the length requirements for this section of all of the awesome " +
-                "stuff we are doing it is quite amazing yes?!",
-                "foobar!", npc_Alden.face); // kirsten test code
-            npc_Alden.talking = false;
-        } else if (npc_Alden.talking === false) {
-            window.uwetech.dialog.hide(); // kirsten test code
-            // topctx.clearRect(0, 0, topcanvas.width, topcanvas.height);
-            npc_Alden.talking = true; // make him talk on next spacebar press
-        }
+
+
     };
 
     /**
@@ -561,8 +582,8 @@ var BackgroundObject = function() {
 
                     var value = sign_screen_bounds[y][x];
 
-                    btmctx.fillText(value,x * 32 - xoffset,
-                        32 + y * 32 - yoffset);
+                    btmctx.fillText(value,x * 32 - xoffset + 10,
+                        32 + y * 32 - yoffset - 10);
 
                 }
             }
@@ -876,6 +897,13 @@ var Game = function() {
     //Creating an array of arrays for the entites
     this.entiteZones = [];
     this.debug = true;
+    console.log("DEBUG IS ON. Hit the Tilde (~ `) key to turn it off!");
+    this.isPaused = false;
+    this.queuedActions = [];
+        //function (){window.uwetech.dialog.show(
+        //"I am testing the length requirements for this section of all of the awesome " +
+        //"stuff we are doing it is quite amazing yes?!", npc_Alden.face);}, // kirsten test code
+        //function () {window.uwetech.dialog.hide();}]; // kirsten test code
 
     /*
     I made it so that at each index it would hold the entities
@@ -955,7 +983,6 @@ var Game = function() {
             } else {
                 g.debug = true;
                 console.log("DEBUG ON");
-                console.log("DEBUG ON");
             }
         } else {
             // do nothing
@@ -986,8 +1013,10 @@ var Game = function() {
      * TODO: Describe this function.
      */
     this.loop = function() {
-        this.update(this.timer.tick());
-        this.render();
+        if (g.isPaused === false) {
+            this.update(this.timer.tick());
+            this.render();
+        }
         requestAnimFrame(this.loop.bind(this));
     };
 
