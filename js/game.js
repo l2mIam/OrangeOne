@@ -462,6 +462,7 @@ var Sprite = function() {
                 npc_Alden.talking = true; // make him talk on next spacebar press
             }
         }
+        // somehow kirsten deleted the above code. OOPS.
 
         if(this.facing === "north") {
             var space = this.y * 32 + 32
