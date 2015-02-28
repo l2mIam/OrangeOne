@@ -275,12 +275,15 @@ var Sprite = function() {
         //console.log(player.y/32);
         //var oldx = this.x; // kirsten debug code
         //var oldy = this.y; // kirsten debug code
+        var BOX_WIDTH = 30; // width of the player bounding box for collisions
+        var BOX_HEIGHT = 26; // height of the player bounding box for collisions
+
 
         /** Collision detection needs to consider the whole square the character occupies. */
         var x_leftmost = Math.floor(player.x/32);
-        var x_rightmost = Math.floor((player.x + 31) / 32); // + 32 is player width but 31 is smoother
+        var x_rightmost = Math.floor((player.x + BOX_WIDTH) / 32); // + 32 is player width but 31 is smoother
         var y_upmost = Math.floor(player.y/32);
-        var y_downmost = Math.floor((player.y + 31) / 32); // + 32 is height of player's box (ignores head collisions)
+        var y_downmost = Math.floor((player.y + BOX_HEIGHT) / 32); // + 32 is height of player's box (ignores head collisions)
 
         var y_new_grid = 0; // tracks if moving player will cause them to enter new grid
         var x_new_grid = 0; // tracks if moving player will cause them to enter new grid
@@ -328,13 +331,13 @@ var Sprite = function() {
             /** Determine if moving the player will result in entering a new grid location*/
             y_new_grid = 0;
             // if player would enter new grid and that grid isn't offscreen
-            if (Math.floor((player.y + 32 + this.speed) / 32) !== y_downmost &&
+            if (Math.floor((player.y + BOX_HEIGHT + this.speed) / 32) !== y_downmost &&
                           ((y_downmost + 1) <= sign_screen_bounds.length - 1)) {
                 y_new_grid = 1;
             }
 
             /** If player would move off screen, move to edge instead, IF edge is a valid location */
-            if ((player.y + 32 + this.speed) < background.image.height) { // "+32" player height no head
+            if ((player.y + BOX_HEIGHT + this.speed) < background.image.height) { // "+32" player height no head
                 /** Check that the player can move based on left AND right bounding box */
                 if (sign_screen_bounds[y_downmost + y_new_grid][x_leftmost] === 0 &&
                     sign_screen_bounds[y_downmost + y_new_grid][x_rightmost] === 0) {
@@ -343,7 +346,7 @@ var Sprite = function() {
             } else { /** player is trying to move off screen, align them to edge if valid location. */
                 if (sign_screen_bounds[sign_screen_bounds.length - 1][x_leftmost] === 0 &&
                     sign_screen_bounds[sign_screen_bounds.length - 1][x_rightmost] === 0) {
-                    this.y = background.image.height - 32; // "-32" is height of player minus head
+                    this.y = background.image.height - BOX_HEIGHT; // "-32" is height of player minus head
                 }
             }
 
@@ -394,13 +397,13 @@ var Sprite = function() {
             /** Determine if moving the player will result in entering a new grid location*/
             x_new_grid = 0;
             // if player would enter new grid and that grid isn't offscreen
-            if (Math.floor((player.x + 32 + this.speed) / 32) !== x_rightmost &&
+            if (Math.floor((player.x + BOX_WIDTH + this.speed) / 32) !== x_rightmost &&
                           ((x_rightmost + 1) <= sign_screen_bounds[y_upmost].length - 1)) {
                 x_new_grid = 1;
             }
 
             /** If player would move off screen, move to edge instead, IF edge is a valid location */
-            if ((player.x + 32 + this.speed) < background.image.width) { // "+32" is width of player
+            if ((player.x + BOX_WIDTH + this.speed) < background.image.width) { // "+32" is width of player
                 /** Check that the player can move based on top AND bottom bounding box */
                 if (sign_screen_bounds[y_upmost][x_rightmost + x_new_grid] === 0 &&
                     sign_screen_bounds[y_downmost][x_rightmost + x_new_grid] === 0) {
@@ -829,8 +832,8 @@ npc_Map2A.update = function(clockTick) {
 player.image.onload = function() {
   player.load = true;
     //console.log(player.dty);
-    player.y_hook = player.dty / 2;
-    player.x_hook = (player.dtx / 4) ;
+    player.y_hook = player.dty / 2 + 4;
+    player.x_hook = (player.dtx / 4 ) ;
 //  alden_por.load = true; // TODO: Why is Alden in here?
  // dialogs.push(alden_por);
 };
@@ -1058,8 +1061,10 @@ var Game = function() {
 
             player.render();
 
-            /** draws the bounding box for the player sprite */
-            midctx.strokeRect(player.x, player.y, 32, 32);
+            if (g.debug === true) {
+                /** draws the bounding box for the player sprite */
+                midctx.strokeRect(player.x, player.y, 30, 26);
+            }
         }
 
 
