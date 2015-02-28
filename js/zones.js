@@ -28,12 +28,12 @@ var int_library_image = new Image();
 int_library_image.src = "./img/int_library.jpg";
 
 // STAIRS MID (Zone 7)
-var ext_stairs_mid_image = new Image();
-ext_stairs_mid_image.src = "./img/ext_stairs_mid.jpg";
+//var ext_stairs_mid_image = new Image();
+//ext_stairs_mid_image.src = "./img/ext_stairs_mid.jpg";
 
 // STAIRS UPPER (Zone 8)
-var ext_stairs_upper_image = new Image();
-ext_stairs_upper_image.src = "./img/ext_stairs_upper.jpg";
+//var ext_stairs_upper_image = new Image();
+//ext_stairs_upper_image.src = "./img/ext_stairs_upper.jpg";
 
 var Exit = function (x_exit, y_exit, go_to_zone, x_entrance, y_entrance) {
         return {
