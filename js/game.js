@@ -551,6 +551,11 @@ var BackgroundObject = function() {
 var player = new Sprite();
 var npc_Chin = new Sprite();
 var npc_Alden = new Sprite();
+
+var npc_Map1C = new Sprite();
+var npc_Map1A = new Sprite();
+var npc_Map2C = new Sprite();
+var npc_Map2A = new Sprite();
 //var background = new Sprite();
 
 // var alden_por = new Dialog();
@@ -562,8 +567,12 @@ var npc_Alden = new Sprite();
 player.setOptions("./img/purple_orc.png", 0, 640, 64, 64,
                                     300, 300, 64, 64, 3);
 //npc_Mobus.setOptions("./img/mobus.png", 0, 640, 64, 64, 350, 10, 62, 62, 1);
-npc_Chin.setOptions("./img/chin.png", 0, 140, 64, 64, 350,10, 62, 62, 1);
-npc_Alden.setOptions("./img/alden.png", 0, 140, 64, 64, 300, 850, 62, 62, 2);
+
+npc_Map1C.setOptions("./img/chin.png", 0, 140, 64, 64, 350,10, 62, 62, 1);
+npc_Map1A.setOptions("./img/alden.png", 0, 140, 64, 64, 300, 880, 62, 62, 2);
+npc_Map2C.setOptions("./img/chin.png", 0, 140, 64, 64, -15,155, 62, 62, 0);
+npc_Map2A.setOptions("./img/alden.png", 0, 140, 64, 64, 430, 40, 62, 62, 0);
+
 npc_Alden.face = (function () {
     var temp = new Image();
     temp.src =  "./img/Alden-plain.png";
@@ -610,14 +619,28 @@ background.set(initialBackground);
 //
 // }
 
-npc_Chin.image.onload = function() {
-  npc_Chin.load = true;
+npc_Map1C.image.onload = function() {
+  npc_Map1C.load = true;
+  npc_Map2C.load = true;
+  npc_Map1A.load = true;
+  npc_Map2A.load = true;
 };
 
-var chinFlip = 0; // Flips between north and south.
-var chinCounter = 0; // Checks to see if you have incountered him.
+var chinFlip = 0;
+var chinCounter = 0;
 var chinDirection = 0;
-npc_Chin.update = function(clockTick) {
+npc_Map2C.update = function(clockTick) {
+  var dist = distance(this, player);
+  console.log(dist);
+  if(dist <= 100) {
+    this.spriteRoll(460, 8,  clockTick, 0.3);
+  } else {
+    this.spriteRoll(460, 1,  clockTick, 0.3);
+  }
+
+};
+
+npc_Map1C.update = function(clockTick) {
   var dist = distance(this, player);
   var chinX = Math.floor(this.x/32) + 1;
   var chinY = Math.floor(this.y/32) + 1
@@ -678,14 +701,11 @@ npc_Chin.update = function(clockTick) {
   }
 };
 
-npc_Alden.image.onload = function() {
-  npc_Alden.load = true;
-}
 
 var aldenFlip = 0;
 var aldenCounter = 0;
 var aldenDirection = 0;
-npc_Alden.update = function(clockTick) {
+npc_Map1A.update = function(clockTick) {
   var dist = distance(this, player);
 
   var aldenX = Math.floor(this.x/32) + 1;
@@ -730,7 +750,7 @@ npc_Alden.update = function(clockTick) {
     this.spriteRoll(704, 8,  clockTick, 0.1);
     this.x += this.speed;
 
-    if(this.x >= 500) {
+    if(this.x >= 450) {
       aldenFlip = 1;
     }
 
@@ -745,6 +765,17 @@ npc_Alden.update = function(clockTick) {
       aldenFlip = 0;
     }
   }
+};
+
+npc_Map2A.update = function(clockTick) {
+  var dist = distance(this, player);
+  console.log(dist);
+  if(dist <= 100) {
+    this.spriteRoll(780, 5,  clockTick, 0.3);
+  } else {
+    this.spriteRoll(780, 1,  clockTick, 0.3);
+  }
+
 };
 
 /** When player's spritesheet loads in browser, sets player.load to true. */
@@ -789,7 +820,15 @@ Timer.prototype.tick = function () {
  * @constructor
  */
 var Game = function() {
-    this.entities = []; // Game or zone wide entities?
+    //Creating an array of arrays for the entites
+    this.entiteZones = [];
+
+    /*
+    I made it so that at each index it would hold the entities
+    for the appropriate zone
+    */
+    this.entiteZones[1] = this.zoneOneEntites = [];
+    this.entiteZones[2] = this.zoneTwoEntites = [];  // Game or zone wide entities?
     this.currentZone;
 
     /**
@@ -892,8 +931,11 @@ var Game = function() {
      * TODO: Describe this function.
      * @param entity
      */
-    this.addEntity = function (entity) {
-        this.entities.push(entity);
+    this.addEntityZoneOne = function (entity) {
+        this.zoneOneEntites.push(entity);
+    };
+    this.addEntityZoneTwo = function (entity) {
+        this.zoneTwoEntites.push(entity);
     };
 
     /**
@@ -904,11 +946,16 @@ var Game = function() {
       this.cam.getPosition(player);
       //player.bounds();
       player.movePlayer(clockTick);
-      console.log(Math.floor(player.x/32) + "= X " + Math.floor(player.y/32) + " = Y");
 
-      var entitiesCount = this.entities.length;
+      /*
+      Get the current zone you are in and draw the entites
+      */
+
+      var getEntityArray = this.entiteZones[this.currentZone.id]
+
+      var entitiesCount = getEntityArray.length;
       for (var i = 0; i < entitiesCount; i++) {
-          var entity = this.entities[i];
+          var entity = getEntityArray[i];
 
           entity.update(clockTick);
       }
@@ -922,10 +969,16 @@ var Game = function() {
         midctx.clearRect(0, 0, midcanvas.width, midcanvas.height);
         midctx.save();
         midctx.translate(this.cam.x, this.cam.y);
-        var entitiesCount = this.entities.length;
+        var getEntityArray = this.entiteZones[this.currentZone.id]
+
+        var entitiesCount = getEntityArray.length;
+
+        /*
+        Get the current zone you are in and draw the entites
+        */
 
         for (var i = 0; i < entitiesCount; i++) {
-            var entity = this.entities[i];
+            var entity = getEntityArray[i];
             if(entity.load) {
               entity.render();
             }
@@ -958,9 +1011,16 @@ var Game = function() {
 var g = new Game();
 var m = new math();
 g.start();
-g.addEntity(npc_Chin);
-//g.addEntity(npc_Mobus);
-g.addEntity(npc_Alden);
+
+/*
+I am adding the entities to each zone array
+ZoneOne is getting Map1 entities and
+ZoneTwo is getting Map2 entities.
+*/
+g.addEntityZoneOne(npc_Map1A);
+g.addEntityZoneOne(npc_Map1C);
+g.addEntityZoneTwo(npc_Map2A);
+g.addEntityZoneTwo(npc_Map2C);
 
 
 
