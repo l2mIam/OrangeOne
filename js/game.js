@@ -26,6 +26,7 @@ var S_KEY = 83;
 var A_KEY = 65;
 var D_KEY = 68;
 var SPACE_KEY = 32;
+var DEBUG_KEY = 192;  // ` key ~ key  is the debug key
 
 //var dialogs = []; // TODO: What is this?
 
@@ -74,7 +75,7 @@ function distance(a, b) {
  *  the entities will be drawn on screen relative to current camera view
  * @constructor
  */
-var Camera = function() {
+var Camera = function () {
     /**
      * Recalculate camera position based entirely on the passed
      * entity's x and y location. (entity should be player!!)
@@ -539,11 +540,52 @@ var BackgroundObject = function() {
     this.set = function(image_object) {
         this.image = image_object;
 
+
         this.renderBackground = function(xoffset, yoffset) {
             btmctx.drawImage(this.image, this.srcX + xoffset, this.srcY + yoffset,
                 this.dtx, this.dty,
                 this.x, this.y, this.width, this.height);
         };
+
+        this.debugOn = function (xoffset, yoffset) {
+
+            //btmctx.clearRect(0, 0, topcanvas.width, topcanvas.height);
+            btmctx.font = "bold 16px sans-serif";
+            btmctx.fillStyle = "#ff00ee";
+
+            for (var y = Math.floor(yoffset / 32); y < sign_screen_bounds.length; y += 1) {
+                for (var x = Math.floor(xoffset / 32); x < sign_screen_bounds[0].length; x += 1) {
+
+                    var value = sign_screen_bounds[y][x];
+
+                    btmctx.fillText(value,x * 32 - xoffset,
+                        32 + y * 32 - yoffset);
+
+                }
+            }
+
+
+
+        };
+        //this.renderGrid = function() {
+        //
+        //    topctx.clearRect(0, 0, topcanvas.width, topcanvas.height);
+        //    topctx.beginPath();
+        //
+        //    for (var x = 0; x <= this.image.width; x += 32) {
+        //        topctx.moveTo(0.5 + x, 0);
+        //        topctx.lineTo(0.5 + x, this.image.height);
+        //    }
+        //
+        //    for (var y = 0; y <= this.image.height; y += 32) {
+        //        topctx.moveTo(0, 0.5 + y);
+        //        topctx.lineTo(this.image.width, 0.5 + y);
+        //    }
+        //
+        //    topctx.strokeStyle = "black";
+        //    topctx.stroke();
+        //
+        //};
     };
 };
 
@@ -593,6 +635,11 @@ var initialBackground = new Image();
 initialBackground.src = "./img/UWTmap1.jpg";
 background.set(initialBackground);
 
+var grid = new BackgroundObject();
+var gridimage = new Image();
+gridimage.src = "./img/32x32grid.png";
+grid.set(gridimage);
+
 // npc_Mobus.image.onload = function() {
 //   npc_Mobus.load = true;
 // }
@@ -631,7 +678,7 @@ var chinCounter = 0;
 var chinDirection = 0;
 npc_Map2C.update = function(clockTick) {
   var dist = distance(this, player);
-  console.log(dist);
+  //console.log(dist);
   if(dist <= 100) {
     this.spriteRoll(460, 8,  clockTick, 0.3);
   } else {
@@ -769,7 +816,7 @@ npc_Map1A.update = function(clockTick) {
 
 npc_Map2A.update = function(clockTick) {
   var dist = distance(this, player);
-  console.log(dist);
+  //console.log(dist);
   if(dist <= 100) {
     this.spriteRoll(780, 5,  clockTick, 0.3);
   } else {
@@ -781,7 +828,7 @@ npc_Map2A.update = function(clockTick) {
 /** When player's spritesheet loads in browser, sets player.load to true. */
 player.image.onload = function() {
   player.load = true;
-    console.log(player.dty);
+    //console.log(player.dty);
     player.y_hook = player.dty / 2;
     player.x_hook = (player.dtx / 4) ;
 //  alden_por.load = true; // TODO: Why is Alden in here?
@@ -791,6 +838,9 @@ player.image.onload = function() {
 /** When background's spritesheet loads in browser, sets background.load to true. */
 background.image.onload = function() {
   background.load = true;
+};
+grid.image.onload = function() {
+    grid.load = true;
 };
 
 //var sign_screen_bounds = window.uwetech.zones[1].bounds;
@@ -822,6 +872,7 @@ Timer.prototype.tick = function () {
 var Game = function() {
     //Creating an array of arrays for the entites
     this.entiteZones = [];
+    this.debug = true;
 
     /*
     I made it so that at each index it would hold the entities
@@ -894,6 +945,15 @@ var Game = function() {
             player.facing = "south";
         } else if (key_id === D_KEY) {
             player.facing = "east";
+        } else if (key_id === DEBUG_KEY) {
+            if (g.debug === true) {
+                g.debug = false;
+                console.log("DEBUG OFF");
+            } else {
+                g.debug = true;
+                console.log("DEBUG ON");
+                console.log("DEBUG ON");
+            }
         } else {
             // do nothing
         }
@@ -992,6 +1052,12 @@ var Game = function() {
             //btmctx.clearRect(0, 0, btmcanvas.width, btmcanvas.height);
             background.renderBackground(this.cam.x * - 1, this.cam.y * - 1);
         }
+
+        if (grid.load && g.debug === true) {
+            grid.renderBackground(this.cam.x * - 1, this.cam.y * -1);
+            grid.debugOn(this.cam.x * - 1, this.cam.y * - 1);
+        }
+
         if (player.load) {
 
             player.render();
@@ -999,6 +1065,7 @@ var Game = function() {
             /** draws the bounding box for the player sprite */
             midctx.strokeRect(player.x, player.y, 32, 32);
         }
+
 
       //  if(alden_por.draw) {
       //    alden_por.render();
