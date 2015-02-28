@@ -656,7 +656,7 @@ background.setOptions("./img/UWTmap1.jpg", 0, 0, btmcanvas.width, btmcanvas.heig
 */
 var background = new BackgroundObject();
 var initialBackground = new Image();
-initialBackground.src = "./img/UWTmap1.jpg";
+initialBackground.src = "./img/ext_stairs_lower.jpg";
 background.set(initialBackground);
 
 var grid = new BackgroundObject();
