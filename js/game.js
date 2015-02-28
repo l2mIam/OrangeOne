@@ -820,8 +820,13 @@ Timer.prototype.tick = function () {
  * @constructor
  */
 var Game = function() {
+    //Creating an array of arrays for the entites
     this.entiteZones = [];
 
+    /*
+    I made it so that at each index it would hold the entities
+    for the appropriate zone
+    */
     this.entiteZones[1] = this.zoneOneEntites = [];
     this.entiteZones[2] = this.zoneTwoEntites = [];  // Game or zone wide entities?
     this.currentZone;
@@ -941,8 +946,11 @@ var Game = function() {
       this.cam.getPosition(player);
       //player.bounds();
       player.movePlayer(clockTick);
-      console.log(Math.floor(player.x/32) + "= X " + Math.floor(player.y/32) + " = Y");
-      console.log(this.currentZone.id);
+
+      /*
+      Get the current zone you are in and draw the entites
+      */
+
       var getEntityArray = this.entiteZones[this.currentZone.id]
 
       var entitiesCount = getEntityArray.length;
@@ -964,6 +972,10 @@ var Game = function() {
         var getEntityArray = this.entiteZones[this.currentZone.id]
 
         var entitiesCount = getEntityArray.length;
+
+        /*
+        Get the current zone you are in and draw the entites
+        */
 
         for (var i = 0; i < entitiesCount; i++) {
             var entity = getEntityArray[i];
@@ -999,6 +1011,12 @@ var Game = function() {
 var g = new Game();
 var m = new math();
 g.start();
+
+/*
+I am adding the entities to each zone array
+ZoneOne is getting Map1 entities and
+ZoneTwo is getting Map2 entities.
+*/
 g.addEntityZoneOne(npc_Map1A);
 g.addEntityZoneOne(npc_Map1C);
 g.addEntityZoneTwo(npc_Map2A);
