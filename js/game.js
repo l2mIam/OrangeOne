@@ -27,7 +27,7 @@ var A_KEY = 65;
 var D_KEY = 68;
 var SPACE_KEY = 32;
 
-var dialogs = []; // TODO: What is this?
+//var dialogs = []; // TODO: What is this?
 
 /** Bottom canvas is for the background. NO ANIMATIONS. */
 var btmcanvas = document.getElementById('bottomlayer'),
@@ -127,45 +127,46 @@ var Camera = function() {
       //};
 };
 
-// TODO: Remove Dialog and instead use window.uwetech.show/hide in dialoghelper.js
-var Dialog = function() {
-  this.load = false;
-  this.imgX = 0;
-
-  this.setOptions = function(src, srcX, srcY, dtx, dty, x, y, width, height) {
-          this.srcX = srcX;
-          this.srcY = srcY;
-          this.dtx = dtx;
-          this.dty = dty;
-          this.x = x;
-          this.y = y;
-          this.width = width;
-          this.height = height;
-          this.draw = false;
-
-          this.image = new Image();
-          this.image.src = src;
-          //console.log(" " + src + "=" + this.image.height); // announce resource height
-
-      /**
-       * Renders this sprite (using the correct animation step previously "rolled").
-       */
-      this.render = function() {
-          topctx.drawImage(this.image, this.srcX, this.srcY, this.dtx, this.dty,
-              this.x, this.y, this.width, this.height);
-        };
-      /**
-       * Special function to render the background image.
-       * @param xoffset
-       * @param yoffset
-       */
-      this.renderBackground = function(xoffset, yoffset) {
-          btmctx.drawImage(this.image, this.srcX + xoffset, this.srcY + yoffset,
-                                          this.dtx, this.dty,
-              this.x, this.y, this.width, this.height);
-      };
-  };
-};
+//
+//// TODO: Remove Dialog and instead use window.uwetech.show/hide in dialoghelper.js
+//var Dialog = function() {
+//  this.load = false;
+//  this.imgX = 0;
+//
+//  this.setOptions = function(src, srcX, srcY, dtx, dty, x, y, width, height) {
+//          this.srcX = srcX;
+//          this.srcY = srcY;
+//          this.dtx = dtx;
+//          this.dty = dty;
+//          this.x = x;
+//          this.y = y;
+//          this.width = width;
+//          this.height = height;
+//          this.draw = false;
+//
+//          this.image = new Image();
+//          this.image.src = src;
+//          //console.log(" " + src + "=" + this.image.height); // announce resource height
+//
+//      /**
+//       * Renders this sprite (using the correct animation step previously "rolled").
+//       */
+//      this.render = function() {
+//          topctx.drawImage(this.image, this.srcX, this.srcY, this.dtx, this.dty,
+//              this.x, this.y, this.width, this.height);
+//        };
+//      /**
+//       * Special function to render the background image.
+//       * @param xoffset
+//       * @param yoffset
+//       */
+//      this.renderBackground = function(xoffset, yoffset) {
+//          btmctx.drawImage(this.image, this.srcX + xoffset, this.srcY + yoffset,
+//                                          this.dtx, this.dty,
+//              this.x, this.y, this.width, this.height);
+//      };
+//  };
+//};
 
 /**
  * Creates a new sprite. What is a sprite? A sprite is an object that has a visual
@@ -433,27 +434,31 @@ var Sprite = function() {
     };
 
     this.interact = function() {
-      if(this.facing === "north") {
-        var space = this.y * 32 + 32
-      } else if (this.facing === "south") {
-        var space = this.y * 32 - 32
-      } else if (this.facing === "west") {
-        var space = this.x * 32 + 32
-      } else {
-        var space = this.x * 32 - 32
-      }
-      if(dialogs[0].draw) {
-        dialogs[0].draw = false;
-          window.uwetech.dialog.hide(); // kirsten test code
-          topctx.clearRect(0, 0, topcanvas.width, topcanvas.height);
-      } else {
-        dialogs[0].draw = true;
-          console.log(alden_por.image); // kirsten test code
-          window.uwetech.dialog.show(
-              "I am testing the length requirements for this section of all of the awesome " +
-              "stuff we are doing it is quite amazing yes?!",
-              "foobar!", alden_por.image); // kirsten test code
-      }
+        if(this.facing === "north") {
+            var space = this.y * 32 + 32
+        } else if (this.facing === "south") {
+            var space = this.y * 32 - 32
+        } else if (this.facing === "west") {
+            var space = this.x * 32 + 32
+        } else {
+            var space = this.x * 32 - 32
+        }
+
+        if (npc_Alden.talking === undefined) {
+            npc_Alden.talking = true;
+        }
+        if (npc_Alden.talking === true) {
+            //console.log(npc_Alden.face); // kirsten test code
+            window.uwetech.dialog.show(
+                "I am testing the length requirements for this section of all of the awesome " +
+                "stuff we are doing it is quite amazing yes?!",
+                "foobar!", npc_Alden.face); // kirsten test code
+            npc_Alden.talking = false;
+        } else if (npc_Alden.talking === false) {
+            window.uwetech.dialog.hide(); // kirsten test code
+            // topctx.clearRect(0, 0, topcanvas.width, topcanvas.height);
+            npc_Alden.talking = true; // make him talk on next spacebar press
+        }
     };
 
     /**
@@ -548,7 +553,7 @@ var npc_Chin = new Sprite();
 var npc_Alden = new Sprite();
 //var background = new Sprite();
 
-var alden_por = new Dialog();
+// var alden_por = new Dialog();
 
 
 // src, srcX, srcY, dtx, dty, x, y, width, height, speed
@@ -559,10 +564,15 @@ player.setOptions("./img/purple_orc.png", 0, 640, 64, 64,
 //npc_Mobus.setOptions("./img/mobus.png", 0, 640, 64, 64, 350, 10, 62, 62, 1);
 npc_Chin.setOptions("./img/chin.png", 0, 140, 64, 64, 350,10, 62, 62, 1);
 npc_Alden.setOptions("./img/alden.png", 0, 140, 64, 64, 300, 850, 62, 62, 2);
-
+npc_Alden.face = (function () {
+    var temp = new Image();
+    temp.src =  "./img/Alden-plain.png";
+    return temp;
+})();
+console.log(npc_Alden.face);
 
 //Faces
-alden_por.setOptions("./img/Alden-plain.png", 0, 0, 480, 638, 100, 100, 480, 638);
+// alden_por.setOptions("./img/Alden-plain.png", 0, 0, 480, 638, 100, 100, 480, 638);
 
 /** Kirsten commented out
 // Backgrounds
@@ -743,8 +753,8 @@ player.image.onload = function() {
     console.log(player.dty);
     player.y_hook = player.dty / 2;
     player.x_hook = (player.dtx / 4) ;
-  alden_por.load = true; // TODO: Why is Alden in here?
-  dialogs.push(alden_por);
+//  alden_por.load = true; // TODO: Why is Alden in here?
+ // dialogs.push(alden_por);
 };
 
 /** When background's spritesheet loads in browser, sets background.load to true. */
@@ -933,9 +943,9 @@ var Game = function() {
             midctx.strokeRect(player.x, player.y, 32, 32);
         }
 
-        if(alden_por.draw) {
-          alden_por.render();
-        }
+      //  if(alden_por.draw) {
+      //    alden_por.render();
+      //  }
 
         midctx.restore();
     };
