@@ -1047,14 +1047,18 @@ var Game = function() {
       Get the current zone you are in and draw the entites
       */
 
-      var getEntityArray = this.entiteZones[this.currentZone.id]
+        if (this.entiteZones.length >= this.currentZone.id) { // kirsten adding in catches
+            var getEntityArray = this.entiteZones[this.currentZone.id]
 
-      var entitiesCount = getEntityArray.length;
-      for (var i = 0; i < entitiesCount; i++) {
-          var entity = getEntityArray[i];
+            if (getEntityArray !== undefined) { // kirsten adding in catches
+                var entitiesCount = getEntityArray.length;
+                for (var i = 0; i < entitiesCount; i++) {
+                    var entity = getEntityArray[i];
 
-          entity.update(clockTick);
-      }
+                    entity.update(clockTick);
+                }
+            }
+        }
 
     };
 
@@ -1067,7 +1071,9 @@ var Game = function() {
         midctx.translate(this.cam.x, this.cam.y);
         var getEntityArray = this.entiteZones[this.currentZone.id]
 
-        var entitiesCount = getEntityArray.length;
+       if (getEntityArray !== undefined) {
+           var entitiesCount = getEntityArray.length;
+       }
 
         /*
         Get the current zone you are in and draw the entites
