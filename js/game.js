@@ -828,7 +828,8 @@ var Game = function() {
     for the appropriate zone
     */
     this.entiteZones[1] = this.zoneOneEntites = [];
-    this.entiteZones[2] = this.zoneTwoEntites = [];  // Game or zone wide entities?
+    this.entiteZones[2] = this.zoneTwoEntites = [];
+    this.entiteZones[3] = this.zoneThreeEntites = [];  // Game or zone wide entities?
     this.currentZone;
 
     /**
@@ -936,6 +937,9 @@ var Game = function() {
     };
     this.addEntityZoneTwo = function (entity) {
         this.zoneTwoEntites.push(entity);
+    };
+    this.addEntityThreeTwo = function (entity) {
+        this.zoneThreeEntites.push(entity);
     };
 
     /**
