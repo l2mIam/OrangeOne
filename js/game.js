@@ -571,7 +571,7 @@ player.setOptions("./img/purple_orc.png", 0, 640, 64, 64,
 npc_Map1C.setOptions("./img/chin.png", 0, 140, 64, 64, 350,10, 62, 62, 1);
 npc_Map1A.setOptions("./img/alden.png", 0, 140, 64, 64, 300, 880, 62, 62, 2);
 npc_Map2C.setOptions("./img/chin.png", 0, 140, 64, 64, -15,155, 62, 62, 0);
-npc_Map2A.setOptions("./img/alden.png", 0, 140, 64, 64, 450, 40, 62, 62, 0);
+npc_Map2A.setOptions("./img/alden.png", 0, 140, 64, 64, 430, 40, 62, 62, 0);
 
 npc_Alden.face = (function () {
     var temp = new Image();
@@ -750,7 +750,7 @@ npc_Map1A.update = function(clockTick) {
     this.spriteRoll(704, 8,  clockTick, 0.1);
     this.x += this.speed;
 
-    if(this.x >= 500) {
+    if(this.x >= 450) {
       aldenFlip = 1;
     }
 
@@ -769,64 +769,13 @@ npc_Map1A.update = function(clockTick) {
 
 npc_Map2A.update = function(clockTick) {
   var dist = distance(this, player);
-
-  var aldenX = Math.floor(this.x/32) + 1;
-  var aldenY = Math.floor(this.y/32) + 1
-
-  //Checks to see if you are next to alden
-  if(dist <= 50 && aldenCounter === 0) {
-    aldenDirection = aldenFlip;
-    aldenFlip = 3;
-    aldenCounter = 1;
+  console.log(dist);
+  if(dist <= 100) {
+    this.spriteRoll(780, 5,  clockTick, 0.3);
+  } else {
+    this.spriteRoll(780, 1,  clockTick, 0.3);
   }
 
-  //If you are next to alden then this happens.
-  if(aldenFlip === 3) {
-    this.y += 0;
-    if(aldenDirection === 0) {
-      this.spriteRoll(704, 1,  clockTick, 0.5);
-      sign_screen_bounds[aldenY][aldenX] = 1;
-      sign_screen_bounds[aldenY + 1][aldenX] = 1;
-      sign_screen_bounds[aldenY][aldenX + 1] = 1;
-      sign_screen_bounds[aldenY + 1][aldenX + 1] = 1;
-    }
-    if(aldenDirection === 1) {
-      this.spriteRoll(576, 1, clockTick, 0.5);
-      sign_screen_bounds[aldenY][aldenX] = 1;
-      sign_screen_bounds[aldenY + 1][aldenX] = 1;
-      sign_screen_bounds[aldenY][aldenX + 1] = 1;
-      sign_screen_bounds[aldenY + 1][aldenX + 1] = 1;
-    }
-    if(dist >= 50) {
-      sign_screen_bounds[aldenY][aldenX] = 0;
-      sign_screen_bounds[aldenY + 1][aldenX] = 0;
-      sign_screen_bounds[aldenY][aldenX + 1] = 0;
-      sign_screen_bounds[aldenY + 1][aldenX + 1] = 0;
-      aldenFlip = aldenDirection;
-    }
-  }
-
-  // You are not next to alden and he is walking west
-  if(aldenFlip === 0) {
-    aldenCounter = 0;
-    this.spriteRoll(704, 8,  clockTick, 0.1);
-    this.x += this.speed;
-
-    if(this.x >= 500) {
-      aldenFlip = 1;
-    }
-
-  }
-  // You are not next to alden and he is walking east
-  if(aldenFlip === 1) {
-    aldenCounter = 0;
-    this.spriteRoll(576, 8,  clockTick, 0.1);
-    this.x -= this.speed;
-
-    if(this.x <= 10) {
-      aldenFlip = 0;
-    }
-  }
 };
 
 /** When player's spritesheet loads in browser, sets player.load to true. */
