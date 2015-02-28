@@ -7,6 +7,7 @@
     <option maxerr="50" />
     <option plusplus="true" />
     <option sloppy="true" />
+    <option todo="true" />
     <option vars="true" />
     <option white="true" />
   </component>

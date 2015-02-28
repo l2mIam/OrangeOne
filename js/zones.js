@@ -68,7 +68,7 @@ var Zone = function (id, name, image, height, width, exits, bounds) {
         }
         //console.log(exits);
     }*/
-    console.log(exits);
+    //console.log(exits);
 
     return {
         id : id,

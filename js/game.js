@@ -26,6 +26,7 @@ var S_KEY = 83;
 var A_KEY = 65;
 var D_KEY = 68;
 var SPACE_KEY = 32;
+var DEBUG_KEY = 192;  // ` key ~ key  is the debug key
 
 //var dialogs = []; // TODO: What is this?
 
@@ -74,7 +75,7 @@ function distance(a, b) {
  *  the entities will be drawn on screen relative to current camera view
  * @constructor
  */
-var Camera = function() {
+var Camera = function () {
     /**
      * Recalculate camera position based entirely on the passed
      * entity's x and y location. (entity should be player!!)
@@ -274,12 +275,15 @@ var Sprite = function() {
         //console.log(player.y/32);
         //var oldx = this.x; // kirsten debug code
         //var oldy = this.y; // kirsten debug code
+        var BOX_WIDTH = 30; // width of the player bounding box for collisions
+        var BOX_HEIGHT = 26; // height of the player bounding box for collisions
+
 
         /** Collision detection needs to consider the whole square the character occupies. */
         var x_leftmost = Math.floor(player.x/32);
-        var x_rightmost = Math.floor((player.x + 31) / 32); // + 32 is player width but 31 is smoother
+        var x_rightmost = Math.floor((player.x + BOX_WIDTH) / 32); // + 32 is player width but 31 is smoother
         var y_upmost = Math.floor(player.y/32);
-        var y_downmost = Math.floor((player.y + 31) / 32); // + 32 is height of player's box (ignores head collisions)
+        var y_downmost = Math.floor((player.y + BOX_HEIGHT) / 32); // + 32 is height of player's box (ignores head collisions)
 
         var y_new_grid = 0; // tracks if moving player will cause them to enter new grid
         var x_new_grid = 0; // tracks if moving player will cause them to enter new grid
@@ -327,13 +331,13 @@ var Sprite = function() {
             /** Determine if moving the player will result in entering a new grid location*/
             y_new_grid = 0;
             // if player would enter new grid and that grid isn't offscreen
-            if (Math.floor((player.y + 32 + this.speed) / 32) !== y_downmost &&
+            if (Math.floor((player.y + BOX_HEIGHT + this.speed) / 32) !== y_downmost &&
                           ((y_downmost + 1) <= sign_screen_bounds.length - 1)) {
                 y_new_grid = 1;
             }
 
             /** If player would move off screen, move to edge instead, IF edge is a valid location */
-            if ((player.y + 32 + this.speed) < background.image.height) { // "+32" player height no head
+            if ((player.y + BOX_HEIGHT + this.speed) < background.image.height) { // "+32" player height no head
                 /** Check that the player can move based on left AND right bounding box */
                 if (sign_screen_bounds[y_downmost + y_new_grid][x_leftmost] === 0 &&
                     sign_screen_bounds[y_downmost + y_new_grid][x_rightmost] === 0) {
@@ -342,7 +346,7 @@ var Sprite = function() {
             } else { /** player is trying to move off screen, align them to edge if valid location. */
                 if (sign_screen_bounds[sign_screen_bounds.length - 1][x_leftmost] === 0 &&
                     sign_screen_bounds[sign_screen_bounds.length - 1][x_rightmost] === 0) {
-                    this.y = background.image.height - 32; // "-32" is height of player minus head
+                    this.y = background.image.height - BOX_HEIGHT; // "-32" is height of player minus head
                 }
             }
 
@@ -393,13 +397,13 @@ var Sprite = function() {
             /** Determine if moving the player will result in entering a new grid location*/
             x_new_grid = 0;
             // if player would enter new grid and that grid isn't offscreen
-            if (Math.floor((player.x + 32 + this.speed) / 32) !== x_rightmost &&
+            if (Math.floor((player.x + BOX_WIDTH + this.speed) / 32) !== x_rightmost &&
                           ((x_rightmost + 1) <= sign_screen_bounds[y_upmost].length - 1)) {
                 x_new_grid = 1;
             }
 
             /** If player would move off screen, move to edge instead, IF edge is a valid location */
-            if ((player.x + 32 + this.speed) < background.image.width) { // "+32" is width of player
+            if ((player.x + BOX_WIDTH + this.speed) < background.image.width) { // "+32" is width of player
                 /** Check that the player can move based on top AND bottom bounding box */
                 if (sign_screen_bounds[y_upmost][x_rightmost + x_new_grid] === 0 &&
                     sign_screen_bounds[y_downmost][x_rightmost + x_new_grid] === 0) {
@@ -539,11 +543,52 @@ var BackgroundObject = function() {
     this.set = function(image_object) {
         this.image = image_object;
 
+
         this.renderBackground = function(xoffset, yoffset) {
             btmctx.drawImage(this.image, this.srcX + xoffset, this.srcY + yoffset,
                 this.dtx, this.dty,
                 this.x, this.y, this.width, this.height);
         };
+
+        this.debugOn = function (xoffset, yoffset) {
+
+            //btmctx.clearRect(0, 0, topcanvas.width, topcanvas.height);
+            btmctx.font = "bold 16px sans-serif";
+            btmctx.fillStyle = "#ff00ee";
+
+            for (var y = Math.floor(yoffset / 32); y < sign_screen_bounds.length; y += 1) {
+                for (var x = Math.floor(xoffset / 32); x < sign_screen_bounds[0].length; x += 1) {
+
+                    var value = sign_screen_bounds[y][x];
+
+                    btmctx.fillText(value,x * 32 - xoffset,
+                        32 + y * 32 - yoffset);
+
+                }
+            }
+
+
+
+        };
+        //this.renderGrid = function() {
+        //
+        //    topctx.clearRect(0, 0, topcanvas.width, topcanvas.height);
+        //    topctx.beginPath();
+        //
+        //    for (var x = 0; x <= this.image.width; x += 32) {
+        //        topctx.moveTo(0.5 + x, 0);
+        //        topctx.lineTo(0.5 + x, this.image.height);
+        //    }
+        //
+        //    for (var y = 0; y <= this.image.height; y += 32) {
+        //        topctx.moveTo(0, 0.5 + y);
+        //        topctx.lineTo(this.image.width, 0.5 + y);
+        //    }
+        //
+        //    topctx.strokeStyle = "black";
+        //    topctx.stroke();
+        //
+        //};
     };
 };
 
@@ -551,6 +596,11 @@ var BackgroundObject = function() {
 var player = new Sprite();
 var npc_Chin = new Sprite();
 var npc_Alden = new Sprite();
+
+var npc_Map1C = new Sprite();
+var npc_Map1A = new Sprite();
+var npc_Map2C = new Sprite();
+var npc_Map2A = new Sprite();
 //var background = new Sprite();
 
 // var alden_por = new Dialog();
@@ -562,8 +612,12 @@ var npc_Alden = new Sprite();
 player.setOptions("./img/purple_orc.png", 0, 640, 64, 64,
                                     300, 300, 64, 64, 3);
 //npc_Mobus.setOptions("./img/mobus.png", 0, 640, 64, 64, 350, 10, 62, 62, 1);
-npc_Chin.setOptions("./img/chin.png", 0, 140, 64, 64, 350,10, 62, 62, 1);
-npc_Alden.setOptions("./img/alden.png", 0, 140, 64, 64, 300, 850, 62, 62, 2);
+
+npc_Map1C.setOptions("./img/chin.png", 0, 140, 64, 64, 350,10, 62, 62, 1);
+npc_Map1A.setOptions("./img/alden.png", 0, 140, 64, 64, 300, 880, 62, 62, 2);
+npc_Map2C.setOptions("./img/chin.png", 0, 140, 64, 64, -15,155, 62, 62, 0);
+npc_Map2A.setOptions("./img/alden.png", 0, 140, 64, 64, 430, 40, 62, 62, 0);
+
 npc_Alden.face = (function () {
     var temp = new Image();
     temp.src =  "./img/Alden-plain.png";
@@ -583,6 +637,11 @@ var background = new BackgroundObject();
 var initialBackground = new Image();
 initialBackground.src = "./img/ext_stairs_lower.jpg";
 background.set(initialBackground);
+
+var grid = new BackgroundObject();
+var gridimage = new Image();
+gridimage.src = "./img/32x32grid.png";
+grid.set(gridimage);
 
 // npc_Mobus.image.onload = function() {
 //   npc_Mobus.load = true;
@@ -610,14 +669,28 @@ background.set(initialBackground);
 //
 // }
 
-npc_Chin.image.onload = function() {
-  npc_Chin.load = true;
+npc_Map1C.image.onload = function() {
+  npc_Map1C.load = true;
+  npc_Map2C.load = true;
+  npc_Map1A.load = true;
+  npc_Map2A.load = true;
 };
 
-var chinFlip = 0; // Flips between north and south.
-var chinCounter = 0; // Checks to see if you have incountered him.
+var chinFlip = 0;
+var chinCounter = 0;
 var chinDirection = 0;
-npc_Chin.update = function(clockTick) {
+npc_Map2C.update = function(clockTick) {
+  var dist = distance(this, player);
+  //console.log(dist);
+  if(dist <= 100) {
+    this.spriteRoll(460, 8,  clockTick, 0.3);
+  } else {
+    this.spriteRoll(460, 1,  clockTick, 0.3);
+  }
+
+};
+
+npc_Map1C.update = function(clockTick) {
   var dist = distance(this, player);
   var chinX = Math.floor(this.x/32) + 1;
   var chinY = Math.floor(this.y/32) + 1
@@ -678,14 +751,11 @@ npc_Chin.update = function(clockTick) {
   }
 };
 
-npc_Alden.image.onload = function() {
-  npc_Alden.load = true;
-}
 
 var aldenFlip = 0;
 var aldenCounter = 0;
 var aldenDirection = 0;
-npc_Alden.update = function(clockTick) {
+npc_Map1A.update = function(clockTick) {
   var dist = distance(this, player);
 
   var aldenX = Math.floor(this.x/32) + 1;
@@ -730,7 +800,7 @@ npc_Alden.update = function(clockTick) {
     this.spriteRoll(704, 8,  clockTick, 0.1);
     this.x += this.speed;
 
-    if(this.x >= 500) {
+    if(this.x >= 450) {
       aldenFlip = 1;
     }
 
@@ -747,12 +817,23 @@ npc_Alden.update = function(clockTick) {
   }
 };
 
+npc_Map2A.update = function(clockTick) {
+  var dist = distance(this, player);
+  //console.log(dist);
+  if(dist <= 100) {
+    this.spriteRoll(780, 5,  clockTick, 0.3);
+  } else {
+    this.spriteRoll(780, 1,  clockTick, 0.3);
+  }
+
+};
+
 /** When player's spritesheet loads in browser, sets player.load to true. */
 player.image.onload = function() {
   player.load = true;
-    console.log(player.dty);
-    player.y_hook = player.dty / 2;
-    player.x_hook = (player.dtx / 4) ;
+    //console.log(player.dty);
+    player.y_hook = player.dty / 2 + 4;
+    player.x_hook = (player.dtx / 4 ) ;
 //  alden_por.load = true; // TODO: Why is Alden in here?
  // dialogs.push(alden_por);
 };
@@ -760,6 +841,9 @@ player.image.onload = function() {
 /** When background's spritesheet loads in browser, sets background.load to true. */
 background.image.onload = function() {
   background.load = true;
+};
+grid.image.onload = function() {
+    grid.load = true;
 };
 
 //var sign_screen_bounds = window.uwetech.zones[1].bounds;
@@ -789,7 +873,17 @@ Timer.prototype.tick = function () {
  * @constructor
  */
 var Game = function() {
-    this.entities = []; // Game or zone wide entities?
+    //Creating an array of arrays for the entites
+    this.entiteZones = [];
+    this.debug = true;
+
+    /*
+    I made it so that at each index it would hold the entities
+    for the appropriate zone
+    */
+    this.entiteZones[1] = this.zoneOneEntites = [];
+    this.entiteZones[2] = this.zoneTwoEntites = [];
+    this.entiteZones[3] = this.zoneThreeEntites = [];  // Game or zone wide entities?
     this.currentZone;
 
     /**
@@ -854,6 +948,15 @@ var Game = function() {
             player.facing = "south";
         } else if (key_id === D_KEY) {
             player.facing = "east";
+        } else if (key_id === DEBUG_KEY) {
+            if (g.debug === true) {
+                g.debug = false;
+                console.log("DEBUG OFF");
+            } else {
+                g.debug = true;
+                console.log("DEBUG ON");
+                console.log("DEBUG ON");
+            }
         } else {
             // do nothing
         }
@@ -892,8 +995,14 @@ var Game = function() {
      * TODO: Describe this function.
      * @param entity
      */
-    this.addEntity = function (entity) {
-        this.entities.push(entity);
+    this.addEntityZoneOne = function (entity) {
+        this.zoneOneEntites.push(entity);
+    };
+    this.addEntityZoneTwo = function (entity) {
+        this.zoneTwoEntites.push(entity);
+    };
+    this.addEntityThreeTwo = function (entity) {
+        this.zoneThreeEntites.push(entity);
     };
 
     /**
@@ -904,11 +1013,16 @@ var Game = function() {
       this.cam.getPosition(player);
       //player.bounds();
       player.movePlayer(clockTick);
-      console.log(Math.floor(player.x/32) + "= X " + Math.floor(player.y/32) + " = Y");
 
-      var entitiesCount = this.entities.length;
+      /*
+      Get the current zone you are in and draw the entites
+      */
+
+      var getEntityArray = this.entiteZones[this.currentZone.id]
+
+      var entitiesCount = getEntityArray.length;
       for (var i = 0; i < entitiesCount; i++) {
-          var entity = this.entities[i];
+          var entity = getEntityArray[i];
 
           entity.update(clockTick);
       }
@@ -922,10 +1036,16 @@ var Game = function() {
         midctx.clearRect(0, 0, midcanvas.width, midcanvas.height);
         midctx.save();
         midctx.translate(this.cam.x, this.cam.y);
-        var entitiesCount = this.entities.length;
+        var getEntityArray = this.entiteZones[this.currentZone.id]
+
+        var entitiesCount = getEntityArray.length;
+
+        /*
+        Get the current zone you are in and draw the entites
+        */
 
         for (var i = 0; i < entitiesCount; i++) {
-            var entity = this.entities[i];
+            var entity = getEntityArray[i];
             if(entity.load) {
               entity.render();
             }
@@ -935,13 +1055,22 @@ var Game = function() {
             //btmctx.clearRect(0, 0, btmcanvas.width, btmcanvas.height);
             background.renderBackground(this.cam.x * - 1, this.cam.y * - 1);
         }
+
+        if (grid.load && g.debug === true) {
+            grid.renderBackground(this.cam.x * - 1, this.cam.y * -1);
+            grid.debugOn(this.cam.x * - 1, this.cam.y * - 1);
+        }
+
         if (player.load) {
 
             player.render();
 
-            /** draws the bounding box for the player sprite */
-            midctx.strokeRect(player.x, player.y, 32, 32);
+            if (g.debug === true) {
+                /** draws the bounding box for the player sprite */
+                midctx.strokeRect(player.x, player.y, 30, 26);
+            }
         }
+
 
       //  if(alden_por.draw) {
       //    alden_por.render();
@@ -958,9 +1087,16 @@ var Game = function() {
 var g = new Game();
 var m = new math();
 g.start();
-g.addEntity(npc_Chin);
-//g.addEntity(npc_Mobus);
-g.addEntity(npc_Alden);
+
+/*
+I am adding the entities to each zone array
+ZoneOne is getting Map1 entities and
+ZoneTwo is getting Map2 entities.
+*/
+g.addEntityZoneOne(npc_Map1A);
+g.addEntityZoneOne(npc_Map1C);
+g.addEntityZoneTwo(npc_Map2A);
+g.addEntityZoneTwo(npc_Map2C);
 
 
 
