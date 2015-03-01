@@ -276,7 +276,7 @@ var Sprite = function() {
         //var oldx = this.x; // kirsten debug code
         //var oldy = this.y; // kirsten debug code
         var BOX_WIDTH = 30; // width of the player bounding box for collisions
-        var BOX_HEIGHT = 26; // height of the player bounding box for collisions
+        var BOX_HEIGHT = 24; // height of the player bounding box for collisions
 
 
         /** Collision detection needs to consider the whole square the character occupies. */
@@ -1058,7 +1058,7 @@ npc_Map6lib.update = function(clockTick) {
 player.image.onload = function() {
   player.load = true;
     //console.log(player.dty);
-    player.y_hook = player.dty / 2 + 4;
+    player.y_hook = player.dty / 2 + 6;
     player.x_hook = (player.dtx / 4 ) ;
 //  alden_por.load = true; // TODO: Why is Alden in here?
  // dialogs.push(alden_por);
@@ -1322,7 +1322,7 @@ var Game = function() {
 
             if (g.debug === true) {
                 /** draws the bounding box for the player sprite */
-                midctx.strokeRect(player.x, player.y, 30, 26);
+                midctx.strokeRect(player.x, player.y, 30, 24);
             }
         }
 
