@@ -1147,6 +1147,7 @@ var Game = function() {
 
             /** insert cool code to go to black screen briefly here... */
             if (this.currentZone !== undefined) { // don't show on the first load
+                g.isPaused = true;
                 loadctx.fillStyle = "#000000";
                 loadctx.fillRect(0, 0, topcanvas.width, topcanvas.height);
                 loadctx.font = "25px sans-serif";
@@ -1155,6 +1156,7 @@ var Game = function() {
                                                loadcanvas.height - (loadcanvas.height / 5));
                 setTimeout(function () {
                     loadctx.clearRect(0, 0, loadcanvas.width, loadcanvas.height);
+                    g.isPaused = false;
                 }, 300);
             }
 
@@ -1214,7 +1216,7 @@ var Game = function() {
       this.cam  = new Camera();
       this.cam.setup(player);
       this.timer = new Timer();
-      this.loadZone(1, 10, 23);
+      this.loadZone(1, 10, 27); // player starts in zone 1 at x=10, y=27
       this.loop();
     };
 
