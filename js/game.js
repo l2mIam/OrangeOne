@@ -638,6 +638,11 @@ var npc_Map4middleStudentOne = new Sprite();
 var npc_Map4middleStudentTwo = new Sprite();
 var npc_Map4backStudentOne = new Sprite();
 
+var npc_Map5dummyOne = new Sprite();
+var npc_Map5dummyTwo = new Sprite();
+
+var npc_Map6lib = new Sprite();
+
 //var background = new Sprite();
 
 // var alden_por = new Dialog();
@@ -670,6 +675,11 @@ npc_Map4frontStudentTwo.setOptions("./img/alden.png", 0, 140, 64, 64, 440,100, 6
 npc_Map4middleStudentOne.setOptions("./img/alden.png", 0, 140, 64, 64, 370,20, 62, 62, 0);
 npc_Map4middleStudentTwo.setOptions("./img/chin.png", 0, 140, 64, 64, 370,100, 62, 62, 0);
 npc_Map4backStudentOne.setOptions("./img/chin.png", 0, 140, 64, 64, 250,100, 62, 62, 0);
+
+npc_Map5dummyOne.setOptions("./img/chin.png", 0, 140, 64, 64, 110,260, 62, 62, 0);
+npc_Map5dummyTwo.setOptions("./img/alden.png", 0, 140, 64, 64, 20,20, 62, 62, 0);
+
+npc_Map6lib.setOptions("./img/chin.png", 0, 140, 64, 64, 150,145, 62, 62, 0);
 
 
 npc_Alden.face = (function () {
@@ -742,6 +752,11 @@ npc_Map1StairWalker.image.onload = function() {
   npc_Map4middleStudentOne.load = true;
   npc_Map4middleStudentTwo.load = true;
   npc_Map4backStudentOne.load = true;
+
+  npc_Map5dummyOne.load = true;
+  npc_Map5dummyTwo.load = true;
+
+  npc_Map6lib.load = true;
 
 };
 
@@ -1028,6 +1043,16 @@ npc_Map4backStudentOne.update = function (clockTick) {
 
 }
 
+npc_Map5dummyOne.update = function (clockTick) {
+  this.spriteRoll(512, 1, clockTick, 0.1);
+}
+npc_Map5dummyTwo.update = function(clockTick) {
+
+}
+
+npc_Map6lib.update = function(clockTick) {
+}
+
 /** When player's spritesheet loads in browser, sets player.load to true. */
 player.image.onload = function() {
   player.load = true;
@@ -1091,7 +1116,10 @@ var Game = function() {
     this.entiteZones[1] = this.zoneOneEntites = [];
     this.entiteZones[2] = this.zoneTwoEntites = [];
     this.entiteZones[3] = this.zoneThreeEntites = [];
-    this.entiteZones[4] = this.zoneFourEntites = [];  // Game or zone wide entities?
+    this.entiteZones[4] = this.zoneFourEntites = [];
+    this.entiteZones[5] = this.zoneFiveEntites = [];
+    this.entiteZones[6] = this.zoneSixEntites = [];
+    // Game or zone wide entities?
     this.currentZone;
 
     /**
@@ -1216,6 +1244,12 @@ var Game = function() {
     this.addEntityZoneFour = function (entity) {
         this.zoneFourEntites.push(entity);
     };
+    this.addEntityZoneFive = function (entity) {
+        this.zoneFiveEntites.push(entity);
+    };
+    this.addEntityZoneSix = function (entity) {
+        this.zoneSixEntites.push(entity);
+    };
 
     /**
      * TODO: Describe this function.
@@ -1329,6 +1363,11 @@ g.addEntityZoneFour(npc_Map4frontStudentTwo);
 g.addEntityZoneFour(npc_Map4middleStudentOne);
 g.addEntityZoneFour(npc_Map4middleStudentTwo);
 g.addEntityZoneFour(npc_Map4backStudentOne);
+
+g.addEntityZoneFive(npc_Map5dummyOne);
+g.addEntityZoneFive(npc_Map5dummyTwo);
+
+g.addEntityZoneSix(npc_Map6lib);
 
 
 
