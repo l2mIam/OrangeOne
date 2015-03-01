@@ -627,6 +627,9 @@ var npc_Map2Cashier = new Sprite();
 var npc_Map2Bookman = new Sprite();
 
 var npc_Map3BottomWalker = new Sprite();
+var npc_Map3dummyOne = new Sprite();
+var npc_Map3dummyTwo = new Sprite();
+var npc_Map3dummyThree = new Sprite();
 //var background = new Sprite();
 
 // var alden_por = new Dialog();
@@ -648,6 +651,10 @@ npc_Map2Cashier.setOptions("./img/chin.png", 0, 140, 64, 64, -15,155, 62, 62, 0)
 npc_Map2Bookman.setOptions("./img/alden.png", 0, 140, 64, 64, 430, 40, 62, 62, 0);
 
 npc_Map3BottomWalker.setOptions("./img/alden.png", 0, 140, 64, 64, 900, 600, 62, 62, 2);
+
+npc_Map3dummyOne.setOptions("./img/alden.png", 0, 140, 64, 64, 800, 150, 62, 62, 2);
+npc_Map3dummyTwo.setOptions("./img/alden.png", 0, 140, 64, 64, 750, 175, 62, 62, 2);
+npc_Map3dummyThree.setOptions("./img/alden.png", 0, 140, 64, 64, 770, 135, 62, 62, 2);
 
 npc_Alden.face = (function () {
     var temp = new Image();
@@ -709,6 +716,9 @@ npc_Map1StairWalker.image.onload = function() {
   npc_Map2Bookman.load = true;
 
   npc_Map3BottomWalker.load = true;
+  npc_Map3dummyOne.load = true;
+  npc_Map3dummyTwo.load = true;
+  npc_Map3dummyThree.load = true;
 };
 
 /*
@@ -889,6 +899,25 @@ npc_Map2Cashier.update = function(clockTick) {
 
 };
 
+/*
+Map3(walkWay) Npc update functions are below
+dummyGroup - Just a bunch of friends talking and blocking the way.
+dummyOne - the one on the far right
+dummyTwo - the one furthest south
+dummyThree - the one furthest north
+bottomWalker - Walks left to right at the bottom of the stairs.. like a normal person.
+*/
+
+npc_Map3dummyOne.update = function(clockTick) {
+  this.spriteRoll(576, 1,  clockTick, 0.1);
+}
+npc_Map3dummyTwo.update = function(clockTick) {
+  this.spriteRoll(512, 1,  clockTick, 0.1);
+}
+npc_Map3dummyThree.update = function(clockTick) {
+  this.spriteRoll(900, 1,  clockTick, 0.1);
+}
+
 npc_Map3BottomWalker.update = function(clockTick) {
   var dist = distance(this, player);
 
@@ -928,7 +957,7 @@ npc_Map3BottomWalker.update = function(clockTick) {
     }
   }
 
-  // You are not next to alden and he is walking west
+  // You are not next to alden and he is walking east
   if(aldenFlip === 0) {
     aldenCounter = 0;
     this.spriteRoll(704, 8,  clockTick, 0.1);
@@ -939,7 +968,7 @@ npc_Map3BottomWalker.update = function(clockTick) {
     }
 
   }
-  // You are not next to alden and he is walking east
+  // You are not next to alden and he is walking west
   if(aldenFlip === 1) {
     aldenCounter = 0;
     this.spriteRoll(576, 8,  clockTick, 0.1);
@@ -1238,6 +1267,9 @@ g.addEntityZoneTwo(npc_Map2Bookman);
 g.addEntityZoneTwo(npc_Map2Cashier);
 
 g.addEntityZoneThree(npc_Map3BottomWalker);
+g.addEntityZoneThree(npc_Map3dummyOne);
+g.addEntityZoneThree(npc_Map3dummyTwo);
+g.addEntityZoneThree(npc_Map3dummyThree);
 
 
 
