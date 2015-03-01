@@ -621,6 +621,8 @@ var npc_Alden = new Sprite();
 
 var npc_Map1StairWalker = new Sprite();
 var npc_Map1BottomWalker = new Sprite();
+var npc_Map1Blocker = new Sprite();
+
 var npc_Map2Cashier = new Sprite();
 var npc_Map2Bookman = new Sprite();
 //var background = new Sprite();
@@ -632,11 +634,14 @@ var npc_Map2Bookman = new Sprite();
 
 // NPC's
 player.setOptions("./img/purple_orc.png", 0, 640, 64, 64,
-                                    300, 300, 64, 64, 3);
+                                    0, 0, 64, 64, 3);
 //npc_Mobus.setOptions("./img/mobus.png", 0, 640, 64, 64, 350, 10, 62, 62, 1);
 
 npc_Map1StairWalker.setOptions("./img/chin.png", 0, 140, 64, 64, 350,10, 62, 62, 1);
 npc_Map1BottomWalker.setOptions("./img/alden.png", 0, 140, 64, 64, 300, 880, 62, 62, 2);
+npc_Map1Blocker.setOptions("./img/alden.png", 0, 140, 64, 64, 500, 10, 62, 62, 2);
+
+
 npc_Map2Cashier.setOptions("./img/chin.png", 0, 140, 64, 64, -15,155, 62, 62, 0);
 npc_Map2Bookman.setOptions("./img/alden.png", 0, 140, 64, 64, 430, 40, 62, 62, 0);
 
@@ -693,24 +698,27 @@ grid.set(gridimage);
 
 npc_Map1StairWalker.image.onload = function() {
   npc_Map1StairWalker.load = true;
-  npc_Map2Cashier.load = true;
+  npc_Map1Blocker.load = true;
   npc_Map1BottomWalker.load = true;
+
+  npc_Map2Cashier.load = true;
   npc_Map2Bookman.load = true;
 };
+
+/*
+Map1(bottomStaircase) Npc update functions are below
+Blocker - If the player gets close he block you from going around.
+Stairwalker - Walks up and down the stairs.. like a normal person.
+BottomWalker - Walks left to right at the bottom of the stairs.. like a normal person.
+*/
+
+npc_Map1Blocker.update = function(clockTick) {
+
+}
 
 var chinFlip = 0;
 var chinCounter = 0;
 var chinDirection = 0;
-npc_Map2Cashier.update = function(clockTick) {
-  var dist = distance(this, player);
-  //console.log(dist);
-  if(dist <= 100) {
-    this.spriteRoll(460, 8,  clockTick, 0.3);
-  } else {
-    this.spriteRoll(460, 1,  clockTick, 0.3);
-  }
-
-};
 
 npc_Map1StairWalker.update = function(clockTick) {
   var dist = distance(this, player);
@@ -839,6 +847,12 @@ npc_Map1BottomWalker.update = function(clockTick) {
   }
 };
 
+/*
+Map2(BookStore) Npc update functions are below
+Bookman - If the player gets close he looks for a book.
+Cashier - If the player gets close he will check you out. *wink*
+*/
+
 npc_Map2Bookman.update = function(clockTick) {
   var dist = distance(this, player);
   //console.log(dist);
@@ -846,6 +860,16 @@ npc_Map2Bookman.update = function(clockTick) {
     this.spriteRoll(780, 5,  clockTick, 0.3);
   } else {
     this.spriteRoll(780, 1,  clockTick, 0.3);
+  }
+
+};
+npc_Map2Cashier.update = function(clockTick) {
+  var dist = distance(this, player);
+  //console.log(dist);
+  if(dist <= 100) {
+    this.spriteRoll(460, 8,  clockTick, 0.3);
+  } else {
+    this.spriteRoll(460, 1,  clockTick, 0.3);
   }
 
 };
@@ -1129,6 +1153,7 @@ I am adding the entities to each zone array
 ZoneOne is getting Map1 entities and
 ZoneTwo is getting Map2 entities.
 */
+g.addEntityZoneOne(npc_Map1Blocker);
 g.addEntityZoneOne(npc_Map1BottomWalker);
 g.addEntityZoneOne(npc_Map1StairWalker);
 g.addEntityZoneTwo(npc_Map2Bookman);
