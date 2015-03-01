@@ -105,10 +105,10 @@ zones[1] = new Zone(1, "ext_stairs_lower", ext_stairs_lower_image, 608, 928,
                   "18,7": Exit(18, 7, 4, 2, 2), // int_wcg
                   "17,29": Exit(17, 29, 2, 1, 8), //int_book_store
                   "17,30": Exit(17, 30, 2, 1, 9), //int_book_store
-                  "17,31": Exit(17, 31, 2, 1, 9) //int_book_store
-                  "9,0":  Exit( 9, 0, 7, 5, 23) // ext_stairs_mid
-                  "10,0": Exit(10, 0, 7, 6, 23) // ext_stairs_mid
-                  "11,0": Exit(11, 0, 7, 7, 23) // ext_stairs_mid
+                  "17,31": Exit(17, 31, 2, 1, 9), //int_book_store
+                  "9,0":  Exit( 9, 0, 7, 5, 23), // ext_stairs_mid
+                  "10,0": Exit(10, 0, 7, 6, 23), // ext_stairs_mid
+                  "11,0": Exit(11, 0, 7, 7, 23), // ext_stairs_mid
                   "12,0": Exit(12, 0, 7, 8, 23) // ext_stairs_mid
 
               },
