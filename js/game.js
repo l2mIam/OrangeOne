@@ -619,10 +619,17 @@ var player = new Sprite();
 var npc_Chin = new Sprite();
 var npc_Alden = new Sprite();
 
-var npc_Map1C = new Sprite();
-var npc_Map1A = new Sprite();
-var npc_Map2C = new Sprite();
-var npc_Map2A = new Sprite();
+var npc_Map1StairWalker = new Sprite();
+var npc_Map1BottomWalker = new Sprite();
+var npc_Map1Blocker = new Sprite();
+
+var npc_Map2Cashier = new Sprite();
+var npc_Map2Bookman = new Sprite();
+
+var npc_Map3BottomWalker = new Sprite();
+var npc_Map3dummyOne = new Sprite();
+var npc_Map3dummyTwo = new Sprite();
+var npc_Map3dummyThree = new Sprite();
 //var background = new Sprite();
 
 // var alden_por = new Dialog();
@@ -632,13 +639,22 @@ var npc_Map2A = new Sprite();
 
 // NPC's
 player.setOptions("./img/purple_orc.png", 0, 640, 64, 64,
-                                    300, 300, 64, 64, 3);
+                                    0, 0, 64, 64, 3);
 //npc_Mobus.setOptions("./img/mobus.png", 0, 640, 64, 64, 350, 10, 62, 62, 1);
 
-npc_Map1C.setOptions("./img/chin.png", 0, 140, 64, 64, 350,10, 62, 62, 1);
-npc_Map1A.setOptions("./img/alden.png", 0, 140, 64, 64, 300, 880, 62, 62, 2);
-npc_Map2C.setOptions("./img/chin.png", 0, 140, 64, 64, -15,155, 62, 62, 0);
-npc_Map2A.setOptions("./img/alden.png", 0, 140, 64, 64, 430, 40, 62, 62, 0);
+npc_Map1StairWalker.setOptions("./img/chin.png", 0, 140, 64, 64, 350,10, 62, 62, 1);
+npc_Map1BottomWalker.setOptions("./img/alden.png", 0, 140, 64, 64, 300, 880, 62, 62, 2);
+npc_Map1Blocker.setOptions("./img/alden.png", 0, 140, 64, 64, 530, 10, 62, 62, 2);
+
+
+npc_Map2Cashier.setOptions("./img/chin.png", 0, 140, 64, 64, -15,155, 62, 62, 0);
+npc_Map2Bookman.setOptions("./img/alden.png", 0, 140, 64, 64, 430, 40, 62, 62, 0);
+
+npc_Map3BottomWalker.setOptions("./img/alden.png", 0, 140, 64, 64, 900, 600, 62, 62, 2);
+
+npc_Map3dummyOne.setOptions("./img/alden.png", 0, 140, 64, 64, 800, 150, 62, 62, 2);
+npc_Map3dummyTwo.setOptions("./img/alden.png", 0, 140, 64, 64, 750, 175, 62, 62, 2);
+npc_Map3dummyThree.setOptions("./img/alden.png", 0, 140, 64, 64, 770, 135, 62, 62, 2);
 
 npc_Alden.face = (function () {
     var temp = new Image();
@@ -691,28 +707,45 @@ grid.set(gridimage);
 //
 // }
 
-npc_Map1C.image.onload = function() {
-  npc_Map1C.load = true;
-  npc_Map2C.load = true;
-  npc_Map1A.load = true;
-  npc_Map2A.load = true;
+npc_Map1StairWalker.image.onload = function() {
+  npc_Map1StairWalker.load = true;
+  npc_Map1Blocker.load = true;
+  npc_Map1BottomWalker.load = true;
+
+  npc_Map2Cashier.load = true;
+  npc_Map2Bookman.load = true;
+
+  npc_Map3BottomWalker.load = true;
+  npc_Map3dummyOne.load = true;
+  npc_Map3dummyTwo.load = true;
+  npc_Map3dummyThree.load = true;
+};
+
+/*
+Map1(bottomStaircase) Npc update functions are below
+Blocker - If the player gets close he block you from going around.
+Stairwalker - Walks up and down the stairs.. like a normal person.
+BottomWalker - Walks left to right at the bottom of the stairs.. like a normal person.
+*/
+
+npc_Map1Blocker.update = function(clockTick) {
+  if(player.y < 40) {
+    if(W_KEY in keys) {
+      this.spriteRoll(512, 8,  clockTick, 0.1);
+      this.y = (player.y - 30);
+    }
+    if(S_KEY in keys) {
+      this.spriteRoll(640, 8,  clockTick, 0.1);
+      this.y = (player.y - 30);
+    }
+  }
 };
 
 var chinFlip = 0;
 var chinCounter = 0;
 var chinDirection = 0;
-npc_Map2C.update = function(clockTick) {
-  var dist = distance(this, player);
-  //console.log(dist);
-  if(dist <= 100) {
-    this.spriteRoll(460, 8,  clockTick, 0.3);
-  } else {
-    this.spriteRoll(460, 1,  clockTick, 0.3);
-  }
 
-};
-
-npc_Map1C.update = function(clockTick) {
+npc_Map1StairWalker.update = function(clockTick) {
   var dist = distance(this, player);
   var chinX = Math.floor(this.x/32) + 1;
   var chinY = Math.floor(this.y/32) + 1
@@ -777,7 +810,7 @@ npc_Map1C.update = function(clockTick) {
 var aldenFlip = 0;
 var aldenCounter = 0;
 var aldenDirection = 0;
-npc_Map1A.update = function(clockTick) {
+npc_Map1BottomWalker.update = function(clockTick) {
   var dist = distance(this, player);
 
   var aldenX = Math.floor(this.x/32) + 1;
@@ -839,7 +872,13 @@ npc_Map1A.update = function(clockTick) {
   }
 };
 
-npc_Map2A.update = function(clockTick) {
+/*
+Map2(BookStore) Npc update functions are below
+Bookman - If the player gets close he looks for a book.
+Cashier - If the player gets close he will check you out. *wink*
+*/
+
+npc_Map2Bookman.update = function(clockTick) {
   var dist = distance(this, player);
   //console.log(dist);
   if(dist <= 100) {
@@ -848,6 +887,97 @@ npc_Map2A.update = function(clockTick) {
     this.spriteRoll(780, 1,  clockTick, 0.3);
   }
 
+};
+npc_Map2Cashier.update = function(clockTick) {
+  var dist = distance(this, player);
+  //console.log(dist);
+  if(dist <= 100) {
+    this.spriteRoll(460, 8,  clockTick, 0.3);
+  } else {
+    this.spriteRoll(460, 1,  clockTick, 0.3);
+  }
+
+};
+
+/*
+Map3(walkWay) Npc update functions are below
+dummyGroup - Just a bunch of friends talking and blocking the way.
+dummyOne - the one on the far right
+dummyTwo - the one furthest south
+dummyThree - the one furthest north
+bottomWalker - Walks left to right at the bottom of the stairs.. like a normal person.
+*/
+
+npc_Map3dummyOne.update = function(clockTick) {
+  this.spriteRoll(576, 1,  clockTick, 0.1);
+}
+npc_Map3dummyTwo.update = function(clockTick) {
+  this.spriteRoll(512, 1,  clockTick, 0.1);
+}
+npc_Map3dummyThree.update = function(clockTick) {
+  this.spriteRoll(900, 1,  clockTick, 0.1);
+}
+
+npc_Map3BottomWalker.update = function(clockTick) {
+  var dist = distance(this, player);
+
+  var aldenX = Math.floor(this.x/32) + 1;
+  var aldenY = Math.floor(this.y/32) + 1
+
+  //Checks to see if you are next to alden
+  if(dist <= 50 && aldenCounter === 0) {
+    aldenDirection = aldenFlip;
+    aldenFlip = 3;
+    aldenCounter = 1;
+  }
+
+  //If you are next to alden then this happens.
+  if(aldenFlip === 3) {
+    this.y += 0;
+    if(aldenDirection === 0) {
+      this.spriteRoll(704, 1,  clockTick, 0.5);
+      sign_screen_bounds[aldenY][aldenX] = 1;
+      sign_screen_bounds[aldenY + 1][aldenX] = 1;
+      sign_screen_bounds[aldenY][aldenX + 1] = 1;
+      sign_screen_bounds[aldenY + 1][aldenX + 1] = 1;
+    }
+    if(aldenDirection === 1) {
+      this.spriteRoll(576, 1, clockTick, 0.5);
+      sign_screen_bounds[aldenY][aldenX] = 1;
+      sign_screen_bounds[aldenY + 1][aldenX] = 1;
+      sign_screen_bounds[aldenY][aldenX + 1] = 1;
+      sign_screen_bounds[aldenY + 1][aldenX + 1] = 1;
+    }
+    if(dist >= 50) {
+      sign_screen_bounds[aldenY][aldenX] = 0;
+      sign_screen_bounds[aldenY + 1][aldenX] = 0;
+      sign_screen_bounds[aldenY][aldenX + 1] = 0;
+      sign_screen_bounds[aldenY + 1][aldenX + 1] = 0;
+      aldenFlip = aldenDirection;
+    }
+  }
+
+  // You are not next to alden and he is walking east
+  if(aldenFlip === 0) {
+    aldenCounter = 0;
+    this.spriteRoll(704, 8,  clockTick, 0.1);
+    this.x += this.speed;
+
+    if(this.x >= 900) {
+      aldenFlip = 1;
+    }
+
+  }
+  // You are not next to alden and he is walking west
+  if(aldenFlip === 1) {
+    aldenCounter = 0;
+    this.spriteRoll(576, 8,  clockTick, 0.1);
+    this.x -= this.speed;
+
+    if(this.x <= 10) {
+      aldenFlip = 0;
+    }
+  }
 };
 
 /** When player's spritesheet loads in browser, sets player.load to true. */
@@ -1031,7 +1161,7 @@ var Game = function() {
     this.addEntityZoneTwo = function (entity) {
         this.zoneTwoEntites.push(entity);
     };
-    this.addEntityThreeTwo = function (entity) {
+    this.addEntityZoneThree = function (entity) {
         this.zoneThreeEntites.push(entity);
     };
 
@@ -1129,10 +1259,17 @@ I am adding the entities to each zone array
 ZoneOne is getting Map1 entities and
 ZoneTwo is getting Map2 entities.
 */
-g.addEntityZoneOne(npc_Map1A);
-g.addEntityZoneOne(npc_Map1C);
-g.addEntityZoneTwo(npc_Map2A);
-g.addEntityZoneTwo(npc_Map2C);
+g.addEntityZoneOne(npc_Map1Blocker);
+g.addEntityZoneOne(npc_Map1BottomWalker);
+g.addEntityZoneOne(npc_Map1StairWalker);
+
+g.addEntityZoneTwo(npc_Map2Bookman);
+g.addEntityZoneTwo(npc_Map2Cashier);
+
+g.addEntityZoneThree(npc_Map3BottomWalker);
+g.addEntityZoneThree(npc_Map3dummyOne);
+g.addEntityZoneThree(npc_Map3dummyTwo);
+g.addEntityZoneThree(npc_Map3dummyThree);
 
 
 
