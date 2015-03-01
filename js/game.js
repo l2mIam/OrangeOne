@@ -639,7 +639,7 @@ player.setOptions("./img/purple_orc.png", 0, 640, 64, 64,
 
 npc_Map1StairWalker.setOptions("./img/chin.png", 0, 140, 64, 64, 350,10, 62, 62, 1);
 npc_Map1BottomWalker.setOptions("./img/alden.png", 0, 140, 64, 64, 300, 880, 62, 62, 2);
-npc_Map1Blocker.setOptions("./img/alden.png", 0, 140, 64, 64, 500, 10, 62, 62, 2);
+npc_Map1Blocker.setOptions("./img/alden.png", 0, 140, 64, 64, 530, 10, 62, 62, 2);
 
 
 npc_Map2Cashier.setOptions("./img/chin.png", 0, 140, 64, 64, -15,155, 62, 62, 0);
@@ -713,6 +713,17 @@ BottomWalker - Walks left to right at the bottom of the stairs.. like a normal p
 */
 
 npc_Map1Blocker.update = function(clockTick) {
+  if(player.y < 40) {
+    if(W_KEY in keys) {
+      this.spriteRoll(512, 8,  clockTick, 0.1);
+      this.y = (player.y - 30);
+    }
+    if(S_KEY in keys) {
+      this.spriteRoll(640, 8,  clockTick, 0.1);
+      this.y = (player.y - 30);
+    }
+  }
+
 
 }
 
