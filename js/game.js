@@ -630,6 +630,19 @@ var npc_Map3BottomWalker = new Sprite();
 var npc_Map3dummyOne = new Sprite();
 var npc_Map3dummyTwo = new Sprite();
 var npc_Map3dummyThree = new Sprite();
+
+var npc_Map4theChin = new Sprite();
+var npc_Map4frontStudentOne = new Sprite();
+var npc_Map4frontStudentTwo = new Sprite();
+var npc_Map4middleStudentOne = new Sprite();
+var npc_Map4middleStudentTwo = new Sprite();
+var npc_Map4backStudentOne = new Sprite();
+
+var npc_Map5dummyOne = new Sprite();
+var npc_Map5dummyTwo = new Sprite();
+
+var npc_Map6lib = new Sprite();
+
 //var background = new Sprite();
 
 // var alden_por = new Dialog();
@@ -655,6 +668,19 @@ npc_Map3BottomWalker.setOptions("./img/alden.png", 0, 140, 64, 64, 900, 600, 62,
 npc_Map3dummyOne.setOptions("./img/alden.png", 0, 140, 64, 64, 800, 150, 62, 62, 2);
 npc_Map3dummyTwo.setOptions("./img/alden.png", 0, 140, 64, 64, 750, 175, 62, 62, 2);
 npc_Map3dummyThree.setOptions("./img/alden.png", 0, 140, 64, 64, 770, 135, 62, 62, 2);
+
+npc_Map4theChin.setOptions("./img/chin.png", 0, 140, 64, 64, 515,20, 62, 62, 0);
+npc_Map4frontStudentOne.setOptions("./img/chin.png", 0, 140, 64, 64, 440,20, 62, 62, 0);
+npc_Map4frontStudentTwo.setOptions("./img/alden.png", 0, 140, 64, 64, 440,100, 62, 62, 0);
+npc_Map4middleStudentOne.setOptions("./img/alden.png", 0, 140, 64, 64, 370,20, 62, 62, 0);
+npc_Map4middleStudentTwo.setOptions("./img/chin.png", 0, 140, 64, 64, 370,100, 62, 62, 0);
+npc_Map4backStudentOne.setOptions("./img/chin.png", 0, 140, 64, 64, 250,100, 62, 62, 0);
+
+npc_Map5dummyOne.setOptions("./img/chin.png", 0, 140, 64, 64, 110,260, 62, 62, 0);
+npc_Map5dummyTwo.setOptions("./img/alden.png", 0, 140, 64, 64, 20,20, 62, 62, 0);
+
+npc_Map6lib.setOptions("./img/chin.png", 0, 140, 64, 64, 150,145, 62, 62, 0);
+
 
 npc_Alden.face = (function () {
     var temp = new Image();
@@ -719,6 +745,19 @@ npc_Map1StairWalker.image.onload = function() {
   npc_Map3dummyOne.load = true;
   npc_Map3dummyTwo.load = true;
   npc_Map3dummyThree.load = true;
+
+  npc_Map4theChin.load = true;
+  npc_Map4frontStudentOne.load = true;
+  npc_Map4frontStudentTwo.load = true;
+  npc_Map4middleStudentOne.load = true;
+  npc_Map4middleStudentTwo.load = true;
+  npc_Map4backStudentOne.load = true;
+
+  npc_Map5dummyOne.load = true;
+  npc_Map5dummyTwo.load = true;
+
+  npc_Map6lib.load = true;
+
 };
 
 /*
@@ -980,6 +1019,40 @@ npc_Map3BottomWalker.update = function(clockTick) {
   }
 };
 
+npc_Map4theChin.update = function (clockTick) {
+
+}
+npc_Map4frontStudentOne.update = function (clockTick) {
+  this.spriteRoll(704, 1,  clockTick, 0.1);
+
+}
+npc_Map4frontStudentTwo.update = function (clockTick) {
+  this.spriteRoll(704, 1,  clockTick, 0.1);
+
+}
+npc_Map4middleStudentOne.update = function (clockTick) {
+  this.spriteRoll(704, 1,  clockTick, 0.1);
+
+}
+npc_Map4middleStudentTwo.update = function (clockTick) {
+  this.spriteRoll(704, 1,  clockTick, 0.1);
+
+}
+npc_Map4backStudentOne.update = function (clockTick) {
+  this.spriteRoll(704, 1,  clockTick, 0.1);
+
+}
+
+npc_Map5dummyOne.update = function (clockTick) {
+  this.spriteRoll(512, 1, clockTick, 0.1);
+}
+npc_Map5dummyTwo.update = function(clockTick) {
+
+}
+
+npc_Map6lib.update = function(clockTick) {
+}
+
 /** When player's spritesheet loads in browser, sets player.load to true. */
 player.image.onload = function() {
   player.load = true;
@@ -1042,7 +1115,11 @@ var Game = function() {
     */
     this.entiteZones[1] = this.zoneOneEntites = [];
     this.entiteZones[2] = this.zoneTwoEntites = [];
-    this.entiteZones[3] = this.zoneThreeEntites = [];  // Game or zone wide entities?
+    this.entiteZones[3] = this.zoneThreeEntites = [];
+    this.entiteZones[4] = this.zoneFourEntites = [];
+    this.entiteZones[5] = this.zoneFiveEntites = [];
+    this.entiteZones[6] = this.zoneSixEntites = [];
+    // Game or zone wide entities?
     this.currentZone;
 
     /**
@@ -1164,6 +1241,15 @@ var Game = function() {
     this.addEntityZoneThree = function (entity) {
         this.zoneThreeEntites.push(entity);
     };
+    this.addEntityZoneFour = function (entity) {
+        this.zoneFourEntites.push(entity);
+    };
+    this.addEntityZoneFive = function (entity) {
+        this.zoneFiveEntites.push(entity);
+    };
+    this.addEntityZoneSix = function (entity) {
+        this.zoneSixEntites.push(entity);
+    };
 
     /**
      * TODO: Describe this function.
@@ -1270,6 +1356,18 @@ g.addEntityZoneThree(npc_Map3BottomWalker);
 g.addEntityZoneThree(npc_Map3dummyOne);
 g.addEntityZoneThree(npc_Map3dummyTwo);
 g.addEntityZoneThree(npc_Map3dummyThree);
+
+g.addEntityZoneFour(npc_Map4theChin);
+g.addEntityZoneFour(npc_Map4frontStudentOne);
+g.addEntityZoneFour(npc_Map4frontStudentTwo);
+g.addEntityZoneFour(npc_Map4middleStudentOne);
+g.addEntityZoneFour(npc_Map4middleStudentTwo);
+g.addEntityZoneFour(npc_Map4backStudentOne);
+
+g.addEntityZoneFive(npc_Map5dummyOne);
+g.addEntityZoneFive(npc_Map5dummyTwo);
+
+g.addEntityZoneSix(npc_Map6lib);
 
 
 
