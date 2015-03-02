@@ -279,10 +279,10 @@ zones[7] = new Zone(7, "ext_stairs_mid", ext_stairs_mid_image, 608, 832, // 19, 
                     "7,0": Exit(7, 0, 8,  9, 31), // ext_stairs_upper
                     "8,0": Exit(8, 0, 8, 10, 31), // ext_stairs_upper
                     "9,0": Exit(9, 0, 8, 11, 31), // ext_stairs_upper
-                    "5,25": Exit(5, 25, 8, 5, 2), // ext_stairs_lower
-                    "6,25": Exit(6, 25, 8, 6, 2), // ext_stairs_lower
-                    "7,25": Exit(7, 25, 8, 7, 2), // ext_stairs_lower
-                    "8,25": Exit(8, 25, 8, 8, 2), // ext_stairs_lower
+                    "5,25": Exit(5, 25, 1, 5, 2), // ext_stairs_lower
+                    "6,25": Exit(6, 25, 1, 6, 2), // ext_stairs_lower
+                    "7,25": Exit(7, 25, 1, 7, 2), // ext_stairs_lower
+                    "8,25": Exit(8, 25, 1, 8, 2), // ext_stairs_lower
                     "0,24": Exit(0, 24, 3, 36,18), // ext_walkway_south
                     "0,25": Exit(0, 25, 3, 36,19) // ext_walkway_south
                 },
@@ -318,11 +318,11 @@ zones[7] = new Zone(7, "ext_stairs_mid", ext_stairs_mid_image, 608, 832, // 19, 
 zones[8] = new Zone(8, "ext_stairs_upper", ext_stairs_upper_image, 864, 1056, //27, 33
             //x_exit, y_exit, go_to_zone, x_entrance, y_entrance
 
-                {   "7,32":  Exit( 7, 32, 8, 5, 2), // ext_stairs_mid
-                    "8,32":  Exit( 8, 32, 8, 6, 2), // ext_stairs_mid
-                    "9,32":  Exit( 9, 32, 8, 7, 2), // ext_stairs_mid
-                    "10,32": Exit(10, 32, 8, 8, 2), // ext_stairs_mid
-                    "11,32": Exit(11, 32, 8, 9, 2) // ext_stairs_mid
+                {   "7,32":  Exit( 7, 32, 7, 5, 2), // ext_stairs_mid
+                    "8,32":  Exit( 8, 32, 7, 6, 2), // ext_stairs_mid
+                    "9,32":  Exit( 9, 32, 7, 7, 2), // ext_stairs_mid
+                    "10,32": Exit(10, 32, 7, 8, 2), // ext_stairs_mid
+                    "11,32": Exit(11, 32, 7, 9, 2) // ext_stairs_mid
                 //     "1,19": Exit(1, 19, 9, 1, 2), // int_metro
                 //     "1,19": Exit(1, 19, 9, 1, 2), // int_metro
                 //     "22,26": Exit(22, 26, 10, 1, 2), // int_science
