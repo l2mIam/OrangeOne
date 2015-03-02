@@ -15,10 +15,10 @@ var ext_stairs_lower_image = new Image();
 ext_stairs_lower_image.src = "./img/ext_stairs_lower.jpg";
 
 var int_book_store_image = new Image();
-int_book_store_image.src = "./img/int_bookstore.jpg"
+int_book_store_image.src = "./img/int_bookstore.jpg";
 
 var int_wcg_image = new Image();
-int_wcg_image.src = "./img/int_wcg.jpg"
+int_wcg_image.src = "./img/int_wcg.jpg";
 
 // WALKWAY SOUTH (Zone 3)
 var ext_walkway_south_image = new Image();
@@ -48,8 +48,8 @@ ext_stairs_upper_image.src = "./img/ext_stairs_upper.jpg";
  * @returns {{x_exit: *, y_exit: *, go_to_zone: *, x_entrance: *, y_entrance: *}}
  * @constructor
  */
-var Exit = function (x_exit, y_exit, go_to_zone, x_entrance, y_entrance) {
-        return {
+var exit = function (x_exit, y_exit, go_to_zone, x_entrance, y_entrance) {
+    return {
         x_exit: x_exit,
         y_exit: y_exit,
         go_to_zone: go_to_zone,
@@ -71,20 +71,20 @@ var Zone = function (id, name, image, height, width, exits, bounds) {
 };
 
 zones[1] = new Zone(1, "ext_stairs_lower", ext_stairs_lower_image, 608, 928,
-                { "0,1": Exit(0, 1, 3, 36, 18), // ext_walkway_south
-                  "0,2": Exit(0, 2, 3, 36, 18), // ext_walkway_south
-                  "0,3": Exit(0, 3, 3, 36, 19), // ext_walkway_south
-                  "0,4": Exit(0, 4, 3, 36, 20), // ext_walkway_south
-                  "0,5": Exit(0, 5, 3, 36, 21), // ext_walkway_south
-                  "18,6": Exit(18, 6, 4, 2, 2), // int_wcg
-                  "18,7": Exit(18, 7, 4, 2, 2), // int_wcg
-                  "17,29": Exit(17, 29, 2, 1, 8), //int_book_store
-                  "17,30": Exit(17, 30, 2, 1, 9), //int_book_store
-                  "17,31": Exit(17, 31, 2, 1, 9), //int_book_store
-                  "9,0":  Exit( 9, 0, 7, 5, 23), // ext_stairs_mid
-                  "10,0": Exit(10, 0, 7, 6, 23), // ext_stairs_mid
-                  "11,0": Exit(11, 0, 7, 7, 23), // ext_stairs_mid
-                  "12,0": Exit(12, 0, 7, 8, 23) // ext_stairs_mid
+                { "0,1": exit(0, 1, 3, 36, 18), // ext_walkway_south
+                  "0,2": exit(0, 2, 3, 36, 18), // ext_walkway_south
+                  "0,3": exit(0, 3, 3, 36, 19), // ext_walkway_south
+                  "0,4": exit(0, 4, 3, 36, 20), // ext_walkway_south
+                  "0,5": exit(0, 5, 3, 36, 21), // ext_walkway_south
+                  "18,6": exit(18, 6, 4, 2, 2), // int_wcg
+                  "18,7": exit(18, 7, 4, 2, 2), // int_wcg
+                  "17,29": exit(17, 29, 2, 1, 8), //int_book_store
+                  "17,30": exit(17, 30, 2, 1, 9), //int_book_store
+                  "17,31": exit(17, 31, 2, 1, 9), //int_book_store
+                  "9,0":  exit( 9, 0, 7, 5, 23), // ext_stairs_mid
+                  "10,0": exit(10, 0, 7, 6, 23), // ext_stairs_mid
+                  "11,0": exit(11, 0, 7, 7, 23), // ext_stairs_mid
+                  "12,0": exit(12, 0, 7, 8, 23) // ext_stairs_mid
 
               },
              //  0         5         1         5
@@ -126,9 +126,9 @@ zones[1] = new Zone(1, "ext_stairs_lower", ext_stairs_lower_image, 608, 928,
 
 zones[2] = new Zone(2, "int_book_store", int_book_store_image, 608, 352,
                 {
-                "0,8": Exit(0, 8, 1, 16, 29),   // ext_stairs_lower
-                "0,9": Exit(0, 9, 1, 16, 30),   // ext_stairs_lower
-                "1,10": Exit(1, 10, 1, 17, 32)  // ext_stairs_lower
+                "0,8": exit(0, 8, 1, 16, 29),   // ext_stairs_lower
+                "0,9": exit(0, 9, 1, 16, 30),   // ext_stairs_lower
+                "1,10": exit(1, 10, 1, 17, 32)  // ext_stairs_lower
                 },
                 [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
                  [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
@@ -144,16 +144,16 @@ zones[2] = new Zone(2, "int_book_store", int_book_store_image, 608, 352,
 );
 
 zones[3] = new Zone(3, "ext_walkway_south", ext_walkway_south_image, 1216, 768,
-                {   "37,16": Exit(37, 16, 1, 1, 2),
-                    "37,17": Exit(37, 17, 1, 1, 2),
-                    "37,18": Exit(37, 18, 1, 1, 2),
-                    "37,19": Exit(37, 19, 1, 1, 3),
-                    "37,20": Exit(37, 20, 1, 1, 4),
-                    "37,21": Exit(37, 21, 1, 1, 5),
-                    "20,0": Exit(20, 0, 6, 10, 8),
-                    "19,0": Exit(19, 0, 6, 10, 8),
-                    "2,23": Exit(2, 23, 5, 16, 2),
-                    "3,23": Exit(3, 23, 5, 16, 2)
+                {   "37,16": exit(37, 16, 1, 1, 2),
+                    "37,17": exit(37, 17, 1, 1, 2),
+                    "37,18": exit(37, 18, 1, 1, 2),
+                    "37,19": exit(37, 19, 1, 1, 3),
+                    "37,20": exit(37, 20, 1, 1, 4),
+                    "37,21": exit(37, 21, 1, 1, 5),
+                    "20,0": exit(20, 0, 6, 10, 8),
+                    "19,0": exit(19, 0, 6, 10, 8),
+                    "2,23": exit(2, 23, 5, 16, 2),
+                    "3,23": exit(3, 23, 5, 16, 2)
                 },
                 [[1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
                  [1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
@@ -185,8 +185,8 @@ zones[3] = new Zone(3, "ext_walkway_south", ext_walkway_south_image, 1216, 768,
 // Connections: Zone 1 (lower stairs)
 zones[4] = new Zone(4, "int_wcg", int_wcg_image, 608, 352,
                 {
-                    "1,0": Exit(1, 0, 1, 16, 2),
-                    "2,0": Exit(2, 0, 1, 16, 2)
+                    "1,0": exit(1, 0, 1, 16, 2),
+                    "2,0": exit(2, 0, 1, 16, 2)
                 },
                [[1,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
                 [1,0,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,0,1],
@@ -204,8 +204,8 @@ zones[4] = new Zone(4, "int_wcg", int_wcg_image, 608, 352,
 // Interior Cherry Parks
 // Connections: Zone 3 (walkway)
 zones[5] = new Zone(5, "int_cp", int_cp_image, 608, 352,
-                {  "15,0": Exit(15, 0, 3, 3, 22),
-                   "16,0": Exit(16, 0, 3, 3, 22 )
+                {  "15,0": exit(15, 0, 3, 3, 22),
+                   "16,0": exit(16, 0, 3, 3, 22 )
                 },
                [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1],
                 [1,1,3,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,1],
@@ -223,10 +223,10 @@ zones[5] = new Zone(5, "int_cp", int_cp_image, 608, 352,
 // Interior library
 // Connections: Zone 3 (walkway)
 zones[6] = new Zone(6, "int_library", int_library_image, 608, 352,
-                {   "8,10": Exit(8,  10, 3, 19, 3),
-                    "9,10": Exit(9,  10, 3, 19, 3),
-                   "10,10": Exit(10, 10, 3, 19, 3),
-                   "11,10": Exit(11, 10, 3, 19, 3)
+                {   "8,10": exit(8,  10, 3, 19, 3),
+                    "9,10": exit(9,  10, 3, 19, 3),
+                   "10,10": exit(10, 10, 3, 19, 3),
+                   "11,10": exit(11, 10, 3, 19, 3)
                   },
                  [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
                   [1,0,0,0,0,0,0,1,0,0,1,1,1,1,1,1,1,1,1],
@@ -244,17 +244,17 @@ zones[6] = new Zone(6, "int_library", int_library_image, 608, 352,
 zones[7] = new Zone(7, "ext_stairs_mid", ext_stairs_mid_image, 608, 832, // 19, 26
             //x_exit, y_exit, go_to_zone, x_entrance, y_entrance
 
-                {   "5,0": Exit(5, 0, 8,  7, 31), // ext_stairs_upper
-                    "6,0": Exit(6, 0, 8,  8, 31), // ext_stairs_upper
-                    "7,0": Exit(7, 0, 8,  9, 31), // ext_stairs_upper
-                    "8,0": Exit(8, 0, 8, 10, 31), // ext_stairs_upper
-                    "9,0": Exit(9, 0, 8, 11, 31), // ext_stairs_upper
-                    "5,25": Exit(5, 25, 1,  9, 2), // ext_stairs_lower
-                    "6,25": Exit(6, 25, 1, 10, 2), // ext_stairs_lower
-                    "7,25": Exit(7, 25, 1, 11, 2), // ext_stairs_lower
-                    "8,25": Exit(8, 25, 1, 12, 2), // ext_stairs_lower
-                    "0,24": Exit(0, 24, 3, 36,18), // ext_walkway_south
-                    "0,25": Exit(0, 25, 3, 36,19) // ext_walkway_south
+                {   "5,0": exit(5, 0, 8,  7, 31), // ext_stairs_upper
+                    "6,0": exit(6, 0, 8,  8, 31), // ext_stairs_upper
+                    "7,0": exit(7, 0, 8,  9, 31), // ext_stairs_upper
+                    "8,0": exit(8, 0, 8, 10, 31), // ext_stairs_upper
+                    "9,0": exit(9, 0, 8, 11, 31), // ext_stairs_upper
+                    "5,25": exit(5, 25, 1,  9, 2), // ext_stairs_lower
+                    "6,25": exit(6, 25, 1, 10, 2), // ext_stairs_lower
+                    "7,25": exit(7, 25, 1, 11, 2), // ext_stairs_lower
+                    "8,25": exit(8, 25, 1, 12, 2), // ext_stairs_lower
+                    "0,24": exit(0, 24, 3, 36,18), // ext_walkway_south
+                    "0,25": exit(0, 25, 3, 36,19) // ext_walkway_south
                 },
               //  0         5         1         5
                 [[1,1,1,1,1,2,2,2,2,2,0,0,0,0,0,0,1,1,1], // 0
@@ -288,11 +288,11 @@ zones[7] = new Zone(7, "ext_stairs_mid", ext_stairs_mid_image, 608, 832, // 19, 
 zones[8] = new Zone(8, "ext_stairs_upper", ext_stairs_upper_image, 864, 1056, //27, 33
             //x_exit, y_exit, go_to_zone, x_entrance, y_entrance
 
-                {   "7,32":  Exit( 7, 32, 7, 5, 2), // ext_stairs_mid
-                    "8,32":  Exit( 8, 32, 7, 6, 2), // ext_stairs_mid
-                    "9,32":  Exit( 9, 32, 7, 7, 2), // ext_stairs_mid
-                    "10,32": Exit(10, 32, 7, 8, 2), // ext_stairs_mid
-                    "11,32": Exit(11, 32, 7, 9, 2) // ext_stairs_mid
+                {   "7,32":  exit( 7, 32, 7, 5, 2), // ext_stairs_mid
+                    "8,32":  exit( 8, 32, 7, 6, 2), // ext_stairs_mid
+                    "9,32":  exit( 9, 32, 7, 7, 2), // ext_stairs_mid
+                    "10,32": exit(10, 32, 7, 8, 2), // ext_stairs_mid
+                    "11,32": exit(11, 32, 7, 9, 2) // ext_stairs_mid
                 //     "1,19": Exit(1, 19, 9, 1, 2), // int_metro
                 //     "1,19": Exit(1, 19, 9, 1, 2), // int_metro
                 //     "22,26": Exit(22, 26, 10, 1, 2), // int_science

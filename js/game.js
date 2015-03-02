@@ -98,7 +98,7 @@ var Camera = function () {
           // if the right side of the camera would go off the side...
           if (entity.x + (midcanvas.width / 2) > background.image.width) {
             // set it to the rightmost legal position
-            this.x = midcanvas.width - background.image.width ;
+            this.x = midcanvas.width - background.image.width;
           } // if the left side would go off...
           else if(entity.x - (midcanvas.width / 2) < 0) {
             // set it to the leftmost legal position
