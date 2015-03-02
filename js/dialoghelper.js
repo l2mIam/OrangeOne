@@ -115,6 +115,24 @@ var Dialog = function () {
     };
 
     /**
+     * Creates a function that calls showRight(text, image);
+     */
+    this.createShowRight = function (text, image) {
+        return function () {
+            window.uwetech.dialog.showRight(text, image);
+        };
+    };
+
+    /**
+     * Creates a function that calls show(text, image);
+     */
+    this.createShow = function (text, image) {
+        return function () {
+            window.uwetech.dialog.show(text, image);
+        };
+    };
+
+    /**
      * Inner Helper Functions. Not callable from outside the function!
      */
     var clearDialogCanvas = function () {
