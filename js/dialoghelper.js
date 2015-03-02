@@ -5,24 +5,25 @@
  */
 
 // !! The global variable window.uwetech.dialog is assigned at the bottom.
+var console = window.console; // Tired of typing window before console, so binding it explicitly.
 
 var Dialog = function () {
 
     //+ Jonas Raoni Soares Silva
     //@ http://jsfromhell.com/string/wordwrap [rev. #2]
-/**
- *String.wordWrap(maxLength: Integer, [breakWith: String = "\n"],
- * [cutType: Integer = 0]): String
- *
-     Returns an string with the extra characters/words "broken".
-     maxLength maximum amount of characters per line
-     breakWtih string that will be added whenever it's needed to break the line
-     cutType
-    0 = words longer than "maxLength" will not be broken
-    1 = words will be broken when needed
-    2 = any word that trespass the limit will be broken
- *
- */
+    /**
+     *String.wordWrap(maxLength: Integer, [breakWith: String = "\n"],
+     * [cutType: Integer = 0]): String
+     *
+         Returns an string with the extra characters/words "broken".
+         maxLength maximum amount of characters per line
+         breakWtih string that will be added whenever it's needed to break the line
+         cutType
+        0 = words longer than "maxLength" will not be broken
+        1 = words will be broken when needed
+        2 = any word that trespass the limit will be broken
+     *
+     */
     String.prototype.wordWrap = function(max_length, break_with, cut_type){
         var i, j, l, s, r;
         if(max_length < 1)
@@ -53,92 +54,113 @@ var Dialog = function () {
     //myFont.format = "bold";
     //dlgctx.font = myFont;
 
+    /** Stops displaying the dialog. Has no effect if no dialog is being displayed. */
+    this.hide = function () {
+        isShown = false;
+        clearDialogCanvas();
+    };
+
     /**
      * Shows a dialog box with the string passed (word wrapped at 75 characters!)
-     * and optionally an npc Image() object.
+     * and optionally an npc Image() object (aligned to the left).
      * @param string_of_text The text to be displayed. Auto-word wrapped at 75 characters.
      * @param npc_image_object Optional. Displays the passed Image() object (npc face).
      */
     this.show = function(string_of_text, npc_image_object) {
+        var position = "left";
         if (isShown === true) {
-            // Clear out the currently displayed text first!
-            dlgctx.clearRect(0, 0, dlgcanvas.width, dlgcanvas.height);
+            clearDialogCanvas(); // clear any previous dialog being displayed
         }
 
         isShown = true;
-        dlgctx.drawImage(smallBox, 0, 0, smallBox.width, smallBox.height,
-                                            0, 0,
-                                        dlgcanvas.width, dlgcanvas.height);
+        displaySmallBox(); // draw OverLayDialogSmall.png to dialog canvas
 
-        if (string_of_text !== undefined) {
-
-            //var brk = '~';
-            //var width = 75;
-            //var cut = false;
-            //
-            //var regex = '.{1,' + width + '}(\s|$)' + (cut ? '|.{' + width + '}|.+$' : '|(\S+)?(\s|$)');
-            //
-            //console.log(string_of_text.match(RegExp(regex, 'g')));
-            //var wordwrap = string_of_text.match(RegExp(regex, 'g')).join(brk);
-            //console.log(wordwrap);
-
-            var wordwrap = string_of_text.wordWrap(75, '~', 3);
-            var lines = wordwrap.split("~");
-
-            for (var i = 0; i < lines.length && i < 4; i++) {
-                dlgctx.fillText(lines[i], dlgcanvas.width / 22,
-                    (i * 18) + dlgcanvas.height - (dlgcanvas.height / 5 ) - 3);
-            }
+        if (string_of_text !== undefined) { // a string was passed
+           writeText(string_of_text); // write the string to dialog canvas
         } else {
+            // Report an error! No arguments were passed.
             console.log('Usage: dialog.show("Text to display")');
         }
-        //
-        //dlgctx.fillText(string_of_text, dlgcanvas.width / 20,
-        //            dlgcanvas.height - (dlgcanvas.height / 5));
-        //dlgctx.fillText(string_of_text, dlgcanvas.width / 20,
-        //    dlgcanvas.height - (dlgcanvas.height / 8));
 
-        if (npc_image_object !== undefined) {
-            /** var npc_image_object;
-            if (typeof npc_image === "string") {
-                npc_image_object = new Image();
-                npc_image_object.src = npc_image;
-            } else if (typeof npc_image === "object") {
-                npc_image_object = npc_image;
-            } */
-            dlgctx.drawImage(npc_image_object, 0, 0, npc_image_object.width, npc_image_object.height,
-                0 + 15, dlgcanvas.height - 12 - ((dlgcanvas.height / 4) + npc_image_object.height / 1.5),
-                npc_image_object.width / 1.5, npc_image_object.height / 1.5);
+        if (npc_image_object !== undefined) { // an image object was passed
+            drawPortrait(npc_image_object, position); // draw portrait to dialog canvas
         }
     };
 
-    /** Stops displaying the dialog. Has no effect if no dialog is being displayed. */
-    this.hide = function () {
-        isShown = false;
-        dlgctx.clearRect(0, 0, dlgcanvas.width, dlgcanvas.height);
-        //hide();
+    /**
+     * Shows a dialog box with the string passed (word wrapped at 75 characters!)
+     * and optionally an npc Image() object (aligned to the right).
+     * @param string_of_text The text to be displayed. Auto-word wrapped at 75 characters.
+     * @param npc_image_object Optional. Displays the passed Image() object (npc face).
+     */
+    this.showRight = function(string_of_text, npc_image_object) {
+        var position = "right";
+        if (isShown === true) {
+            clearDialogCanvas(); // clear any previous dialog being displayed
+        }
+
+        isShown = true;
+        displaySmallBox(); // draw OverLayDialogSmall.png to dialog canvas
+
+        if (string_of_text !== undefined) { // a string was passed
+            writeText(string_of_text); // write the string to dialog canvas
+        } else {
+            // Report an error! No arguments were passed.
+            console.log('Usage: dialog.show("Text to display")');
+        }
+
+        if (npc_image_object !== undefined) { // an image object was passed
+            drawPortrait(npc_image_object, position); // draw portrait to dialog canvas
+        }
     };
 
-    /** Testing code! Wheee! Kirsten says fun stuff is usually commented out. */
-    //console.log("will it load?");
-    //smallBox.onload = function () {
-    //    that.show("happy");
-    //    console.log("smallBox loaded!");
-    //};
-    //this.show("happy");
+    /**
+     * Inner Helper Functions. Not callable from outside the function!
+     */
+    var clearDialogCanvas = function () {
+        dlgctx.clearRect(0, 0, dlgcanvas.width, dlgcanvas.height);
+    };
+
+    var displaySmallBox = function () {
+        dlgctx.drawImage(smallBox, 0, 0, smallBox.width, smallBox.height,
+            0, 0, dlgcanvas.width, dlgcanvas.height);
+    };
+
+    var writeText = function (string_of_text) {
+        // break the string down into lines.
+        var wordwrap = string_of_text.wordWrap(75, '~', 3);
+        var lines = wordwrap.split("~");
+
+        // display the lines (up to 4 displayed)
+        for (var i = 0; i < lines.length && i < 4; i++) {
+            dlgctx.fillText(lines[i], dlgcanvas.width / 22,
+                (i * 18) + dlgcanvas.height - (dlgcanvas.height / 5 ) - 3);
+        }
+    };
+
+    var drawPortrait = function (npc_image_object, position) {
+        var x_offset = 0;
+
+        if (position !== undefined) {
+            if (position === "left") {
+                x_offset = 20;
+            } else if (position === "right") {
+                x_offset = dlgcanvas.width - 20 - npc_image_object.width / 1.5;
+            }
+
+            dlgctx.drawImage(npc_image_object, 0, 0, npc_image_object.width, npc_image_object.height,
+                x_offset, dlgcanvas.height - 12 - ((dlgcanvas.height / 4) + npc_image_object.height / 1.5),
+                npc_image_object.width / 1.5, npc_image_object.height / 1.5);
+
+        } else {
+            // Report error and draw nothing.
+            console.log("No position was passed to drawPortrait!");
+        }
+
+    };
 
 };
 
 
 /** Attach a new Dialog object to the global variable for other javascript files. */
 window.uwetech.dialog = new Dialog();
-
-
-//var show = function (first_line, second_line, npc_face) {
-//
-//
-//};
-//
-//var hide = function () {
-//
-//};
