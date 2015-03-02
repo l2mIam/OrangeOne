@@ -437,33 +437,12 @@ var Sprite = function() {
 
     };
 
+    /**
+     * This code is triggered when the interact button/key was pressed.
+     */
     this.interact = function() {
 
-        /** Kirsten testing queued actions for multiple text pop-ups.*/
-        if (npc_Alden.talking === undefined) {
-            npc_Alden.talking = true;
-        }
-        if (npc_Alden.talking === true) {
-            //console.log(npc_Alden.face); // kirsten test code
-            g.queuedActions.push(function (){window.uwetech.dialog.show(
-                "I am testing the length requirements for this section of all of the awesome " +
-                "stuff we are doing it is quite amazing yes?!", npc_Alden.face);}); // kirsten test code
-
-            g.queuedActions.push(function (){window.uwetech.dialog.show(
-                "I'm a little teappot, short and stout. Here is my handle and here is my stout." +
-                " When I get all steamed up, here me shout! Tip me over and pour me out. This is a " +
-                "test of the second dialog while talking to same npc trick. Yay for queues!!!", npc_Alden.face);});
-            g.queuedActions.push(function () {window.uwetech.dialog.hide();}); // kirsten test code
-            //console.log(g.queuedActions[0]);
-            npc_Alden.talking = false;
-        } else if (npc_Alden.talking === false) {
-            // topctx.clearRect(0, 0, topcanvas.width, topcanvas.height);
-            if (g.queuedActions.length <= 1) {
-                npc_Alden.talking = true; // make him talk on next spacebar press
-            }
-        }
-        // somehow kirsten deleted the above code. OOPS.
-
+        /** Dylan/Duncan code. */
         if(this.facing === "north") {
             var space = this.y * 32 + 32
         } else if (this.facing === "south") {
@@ -474,14 +453,43 @@ var Sprite = function() {
             var space = this.x * 32 - 32
         }
 
-        if (g.queuedActions.length > 0) {
+        /** Kirsten testing queued actions for multiple text pop-ups.*/
+        if (npc_Alden.talking === undefined) {
+            npc_Alden.talking = true;   // test code forces Alden to start talking.
+        }
+        if (npc_Alden.talking === true) { // queues up some dialog since Alden is talking.
+            //console.log(npc_Alden.face); // kirsten test code
+            g.queuedActions.push(function (){window.uwetech.dialog.show(
+                "I am testing the word wrap functionality of the dialog.show method. If everything " +
+                "works out, then this should word wrap in a very nice way. This box displays, at most, " +
+                "four lines of text, with words being wrapped after 75 characters.", npc_Alden.face);});
+            // kirsten test code
+
+            g.queuedActions.push(function (){window.uwetech.dialog.showRight(
+                "This dialog box is for showing how queuedActions could work with multiple dialog " +
+                "boxes you want to display in a series. I am also showing the functionality of" +
+                "aligning a portrait to the right instead of the left. Neat huh?", npc_Alden.face);});
+            // Of course, always make sure you call a dialog.hide() when you are done showing text!!
+            g.queuedActions.push(function () {window.uwetech.dialog.hide();});
+            //console.log(g.queuedActions[0]);
+            npc_Alden.talking = false;
+        } else if (npc_Alden.talking === false) {
+            // test code to start alden talking again if the queue will be empty after this cycle.
+            if (g.queuedActions.length <= 1) {
+                npc_Alden.talking = true; // make him talk on next spacebar press
+            }
+        }
+
+        /** This logic will check if any actions are currently queued and pause the game.
+         * Then the action at the front of the queue is called. If the action just called
+         * results in the queue now being empty, the game is also un-paused. */
+        if (g.queuedActions.length > 0 && g.queuedActions !== undefined) {
             g.isPaused = true;
             g.queuedActions.shift()();
 
             if (g.queuedActions.length === 0) {
                 g.isPaused = false;
             }
-            //action();
         }
 
 
@@ -1056,12 +1064,12 @@ npc_Map6lib.update = function(clockTick) {
 
 /** When player's spritesheet loads in browser, sets player.load to true. */
 player.image.onload = function() {
-  player.load = true;
-    //console.log(player.dty);
+    player.load = true;
+
+    /** Hooks position the player's image relative to player's x,y values.
+     * This offset is necessary due to the sprite sheet's alignment. */
     player.y_hook = player.dty / 2 + 8;
     player.x_hook = (player.dtx / 4 ) + 1  ;
-//  alden_por.load = true; // TODO: Why is Alden in here?
- // dialogs.push(alden_por);
 };
 
 /** When background's spritesheet loads in browser, sets background.load to true. */
@@ -1071,8 +1079,6 @@ background.image.onload = function() {
 grid.image.onload = function() {
     grid.load = true;
 };
-
-//var sign_screen_bounds = window.uwetech.zones[1].bounds;
 
 /**
  * TODO: Explain this object.
