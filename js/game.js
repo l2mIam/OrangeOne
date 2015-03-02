@@ -194,12 +194,16 @@ var Sprite = function() {
             this.height = height;
             this.speed = speed;
             this.facing = "south";
+            this.dialog = [];
             this.visualRadius = 50; // TODO: What is this?
+                                    // ^^ If I remember correctly this was for Duncan's
+                                    // bounding box, so if the npc is within 50 of you
+                                    // he will stop.
 
             this.x_hook = 0;
             this.y_hook = 0;
 
-            this.elapsedTime = 0; // TODO: What is this? How does it relate to sprite?
+            this.elapsedTime = 0; // TODO: This tracks how fast it should animate - Dylan.
             this.image = new Image();
             this.image.src = src;
             //console.log(" " + src + "=" + this.image.height); // announce resource height
@@ -440,7 +444,7 @@ var Sprite = function() {
     /**
      * This code is triggered when the interact button/key was pressed.
      */
-    this.interact = function() {
+    this.interact = function(interactNPC) {
 
         /** Dylan/Duncan code. */
         if(this.facing === "north") {
@@ -452,34 +456,87 @@ var Sprite = function() {
         } else {
             var space = this.x * 32 - 32
         }
+            /*
+
+              Kirsten's Interaction Code
+
+            */
+        // /** Kirsten testing queued actions for multiple text pop-ups.*/
+        //   if (npc_Alden.talking === undefined) {
+        //       npc_Alden.talking = true;   // test code forces Alden to start talking.
+        //   }
+        //   if (npc_Alden.talking === true) { // queues up some dialog since Alden is talking.
+        //     //console.log(npc_Alden.face); // kirsten test code
+        //         g.queuedActions.push(function (){window.uwetech.dialog.show(
+        //           "I am testing the word wrap functionality of the dialog.show method. If everything " +
+        //           "works out, then this should word wrap in a very nice way. This box displays, at most, " +
+        //           "four lines of text, with words being wrapped after 75 characters.", npc_Alden.face);});
+        //     // kirsten test code
+        //
+        //       g.queuedActions.push(function (){window.uwetech.dialog.showRight(
+        //           "This dialog box is for showing how queuedActions could work with multiple dialog " +
+        //           "boxes you want to display in a series. I am also showing the functionality of" +
+        //           "aligning a portrait to the right instead of the left. Neat huh?", npc_Alden.face);});
+        //     // Of course, always make sure you call a dialog.hide() when you are done showing text!!
+        //       g.queuedActions.push(function () {window.uwetech.dialog.hide();});
+        //     //console.log(g.queuedActions[0]);
+        //       npc_Alden.talking = false;
+        //   } else if (npc_Alden.talking === false) {
+        //     // test code to start alden talking again if the queue will be empty after this cycle.
+        //       if (g.queuedActions.length <= 1) {
+        //           npc_Alden.talking = true; // make him talk on next spacebar press
+        //       }
+        //   }
+
+
+        if(interactNPC === undefined) {
 
         /** Kirsten testing queued actions for multiple text pop-ups.*/
+          if (npc_Alden.talking === undefined) {
+              npc_Alden.talking = true;   // test code forces Alden to start talking.
+          }
+          if (npc_Alden.talking === true) { // queues up some dialog since Alden is talking.
+            //console.log(npc_Alden.face); // kirsten test code
+                g.queuedActions.push(function (){window.uwetech.dialog.show(
+                  "You hear students in the distance having fun without you.", npc_Alden.face);});
+            // kirsten test code
+
+              g.queuedActions.push(function (){window.uwetech.dialog.showRight(
+                  "Maybe you should go talk to them.", npc_Alden.face);});
+            // Of course, always make sure you call a dialog.hide() when you are done showing text!!
+              g.queuedActions.push(function () {window.uwetech.dialog.hide();});
+            //console.log(g.queuedActions[0]);
+              npc_Alden.talking = false;
+          } else if (npc_Alden.talking === false) {
+            // test code to start alden talking again if the queue will be empty after this cycle.
+              if (g.queuedActions.length <= 1) {
+                  npc_Alden.talking = true; // make him talk on next spacebar press
+              }
+          }
+      } else {
         if (npc_Alden.talking === undefined) {
             npc_Alden.talking = true;   // test code forces Alden to start talking.
         }
-        if (npc_Alden.talking === true) { // queues up some dialog since Alden is talking.
-            //console.log(npc_Alden.face); // kirsten test code
-            g.queuedActions.push(function (){window.uwetech.dialog.show(
-                "I am testing the word wrap functionality of the dialog.show method. If everything " +
-                "works out, then this should word wrap in a very nice way. This box displays, at most, " +
-                "four lines of text, with words being wrapped after 75 characters.", npc_Alden.face);});
-            // kirsten test code
-
-            g.queuedActions.push(function (){window.uwetech.dialog.showRight(
-                "This dialog box is for showing how queuedActions could work with multiple dialog " +
-                "boxes you want to display in a series. I am also showing the functionality of" +
-                "aligning a portrait to the right instead of the left. Neat huh?", npc_Alden.face);});
-            // Of course, always make sure you call a dialog.hide() when you are done showing text!!
-            g.queuedActions.push(function () {window.uwetech.dialog.hide();});
-            //console.log(g.queuedActions[0]);
-            npc_Alden.talking = false;
+        if (npc_Alden.talking === true) {
+          var dialogSize = interactNPC.dialog.length;
+          for(var i = 0; i < dialogSize; i++) {
+            var text = interactNPC.dialog[i];
+            console.log(text);
+            g.queuedActions.push((function (text) {
+                   return function () {
+                       window.uwetech.dialog.showRight(text);
+                   };
+                })(text));
+          }
+          g.queuedActions.push(function () {window.uwetech.dialog.hide();});
+          npc_Alden.talking = false;
         } else if (npc_Alden.talking === false) {
-            // test code to start alden talking again if the queue will be empty after this cycle.
+          // test code to start alden talking again if the queue will be empty after this cycle.
             if (g.queuedActions.length <= 1) {
                 npc_Alden.talking = true; // make him talk on next spacebar press
             }
         }
-
+      }
         /** This logic will check if any actions are currently queued and pause the game.
          * Then the action at the front of the queue is called. If the action just called
          * results in the queue now being empty, the game is also un-paused. */
@@ -774,6 +831,11 @@ Blocker - If the player gets close he block you from going around.
 Stairwalker - Walks up and down the stairs.. like a normal person.
 BottomWalker - Walks left to right at the bottom of the stairs.. like a normal person.
 */
+npc_Map1StairWalker.dialog[0] = "Hi there";
+npc_Map1StairWalker.dialog[1] = "My Name is Jim";
+
+npc_Map1BottomWalker.dialog[0] = "I am death";
+npc_Map1BottomWalker.dialog[1] = "You can not escape me";
 
 npc_Map1Blocker.update = function(clockTick) {
   if(player.y < 171) {
@@ -807,6 +869,7 @@ npc_Map1StairWalker.update = function(clockTick) {
   //If you are next to chin then this happens.
   if(chinFlip === 3) {
     this.y += 0;
+    interactNPC = this;
     if(chinDirection === 0) {
       this.spriteRoll(640, 1,  clockTick, 0.5);
       sign_screen_bounds[chinY][chinX] = 1;
@@ -874,6 +937,7 @@ npc_Map1BottomWalker.update = function(clockTick) {
   //If you are next to alden then this happens.
   if(aldenFlip === 3) {
     this.y += 0;
+    interactNPC = this;
     if(aldenDirection === 0) {
       this.spriteRoll(704, 1,  clockTick, 0.5);
       sign_screen_bounds[aldenY][aldenX] = 1;
@@ -1104,6 +1168,9 @@ Timer.prototype.tick = function () {
  * TODO: Explain this object.
  * @constructor
  */
+
+var interactNPC;
+
 var Game = function() {
     //Creating an array of arrays for the entites
     this.entiteZones = [];
@@ -1182,7 +1249,7 @@ var Game = function() {
 
         // 87, 83, 65, 68, 32
         if (key_id === SPACE_KEY) { // Spacebar
-            player.interact();
+            player.interact(interactNPC);
             console.log("space");
             //g.loadZone(2, 1, 8); // kirsten debug, tested zone loading via button press
         } else if (key_id === W_KEY) {
@@ -1266,6 +1333,7 @@ var Game = function() {
      */
     this.update = function(clockTick) {
       this.cam.getPosition(player);
+      interactNPC = undefined;
       //player.bounds();
       player.movePlayer(clockTick);
 
