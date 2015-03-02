@@ -522,8 +522,11 @@ var Sprite = function() {
           for(var i = 0; i < dialogSize; i++) {
             var text = interactNPC.dialog[i];
             console.log(text);
-            g.queuedActions.push(function (){window.uwetech.dialog.showRight(
-              text, npc_Alden.face);});
+            g.queuedActions.push((function (text) {
+                   return function () {
+                       window.uwetech.dialog.showRight(text);
+                   };
+                })(text));
           }
           g.queuedActions.push(function () {window.uwetech.dialog.hide();});
           npc_Alden.talking = false;
