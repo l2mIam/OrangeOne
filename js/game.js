@@ -27,8 +27,7 @@ var A_KEY = 65;
 var D_KEY = 68;
 var SPACE_KEY = 32;
 var DEBUG_KEY = 192;  // ` key ~ key  is the debug key
-
-//var dialogs = []; // TODO: What is this?
+var units = [];
 
 /** Bottom canvas is for the background. NO ANIMATIONS. */
 var btmcanvas = document.getElementById('bottomlayer'),
@@ -127,46 +126,38 @@ var Camera = function () {
       //};
 };
 
-//
-//// TODO: Remove Dialog and instead use window.uwetech.show/hide in dialoghelper.js
-//var Dialog = function() {
-//  this.load = false;
-//  this.imgX = 0;
-//
-//  this.setOptions = function(src, srcX, srcY, dtx, dty, x, y, width, height) {
-//          this.srcX = srcX;
-//          this.srcY = srcY;
-//          this.dtx = dtx;
-//          this.dty = dty;
-//          this.x = x;
-//          this.y = y;
-//          this.width = width;
-//          this.height = height;
-//          this.draw = false;
-//
-//          this.image = new Image();
-//          this.image.src = src;
-//          //console.log(" " + src + "=" + this.image.height); // announce resource height
-//
-//      /**
-//       * Renders this sprite (using the correct animation step previously "rolled").
-//       */
-//      this.render = function() {
-//          topctx.drawImage(this.image, this.srcX, this.srcY, this.dtx, this.dty,
-//              this.x, this.y, this.width, this.height);
-//        };
-//      /**
-//       * Special function to render the background image.
-//       * @param xoffset
-//       * @param yoffset
-//       */
-//      this.renderBackground = function(xoffset, yoffset) {
-//          btmctx.drawImage(this.image, this.srcX + xoffset, this.srcY + yoffset,
-//                                          this.dtx, this.dty,
-//              this.x, this.y, this.width, this.height);
-//      };
-//  };
-//};
+function check_units(unit) {
+
+  var BOX_WIDTH = 29; // width of the player bounding box for collisions
+  var BOX_HEIGHT = 24; // height of the player bounding box for collisions
+
+  /** Collision detection needs to consider the whole square the character occupies. */
+  var x_leftmost = Math.floor(unit.x/32);
+  var x_rightmost = Math.floor((unit.x + BOX_WIDTH) / 32); // + 32 is player width but 31 is smoother
+  var y_upmost = Math.floor(unit.y/32);
+  var y_downmost = Math.floor((unit.y + BOX_HEIGHT) / 32); // + 32 is height of player's box (ignores head collisions)
+
+  if (units !== undefined) {
+      var entitiesCount = units.length;
+      for (var i = 0; i < entitiesCount; i++) {
+          var entity = units[i];
+
+          var x_1 = Math.floor(entity.x/32);
+          var x_2 = Math.floor((entity.x + BOX_WIDTH) / 32); // + 32 is player width but 31 is smoother
+          var y_1 = Math.floor(entity.y/32);
+          var y_2 = Math.floor((entity.y + BOX_HEIGHT) / 32); // + 32 is height of player's box (ignores head collisions)
+
+          if (x_leftmost < x_2 &&
+              x_rightmost > x_1 &&
+              y_upmost < y_2 &&
+              y_downmost > y_1) {
+                console.log(x_leftmost + " " + x_1);
+              }
+              console.log(x_leftmost + " " + x_1);
+      }
+  }
+  return true;
+}
 
 /**
  * Creates a new sprite. What is a sprite? A sprite is an object that has a visual
@@ -193,12 +184,6 @@ var Sprite = function() {
             this.height = height;
             this.speed = speed;
             this.facing = "south";
-            this.dialog = [];
-            this.face = new Image();
-            this.visualRadius = 50; // TODO: What is this?
-                                    // ^^ If I remember correctly this was for Duncan's
-                                    // bounding box, so if the npc is within 50 of you
-                                    // he will stop.
 
             this.x_hook = 0;
             this.y_hook = 0;
@@ -310,13 +295,14 @@ var Sprite = function() {
             /** If player would move off screen, move to edge instead, IF edge is a valid location */
             if ((player.y - (this.speed)) > 0) {
                 /** Check that the player can move based on left AND right bounding box */
-                if (sign_screen_bounds[y_upmost - y_new_grid][x_leftmost] === 0 &&
+                if (check_units(player) && sign_screen_bounds[y_upmost - y_new_grid][x_leftmost] === 0 &&
                     sign_screen_bounds[y_upmost - y_new_grid][x_rightmost] === 0) {
                     this.y -= this.speed;
                 }
             } else { /** player is trying to move off screen, align them to edge if valid location. */
                 if (sign_screen_bounds[0][x_leftmost] === 0 &&
-                    sign_screen_bounds[0][x_rightmost] === 0) {
+                    sign_screen_bounds[0][x_rightmost] === 0 &&
+                    check_units(player)) {
                     this.y = 1;
                 }
             }
@@ -708,6 +694,9 @@ var npc_Map5dummyOne = new Sprite();
 var npc_Map5dummyTwo = new Sprite();
 
 var npc_Map6lib = new Sprite();
+
+units.push(npc_Chin);
+units.push(npc_Alden);
 
 //var background = new Sprite();
 
@@ -1412,7 +1401,7 @@ var Game = function() {
         midctx.clearRect(0, 0, midcanvas.width, midcanvas.height);
         midctx.save();
         midctx.translate(this.cam.x, this.cam.y);
-        var getEntityArray = this.entiteZones[this.currentZone.id]
+        getEntityArray = this.entiteZones[this.currentZone.id]
 
        if (getEntityArray !== undefined) {
            var entitiesCount = getEntityArray.length;
