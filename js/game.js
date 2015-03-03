@@ -295,7 +295,8 @@ var Sprite = function() {
         var exit; // tracks if the player's movement has triggered an exit and zone change
 
         /** Checks which keys are being currently pressed and moves player if new location is valid. */
-        if(W_KEY in keys) { // W
+        if(W_KEY in keys) {
+          // W
             this.spriteRoll(512, 8, clockTick, 0.1); // even if player doesn't move, animate them!
 
             /** Determine if moving the player will result in entering a new grid location. */
@@ -1147,7 +1148,11 @@ Timer.prototype.tick = function () {
 
 var interactNPC;
 
-smallButton = new Image();
+interactionButton = new Image();
+wButton = new Image();
+sButton = new Image();
+aButton = new Image();
+dButton = new Image();
 var Game = function() {
     //Creating an array of arrays for the entites
     this.entiteZones = [];
@@ -1343,15 +1348,66 @@ var Game = function() {
     this.render = function() {
       topctx.clearRect(0, 0, topcanvas.width, topcanvas.height);
       if(interactNPC === undefined) {
-        smallButton.src = './img/doButtonInactive.png';
-        topctx.drawImage(smallButton, 0, 0, smallButton.width, smallButton.height,
-          topcanvas.width - (smallButton.width * 1.5), topcanvas.height - (smallButton.height * 1.2), smallButton.width, smallButton.height);
+        interactionButton.src = './img/doButtonInactive.png';
+        topctx.drawImage(interactionButton, 0, 0, interactionButton.width, interactionButton.height,
+          topcanvas.width - (interactionButton.width * 1.5),
+           topcanvas.height - (interactionButton.height * 1.2), interactionButton.width, interactionButton.height);
       }
       if(interactNPC !== undefined) {
-        smallButton.src = './img/doButtonActive.png';
-        topctx.drawImage(smallButton, 0, 0, smallButton.width, smallButton.height,
-          topcanvas.width - (smallButton.width * 1.5), topcanvas.height - (smallButton.height * 1.2), smallButton.width, smallButton.height);
+        interactionButton.src = './img/doButtonActive.png';
+        topctx.drawImage(interactionButton, 0, 0, interactionButton.width, interactionButton.height,
+          topcanvas.width - (interactionButton.width * 1.5), topcanvas.height - (interactionButton.height * 1.2), interactionButton.width, interactionButton.height);
       }
+
+      if(W_KEY in keys) {
+        wButton.src = './img/doButtonActive.png';
+        topctx.drawImage(wButton, 0, 0, wButton.width, wButton.height,
+          (wButton.width * 1.5),
+           topcanvas.height - (wButton.height * 2), wButton.width, wButton.height);
+      } else {
+        wButton.src = './img/doButtonInactive.png';
+        topctx.drawImage(wButton, 0, 0, wButton.width, wButton.height,
+          (wButton.width * 1.5),
+           topcanvas.height - (wButton.height * 2), wButton.width, wButton.height);
+      }
+
+      if(S_KEY in keys) {
+        sButton.src = './img/doButtonActive.png';
+        topctx.drawImage(sButton, 0, 0, sButton.width, sButton.height,
+          (sButton.width * 1.5),
+           topcanvas.height - (sButton.height * 1), sButton.width, sButton.height);
+      } else {
+        sButton.src = './img/doButtonInactive.png';
+        topctx.drawImage(sButton, 0, 0, sButton.width, sButton.height,
+          (sButton.width * 1.5),
+           topcanvas.height - (sButton.height * 1), sButton.width, sButton.height);
+      }
+
+      if(A_KEY in keys) {
+        aButton.src = './img/doButtonActive.png';
+        topctx.drawImage(aButton, 0, 0, aButton.width, aButton.height,
+          (aButton.width * .75) ,
+           topcanvas.height - (aButton.height * 1.5), aButton.width, aButton.height);
+      } else {
+        aButton.src = './img/doButtonInactive.png';
+        topctx.drawImage(aButton, 0, 0, aButton.width, aButton.height,
+          (aButton.width * .75),
+           topcanvas.height - (aButton.height * 1.5), aButton.width, aButton.height);
+      }
+      if(D_KEY in keys) {
+        dButton.src = './img/doButtonActive.png';
+        topctx.drawImage(dButton, 0, 0, dButton.width, dButton.height,
+          (dButton.width * 2.25) ,
+           topcanvas.height - (dButton.height * 1.5), dButton.width, dButton.height);
+      } else {
+        dButton.src = './img/doButtonInactive.png';
+        topctx.drawImage(dButton, 0, 0, dButton.width, dButton.height,
+          (dButton.width * 2.25),
+           topcanvas.height - (dButton.height * 1.5), dButton.width, dButton.height);
+      }
+
+
+
 
         midctx.clearRect(0, 0, midcanvas.width, midcanvas.height);
         midctx.save();
