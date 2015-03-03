@@ -772,32 +772,6 @@ var gridimage = new Image();
 gridimage.src = "./img/32x32grid.png";
 grid.set(gridimage);
 
-// npc_Mobus.image.onload = function() {
-//   npc_Mobus.load = true;
-// }
-
-// var mobusCounter = 0;
-// npc_Mobus.update = function(clockTick) {
-//   if(mobusCounter === 0) {
-//     this.spriteRoll(640, 8,  clockTick, 0.1);
-//     this.y += this.speed;
-//
-//     if(this.y >= 700) {
-//       mobusCounter = 1;
-//     }
-//
-//   }
-//   if(mobusCounter === 1) {
-//     this.spriteRoll(512, 8, clockTick, 0.1);
-//     this.y -= this.speed;
-//
-//     if(this.y <= 10) {
-//       mobusCounter = 0;
-//     }
-//   }
-//
-// }
-
 npc_Map1StairWalker.image.onload = function() {
   npc_Map1StairWalker.load = true;
   npc_Map1Blocker.load = true;
@@ -1371,12 +1345,12 @@ var Game = function() {
       if(interactNPC === undefined) {
         smallButton.src = './img/doButtonInactive.png';
         topctx.drawImage(smallButton, 0, 0, smallButton.width, smallButton.height,
-            0, 0, smallButton.width, smallButton.height);
+          topcanvas.width - (smallButton.width * 1.5), topcanvas.height - (smallButton.height * 1.2), smallButton.width, smallButton.height);
       }
       if(interactNPC !== undefined) {
         smallButton.src = './img/doButtonActive.png';
         topctx.drawImage(smallButton, 0, 0, smallButton.width, smallButton.height,
-            0, 0, smallButton.width, smallButton.height);
+          topcanvas.width - (smallButton.width * 1.5), topcanvas.height - (smallButton.height * 1.2), smallButton.width, smallButton.height);
       }
 
         midctx.clearRect(0, 0, midcanvas.width, midcanvas.height);
