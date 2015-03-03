@@ -1174,8 +1174,8 @@ var interactNPC;
 var Game = function() {
     //Creating an array of arrays for the entites
     this.entiteZones = [];
-    this.debug = true;
-    console.log("DEBUG IS ON. Hit the Tilde (~ `) key to turn it off!");
+    this.debug = false;
+    console.log("DEBUG IS OFF. Hit the Tilde (~ `) key to turn it on!");
     this.isPaused = false;
     this.queuedActions = [];
         //function (){window.uwetech.dialog.show(
