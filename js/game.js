@@ -778,9 +778,7 @@ npc_Map1StairWalker.dialog[0] = "Hi there";
 npc_Map1StairWalker.dialog[1] = "My Name is Jim";
 
 npc_Map1BottomWalker.dialog[0] = "I could really use a beer, I think I am seeing things.";
-npc_Map1BottomWalker.dialog[1] = "Did you see that albino raptor? Never thought I could see those in the wild.";
 npc_Map1BottomWalker.faceArray[0] = npc_Map1BottomWalker.face;
-npc_Map1BottomWalker.faceArray[1] = npc_Map1BottomWalker.face;
 npc_Map1BottomWalker.face.src =  "./img/Robert.png";
 npc_Map1StairWalker.face.src =  "./img/Alden-plain.png";
 
