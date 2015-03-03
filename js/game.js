@@ -194,6 +194,7 @@ var Sprite = function() {
             this.speed = speed;
             this.facing = "south";
             this.dialog = [];
+            this.face = new Image();
             this.visualRadius = 50; // TODO: What is this?
                                     // ^^ If I remember correctly this was for Duncan's
                                     // bounding box, so if the npc is within 50 of you
@@ -523,7 +524,7 @@ var Sprite = function() {
             console.log(text);
             g.queuedActions.push((function (text) {
                    return function () {
-                       window.uwetech.dialog.showRight(text);
+                       window.uwetech.dialog.showRight(text, interactNPC.face);
                    };
                 })(text));
           }
@@ -835,6 +836,8 @@ npc_Map1StairWalker.dialog[1] = "My Name is Jim";
 
 npc_Map1BottomWalker.dialog[0] = "I could really use a beer, I think I am seeing things.";
 npc_Map1BottomWalker.dialog[1] = "Did you see that albino raptor? Never thought I could see those in the wild.";
+npc_Map1BottomWalker.face.src =  "./img/Robert.png";
+
 
 npc_Map1Blocker.update = function(clockTick) {
   if(player.y < 171) {
