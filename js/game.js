@@ -213,8 +213,9 @@ var Sprite = function() {
             this.facing = "south";
             this.dialog = [];
             this.talkTo = false;
-            this.faceArray = []; // Used to check if you want the dialog on left or right
+            this.faceSpot = 0;// Used to check if you want the dialog on left or right
                                 // O is left 1 is right
+            this.faceArray = []; // Used to check which face you want to show
             this.face = new Image();
             this.visualRadius = 50; // TODO: What is this?
                                     // ^^ If I remember correctly this was for Duncan's
@@ -499,13 +500,24 @@ var Sprite = function() {
 
             var text = interactNPC.dialog[i];
             var face = interactNPC.faceArray[i];
+            var faceSpot = interactNPC.faceSpot;
+
+            if(faceSpot === 0 ){
+              g.queuedActions.push((function (text, face) {
+                     return function () {
+                         window.uwetech.dialog.showRight(text, face);
+                     };
+                  })(text, face));
+            }
+            if(faceSpot === 1) {
+              g.queuedActions.push((function (text, face) {
+                     return function () {
+                         window.uwetech.dialog.show(text, face);
+                     };
+                  })(text, face));
+            }
 
             console.log(text);
-            g.queuedActions.push((function (text, face) {
-                   return function () {
-                       window.uwetech.dialog.showRight(text, face);
-                   };
-                })(text, face));
           }
           interactNPC.talkTo ^= true;
           g.queuedActions.push(function () {window.uwetech.dialog.hide();});
@@ -965,6 +977,8 @@ npc_Map3Jay.faceArray[0] = npc_Map3Jay.face;
 npc_Map3Jay.faceArray[1] = npc_Map3SilentBob.face;
 npc_Map3Jay.faceArray[2] = npc_Map3Jay.face;
 
+
+npc_Map3SilentBob.faceSpot = 1;
 npc_Map3SilentBob.face.src =  "./img/Alden-plain.png";
 npc_Map3SilentBob.dialog[0] = "Crap crap crap crap crap crap crap";
 npc_Map3SilentBob.dialog[1] = "......."
@@ -973,6 +987,7 @@ npc_Map3SilentBob.dialog[2] = "Fifteen bucks little man, but that crap in my han
 npc_Map3SilentBob.faceArray[0] = npc_Map3Jay.face;
 npc_Map3SilentBob.faceArray[1] = npc_Map3SilentBob.face;
 npc_Map3SilentBob.faceArray[2] = npc_Map3Jay.face;
+
 
 npc_Map3Jay.update = function(clockTick) {
   this.spriteRoll(900, 1,  clockTick, 0.1);
