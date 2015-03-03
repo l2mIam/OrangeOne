@@ -46,7 +46,6 @@ var topcanvas = document.getElementById('toplayer'),
 var loadcanvas = document.getElementById('loadlayer'),
     loadctx = loadcanvas.getContext('2d');
 
-
 /** BTW: Other canvases exist you don't know about are in the HTML file. */
 
 /** Represents the 2D array for the zone's boundaries.
@@ -1176,12 +1175,10 @@ var Game = function() {
     this.entiteZones = [];
     this.debug = false;
     console.log("DEBUG IS OFF. Hit the Tilde (~ `) key to turn it on!");
+    /** Tracks if game is currently in a paused state. */
     this.isPaused = false;
+    /** Array of queued actions. Sets isPaused to true when queuedActions length is > 0. */
     this.queuedActions = [];
-        //function (){window.uwetech.dialog.show(
-        //"I am testing the length requirements for this section of all of the awesome " +
-        //"stuff we are doing it is quite amazing yes?!", npc_Alden.face);}, // kirsten test code
-        //function () {window.uwetech.dialog.hide();}]; // kirsten test code
 
     /*
     I made it so that at each index it would hold the entities
@@ -1294,7 +1291,12 @@ var Game = function() {
     };
 
     /**
-     * TODO: Describe this function.
+     * This method is called on every screen refresh the browser alerts us about.
+     * There is no guarantee how often this is called. As per mozilla.org:
+     *
+     * "The number of callbacks is usually 60 times per second, but will generally
+     * match the display refresh rate in most web browsers as per W3C recommendation.
+     * The callback rate may be reduced to a lower rate when running in background tabs."
      */
     this.loop = function() {
         if (g.isPaused === false) {
@@ -1341,7 +1343,7 @@ var Game = function() {
       Get the current zone you are in and draw the entites
       */
 
-        if (this.entiteZones.length >= this.currentZone.id) { // kirsten adding in catches
+        if (this.currentZone.id <= this.entiteZones.length) { // kirsten adding in catches
             var getEntityArray = this.entiteZones[this.currentZone.id]
 
             if (getEntityArray !== undefined) { // kirsten adding in catches
@@ -1400,13 +1402,54 @@ var Game = function() {
             }
         }
 
-
-      //  if(alden_por.draw) {
-      //    alden_por.render();
-      //  }
-
         midctx.restore();
     };
+
+    /**
+     * TODO: This function needs to be completed.
+     * Call this method to re-initialize the game's state. Useful
+     * for when a game-over occurs and the game needs to restart.
+     */
+    this.restartGame = function() {
+
+        /**
+         * NOTE: Anything that can change state needs to be reset after a game over.
+         * If you notice anything missing from this list, add it! */
+
+
+        /** 1) Timer needs to be reset. */
+        // TODO: Can someone show me how to reset the timer?
+
+        /** 2) Reset the win conditions back to none. */
+        // TODO: First we need to add variables that track which win conditions are done.
+
+        /** 3) Reset the queued actions array. */
+        this.queuedActions = [];
+
+        /** 4) Reset all of the NPCS back to initial state. */
+        // TODO: Can someone show me how to reset the npcs?
+
+        /** 5) Reset Spriteroll state. (?)   */
+        // TODO: Do we need to reset the player or npcs's sprite roll animation state thing?
+
+        /** 6)    */
+
+
+        /** 7)    */
+
+
+        /** 8) Play the quick-start opening cutscene. */
+        // TODO: This code doesn't exist yet. Add it here once it does.
+
+        /** 9) Player needs to be sent back to the starting zone. */
+        this.currentZone = undefined; // when undefined, prevents loading screen.
+        this.loadZone(1, 10, 27); // player starts in zone 1 at x=10, y=27
+
+        /** 10) Un-pause the game. */  // TODO: Not sure if we need this or not.
+        g.isPaused = false;
+
+    };
+
 };
 
 
