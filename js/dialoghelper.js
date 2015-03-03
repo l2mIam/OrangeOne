@@ -5,40 +5,11 @@
  */
 
 // !! The global variable window.uwetech.dialog is assigned at the bottom.
-var console = window.console; // Tired of typing window before console, so binding it explicitly.
+
+// Tired of typing window before console, so binding it explicitly.
+var console = window.console;
 
 var Dialog = function () {
-
-    //+ Jonas Raoni Soares Silva
-    //@ http://jsfromhell.com/string/wordwrap [rev. #2]
-    /**
-     *String.wordWrap(maxLength: Integer, [breakWith: String = "\n"],
-     * [cutType: Integer = 0]): String
-     *
-         Returns an string with the extra characters/words "broken".
-         maxLength maximum amount of characters per line
-         breakWtih string that will be added whenever it's needed to break the line
-         cutType
-        0 = words longer than "maxLength" will not be broken
-        1 = words will be broken when needed
-        2 = any word that trespass the limit will be broken
-     *
-     */
-    String.prototype.wordWrap = function(max_length, break_with, cut_type){
-        var i, j, l, s, r;
-        if(max_length < 1)
-            return this;
-        for(i = -1, l = (r = this.split("\n")).length; ++i < l; r[i] += s) {
-            for (s = r[i], r[i] = ""; s.length > max_length;
-                 r[i] += s.slice(0, j) + ((s = s.slice(j)).length ? break_with : "")) {
-                j = cut_type == 2 || (j = s.slice(0, max_length + 1).match(/\S*(\s)?$/))[1] ?
-                    max_length : j.input.length - j[0].length ||
-                cut_type == 1 && max_length || j.input.length +
-                (j = s.slice(max_length).match(/^\S*/)).input.length;
-            }
-        }
-        return r.join("\n");
-    };
 
     /** Setup Dialog variables~~ */
     var that = this, // because javascript is weird
@@ -182,3 +153,35 @@ var Dialog = function () {
 
 /** Attach a new Dialog object to the global variable for other javascript files. */
 window.uwetech.dialog = new Dialog();
+
+// Adds a wordWrap function to the String prototype.
+//+ Jonas Raoni Soares Silva
+//@ http://jsfromhell.com/string/wordwrap [rev. #2]
+/**
+ *String.wordWrap(maxLength: Integer, [breakWith: String = "\n"],
+ * [cutType: Integer = 0]): String
+ *
+ Returns an string with the extra characters/words "broken".
+ maxLength maximum amount of characters per line
+ breakWtih string that will be added whenever it's needed to break the line
+ cutType
+ 0 = words longer than "maxLength" will not be broken
+ 1 = words will be broken when needed
+ 2 = any word that trespass the limit will be broken
+ *
+ */
+String.prototype.wordWrap = function(max_length, break_with, cut_type){
+    var i, j, l, s, r;
+    if(max_length < 1)
+        return this;
+    for(i = -1, l = (r = this.split("\n")).length; ++i < l; r[i] += s) {
+        for (s = r[i], r[i] = ""; s.length > max_length;
+             r[i] += s.slice(0, j) + ((s = s.slice(j)).length ? break_with : "")) {
+            j = cut_type == 2 || (j = s.slice(0, max_length + 1).match(/\S*(\s)?$/))[1] ?
+                max_length : j.input.length - j[0].length ||
+            cut_type == 1 && max_length || j.input.length +
+            (j = s.slice(max_length).match(/^\S*/)).input.length;
+        }
+    }
+    return r.join("\n");
+};
