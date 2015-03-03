@@ -74,10 +74,10 @@ function distance(a, b) {
 //http://stackoverflow.com/questions/306316/determine-if-two-rectangles-overlap-each-other
 function is_collide(a, b) {
 
-  var ax_1 = a.x + 15;
-  var ax_2 = a.x + BOX_WIDTH + 15; // + 32 is player width but 31 is smoother
-  var ay_1 = a.y + 40;
-  var ay_2 = a.y + BOX_HEIGHT + 40; // + 32 is height of player's box (ignores head collisions)
+  var ax_1 = a.x - 15;
+  var ax_2 = a.x + BOX_WIDTH + 45; // + 32 is player width but 31 is smoother
+  var ay_1 = a.y + 10;
+  var ay_2 = a.y + BOX_HEIGHT + 70; // + 32 is height of player's box (ignores head collisions)
 
   var bx_1 = b.x;
   var bx_2 = b.x + BOX_WIDTH; // + 32 is player width but 31 is smoother
@@ -246,6 +246,7 @@ var Sprite = function() {
           if(entity.load) {
             entity.render();
             if(is_collide(entity, player)) {
+              interactNPC = entity;
               return false;
             }
           }
@@ -282,7 +283,7 @@ var Sprite = function() {
             if ((player.y - (this.speed)) > 0) {
                 /** Check that the player can move based on left AND right bounding box */
                 if (sign_screen_bounds[y_upmost - y_new_grid][x_leftmost] === 0 &&
-                    sign_screen_bounds[y_upmost - y_new_grid][x_rightmost] === 0 && this.check_units()) {
+                    sign_screen_bounds[y_upmost - y_new_grid][x_rightmost] === 0) {
                     this.y -= this.speed;
                 }
 
@@ -318,7 +319,7 @@ var Sprite = function() {
             if ((player.y + BOX_HEIGHT + this.speed) < (background.image.height - 1)) { // "+32" player height no head
                 /** Check that the player can move based on left AND right bounding box */
                 if (sign_screen_bounds[y_downmost + y_new_grid][x_leftmost] === 0 &&
-                    sign_screen_bounds[y_downmost + y_new_grid][x_rightmost] === 0 && this.check_units()) {
+                    sign_screen_bounds[y_downmost + y_new_grid][x_rightmost] === 0) {
                     this.y += this.speed;
                 }
             } else { /** player is trying to move off screen, align them to edge if valid location. */
@@ -351,7 +352,7 @@ var Sprite = function() {
             if ((player.x - this.speed) > 0) {
                 /** Check that the player can move based on top AND bottom bounding box */
                 if (sign_screen_bounds[y_upmost][x_leftmost - x_new_grid] === 0 &&
-                    sign_screen_bounds[y_downmost][x_leftmost - x_new_grid] === 0 && this.check_units()) {
+                    sign_screen_bounds[y_downmost][x_leftmost - x_new_grid] === 0) {
                     this.x -= this.speed;
                 }
             } else { /** player is trying to move off screen, align them to edge if valid location. */
@@ -384,7 +385,7 @@ var Sprite = function() {
             if ((player.x + BOX_WIDTH + this.speed) < (background.image.width - 1)) { // "+32" is width of player
                 /** Check that the player can move based on top AND bottom bounding box */
                 if (sign_screen_bounds[y_upmost][x_rightmost + x_new_grid] === 0 &&
-                    sign_screen_bounds[y_downmost][x_rightmost + x_new_grid] === 0 && this.check_units()) {
+                    sign_screen_bounds[y_downmost][x_rightmost + x_new_grid] === 0) {
                     this.x += this.speed;
                 }
             } else { /** player is trying to move off screen, align them to edge if valid location. */
@@ -789,9 +790,6 @@ var chinDirection = 0;
 
 npc_Map1StairWalker.update = function(clockTick) {
   //console.log(player.y);
-  var dist = distance(this, player);
-  var chinX = Math.floor(this.x/32) + 1;
-  var chinY = Math.floor(this.y/32) + 1
   //Checks to see if you are next to chin
   if(is_collide(this, player) && chinCounter === 0) {
     chinDirection = chinFlip;
@@ -802,26 +800,15 @@ npc_Map1StairWalker.update = function(clockTick) {
   //If you are next to chin then this happens.
   if(chinFlip === 3) {
     this.y += 0;
-    interactNPC = this;
     if(chinDirection === 0) {
       this.spriteRoll(640, 1,  clockTick, 0.5);
-      // sign_screen_bounds[chinY][chinX] = 1;
-      // sign_screen_bounds[chinY + 1][chinX] = 1;
-      // sign_screen_bounds[chinY][chinX + 1] = 1;
-      // sign_screen_bounds[chinY + 1][chinX + 1] = 1;
+
     }
     if(chinDirection === 1) {
       this.spriteRoll(512, 1, clockTick, 0.5);
-      // sign_screen_bounds[chinY][chinX] = 1;
-      // sign_screen_bounds[chinY + 1][chinX] = 1;
-      // sign_screen_bounds[chinY][chinX + 1] = 1;
-      // sign_screen_bounds[chinY + 1][chinX + 1] = 1;
     }
-    if(dist >= 50) {
-      // sign_screen_bounds[chinY][chinX] = 0;
-      // sign_screen_bounds[chinY + 1][chinX] = 0;
-      // sign_screen_bounds[chinY][chinX + 1] = 0;
-      // sign_screen_bounds[chinY + 1][chinX + 1] = 0;
+    if(!is_collide(this, player)) {
+
       chinFlip = chinDirection;
     }
   }
@@ -855,13 +842,12 @@ var aldenFlip = 0;
 var aldenCounter = 0;
 var aldenDirection = 0;
 npc_Map1BottomWalker.update = function(clockTick) {
-  var dist = distance(this, player);
 
   var aldenX = Math.floor(this.x/32) + 1;
   var aldenY = Math.floor(this.y/32) + 1
 
   //Checks to see if you are next to alden
-  if(dist <= 50 && aldenCounter === 0) {
+  if(is_collide(this, player) && aldenCounter === 0) {
     aldenDirection = aldenFlip;
     aldenFlip = 3;
     aldenCounter = 1;
@@ -870,26 +856,16 @@ npc_Map1BottomWalker.update = function(clockTick) {
   //If you are next to alden then this happens.
   if(aldenFlip === 3) {
     this.y += 0;
-    interactNPC = this;
     if(aldenDirection === 0) {
       this.spriteRoll(704, 1,  clockTick, 0.5);
-      sign_screen_bounds[aldenY][aldenX] = 1;
-      sign_screen_bounds[aldenY + 1][aldenX] = 1;
-      sign_screen_bounds[aldenY][aldenX + 1] = 1;
-      sign_screen_bounds[aldenY + 1][aldenX + 1] = 1;
+
     }
     if(aldenDirection === 1) {
       this.spriteRoll(576, 1, clockTick, 0.5);
-      sign_screen_bounds[aldenY][aldenX] = 1;
-      sign_screen_bounds[aldenY + 1][aldenX] = 1;
-      sign_screen_bounds[aldenY][aldenX + 1] = 1;
-      sign_screen_bounds[aldenY + 1][aldenX + 1] = 1;
+
     }
-    if(dist >= 50) {
-      sign_screen_bounds[aldenY][aldenX] = 0;
-      sign_screen_bounds[aldenY + 1][aldenX] = 0;
-      sign_screen_bounds[aldenY][aldenX + 1] = 0;
-      sign_screen_bounds[aldenY + 1][aldenX + 1] = 0;
+    if(!is_collide(this, player)) {
+
       aldenFlip = aldenDirection;
     }
   }
@@ -924,9 +900,8 @@ Cashier - If the player gets close he will check you out. *wink*
 */
 
 npc_Map2Bookman.update = function(clockTick) {
-  var dist = distance(this, player);
   //console.log(dist);
-  if(dist <= 100) {
+  if(is_collide(this, player)) {
     this.spriteRoll(780, 5,  clockTick, 0.3);
   } else {
     this.spriteRoll(780, 1,  clockTick, 0.3);
@@ -934,9 +909,8 @@ npc_Map2Bookman.update = function(clockTick) {
 
 };
 npc_Map2Cashier.update = function(clockTick) {
-  var dist = distance(this, player);
   //console.log(dist);
-  if(dist <= 100) {
+  if(is_collide(this, player)) {
     this.spriteRoll(460, 8,  clockTick, 0.3);
   } else {
     this.spriteRoll(460, 1,  clockTick, 0.3);
@@ -964,13 +938,12 @@ npc_Map3dummyThree.update = function(clockTick) {
 }
 
 npc_Map3BottomWalker.update = function(clockTick) {
-  var dist = distance(this, player);
 
   var aldenX = Math.floor(this.x/32) + 1;
   var aldenY = Math.floor(this.y/32) + 1
 
   //Checks to see if you are next to alden
-  if(dist <= 50 && aldenCounter === 0) {
+  if(is_collide(this, player) && aldenCounter === 0) {
     aldenDirection = aldenFlip;
     aldenFlip = 3;
     aldenCounter = 1;
@@ -981,23 +954,14 @@ npc_Map3BottomWalker.update = function(clockTick) {
     this.y += 0;
     if(aldenDirection === 0) {
       this.spriteRoll(704, 1,  clockTick, 0.5);
-      sign_screen_bounds[aldenY][aldenX] = 1;
-      sign_screen_bounds[aldenY + 1][aldenX] = 1;
-      sign_screen_bounds[aldenY][aldenX + 1] = 1;
-      sign_screen_bounds[aldenY + 1][aldenX + 1] = 1;
+
     }
     if(aldenDirection === 1) {
       this.spriteRoll(576, 1, clockTick, 0.5);
-      sign_screen_bounds[aldenY][aldenX] = 1;
-      sign_screen_bounds[aldenY + 1][aldenX] = 1;
-      sign_screen_bounds[aldenY][aldenX + 1] = 1;
-      sign_screen_bounds[aldenY + 1][aldenX + 1] = 1;
+
     }
-    if(dist >= 50) {
-      sign_screen_bounds[aldenY][aldenX] = 0;
-      sign_screen_bounds[aldenY + 1][aldenX] = 0;
-      sign_screen_bounds[aldenY][aldenX + 1] = 0;
-      sign_screen_bounds[aldenY + 1][aldenX + 1] = 0;
+    if(!is_collide(this, player)) {
+
       aldenFlip = aldenDirection;
     }
   }
@@ -1278,6 +1242,7 @@ var Game = function() {
       interactNPC = undefined;
       //player.bounds();
       player.movePlayer(clockTick);
+      player.check_units();
 
       /*
       Get the current zone you are in and draw the entites
