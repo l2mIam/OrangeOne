@@ -1,3 +1,4 @@
+
 // Relate animation drawing to window frame rate
 window.requestAnimFrame = (function () {
     return window.requestAnimationFrame  ||
@@ -20,6 +21,9 @@ window.addEventListener('keyup', function (e) {
 /** Array containing all currently pressed keys. This is for animations/movement. */
 var keys = window.uwetech.Input.keys; // code is in input.js
 
+var BOX_WIDTH = 29; // width of the player bounding box for collisions
+var BOX_HEIGHT = 24; // height of the player bounding box for collisions
+
 //  constants!     W 87, S 83, A 65, D 68, space 32
 var W_KEY = 87;
 var S_KEY = 83;
@@ -27,7 +31,6 @@ var A_KEY = 65;
 var D_KEY = 68;
 var SPACE_KEY = 32;
 var DEBUG_KEY = 192;  // ` key ~ key  is the debug key
-var units = [];
 
 /** Bottom canvas is for the background. NO ANIMATIONS. */
 var btmcanvas = document.getElementById('bottomlayer'),
@@ -66,6 +69,22 @@ function distance(a, b) {
     var dx = a.x - b.x;
     var dy = a.y - b.y;
     return Math.sqrt(dx * dx + dy * dy);
+}
+
+//http://stackoverflow.com/questions/306316/determine-if-two-rectangles-overlap-each-other
+function is_collide(a, b) {
+
+  var ax_1 = a.x + 15;
+  var ax_2 = a.x + BOX_WIDTH + 15; // + 32 is player width but 31 is smoother
+  var ay_1 = a.y + 40;
+  var ay_2 = a.y + BOX_HEIGHT + 40; // + 32 is height of player's box (ignores head collisions)
+
+  var bx_1 = b.x;
+  var bx_2 = b.x + BOX_WIDTH; // + 32 is player width but 31 is smoother
+  var by_1 = b.y;
+  var by_2 = b.y + BOX_HEIGHT;
+
+  return (ax_1 < bx_2 && ax_2 > bx_1 && ay_1 < by_2 && ay_2 > by_1);
 }
 
 /**
@@ -126,38 +145,46 @@ var Camera = function () {
       //};
 };
 
-function check_units(unit) {
-
-  var BOX_WIDTH = 29; // width of the player bounding box for collisions
-  var BOX_HEIGHT = 24; // height of the player bounding box for collisions
-
-  /** Collision detection needs to consider the whole square the character occupies. */
-  var x_leftmost = Math.floor(unit.x/32);
-  var x_rightmost = Math.floor((unit.x + BOX_WIDTH) / 32); // + 32 is player width but 31 is smoother
-  var y_upmost = Math.floor(unit.y/32);
-  var y_downmost = Math.floor((unit.y + BOX_HEIGHT) / 32); // + 32 is height of player's box (ignores head collisions)
-
-  if (units !== undefined) {
-      var entitiesCount = units.length;
-      for (var i = 0; i < entitiesCount; i++) {
-          var entity = units[i];
-
-          var x_1 = Math.floor(entity.x/32);
-          var x_2 = Math.floor((entity.x + BOX_WIDTH) / 32); // + 32 is player width but 31 is smoother
-          var y_1 = Math.floor(entity.y/32);
-          var y_2 = Math.floor((entity.y + BOX_HEIGHT) / 32); // + 32 is height of player's box (ignores head collisions)
-
-          if (x_leftmost < x_2 &&
-              x_rightmost > x_1 &&
-              y_upmost < y_2 &&
-              y_downmost > y_1) {
-                console.log(x_leftmost + " " + x_1);
-              }
-              console.log(x_leftmost + " " + x_1);
-      }
-  }
-  return true;
-}
+//
+//// TODO: Remove Dialog and instead use window.uwetech.show/hide in dialoghelper.js
+//var Dialog = function() {
+//  this.load = false;
+//  this.imgX = 0;
+//
+//  this.setOptions = function(src, srcX, srcY, dtx, dty, x, y, width, height) {
+//          this.srcX = srcX;
+//          this.srcY = srcY;
+//          this.dtx = dtx;
+//          this.dty = dty;
+//          this.x = x;
+//          this.y = y;
+//          this.width = width;
+//          this.height = height;
+//          this.draw = false;
+//
+//          this.image = new Image();
+//          this.image.src = src;
+//          //console.log(" " + src + "=" + this.image.height); // announce resource height
+//
+//      /**
+//       * Renders this sprite (using the correct animation step previously "rolled").
+//       */
+//      this.render = function() {
+//          topctx.drawImage(this.image, this.srcX, this.srcY, this.dtx, this.dty,
+//              this.x, this.y, this.width, this.height);
+//        };
+//      /**
+//       * Special function to render the background image.
+//       * @param xoffset
+//       * @param yoffset
+//       */
+//      this.renderBackground = function(xoffset, yoffset) {
+//          btmctx.drawImage(this.image, this.srcX + xoffset, this.srcY + yoffset,
+//                                          this.dtx, this.dty,
+//              this.x, this.y, this.width, this.height);
+//      };
+//  };
+//};
 
 /**
  * Creates a new sprite. What is a sprite? A sprite is an object that has a visual
@@ -184,6 +211,12 @@ var Sprite = function() {
             this.height = height;
             this.speed = speed;
             this.facing = "south";
+            this.dialog = [];
+            this.face = new Image();
+            this.visualRadius = 50; // TODO: What is this?
+                                    // ^^ If I remember correctly this was for Duncan's
+                                    // bounding box, so if the npc is within 50 of you
+                                    // he will stop.
 
             this.x_hook = 0;
             this.y_hook = 0;
@@ -202,71 +235,25 @@ var Sprite = function() {
 
         };
     };
-    // TODO: OLD move code for reference only. New code is further down.
-    /**
-     *
-     * @param clockTick
-     */
-    //this.move = function(clockTick) {
-    //    console.log("(" + player.x + "," + player.y + ") [" + player.y/32 + "," + player.x/32 + "]");
-    //    //console.log(player.x/32);
-    //    //console.log(player.y);
-    //    //console.log(player.y/32);
-    //  var x = Math.floor(player.x/32) + 1;
-    //  var y = Math.floor(player.y/32) + 1;
-    //
-    //
-    //  if(87 in keys) { // W
-    //      this.spriteRoll(512, 8, clockTick, 0.1);
-    //      if (y > 0 && sign_screen_bounds[y - 1][x] === 0) {
-    //        this.y -= this.speed;
-    //      }
-    //      this.facing = "north";
-    //  }
-    //
-    //  if(83 in keys) { // S
-    //      this.spriteRoll(640, 8,  clockTick, 0.1);
-    //      if (y < 28 && sign_screen_bounds[y + 1][x] === 0) {
-    //        this.y += this.speed;
-    //      }
-    //      this.facing = "south";
-    //  }
-    //
-    //  if(65 in keys) { // A
-    //      this.spriteRoll(576, 8,  clockTick, 0.1);
-    //      if (x > 0 && sign_screen_bounds[y][x - 1] === 0) {
-    //        this.x -= this.speed;
-    //      }
-    //      this.facing = "west";
-    //  }
-    //
-    //  if(68 in keys) { // D
-    //      this.spriteRoll(704, 8,  clockTick, 0.1);
-    //      if (x < 18 && sign_screen_bounds[y][x + 1] === 0) {
-    //        this.x += this.speed;
-    //      }
-    //      this.facing = "east";
-    //  }
-    //
-    //
-    //  if(32 in keys) { // Spacebar
-    //    this.interact();
-    //    console.log("space");
-    //
-    //      g.loadZone(2, 1, 8);
-    //  }
-    //};
+
+    this.check_units = function() {
+      var getEntityArray = g.entiteZones[g.currentZone.id]
+      if (getEntityArray !== undefined) {
+        var entitiesCount = getEntityArray.length;
+      }
+      for (var i = 0; i < entitiesCount; i++) {
+          var entity = getEntityArray[i];
+          if(entity.load) {
+            entity.render();
+            if(is_collide(entity, player)) {
+              return false;
+            }
+          }
+      }
+      return true;
+    }
 
     this.movePlayer = function(clockTick) {
-        //console.log("(" + player.x + "," + player.y + ") [" + player.y/32 + "," + player.x/32 + "]");
-        //console.log(player.x/32);
-        //console.log(player.y);
-        //console.log(player.y/32);
-        //var oldx = this.x; // kirsten debug code
-        //var oldy = this.y; // kirsten debug code
-        var BOX_WIDTH = 29; // width of the player bounding box for collisions
-        var BOX_HEIGHT = 24; // height of the player bounding box for collisions
-
 
         /** Collision detection needs to consider the whole square the character occupies. */
         var x_leftmost = Math.floor(player.x/32);
@@ -292,17 +279,17 @@ var Sprite = function() {
                 y_new_grid =  1;
             }
 
-            /** If player would move off screen, move to edge instead, IF edge is a valid location */
             if ((player.y - (this.speed)) > 0) {
                 /** Check that the player can move based on left AND right bounding box */
-                if (check_units(player) && sign_screen_bounds[y_upmost - y_new_grid][x_leftmost] === 0 &&
-                    sign_screen_bounds[y_upmost - y_new_grid][x_rightmost] === 0) {
+                if (sign_screen_bounds[y_upmost - y_new_grid][x_leftmost] === 0 &&
+                    sign_screen_bounds[y_upmost - y_new_grid][x_rightmost] === 0 && this.check_units()) {
                     this.y -= this.speed;
                 }
+
+
             } else { /** player is trying to move off screen, align them to edge if valid location. */
                 if (sign_screen_bounds[0][x_leftmost] === 0 &&
-                    sign_screen_bounds[0][x_rightmost] === 0 &&
-                    check_units(player)) {
+                    sign_screen_bounds[0][x_rightmost] === 0) {
                     this.y = 1;
                 }
             }
@@ -331,7 +318,7 @@ var Sprite = function() {
             if ((player.y + BOX_HEIGHT + this.speed) < (background.image.height - 1)) { // "+32" player height no head
                 /** Check that the player can move based on left AND right bounding box */
                 if (sign_screen_bounds[y_downmost + y_new_grid][x_leftmost] === 0 &&
-                    sign_screen_bounds[y_downmost + y_new_grid][x_rightmost] === 0) {
+                    sign_screen_bounds[y_downmost + y_new_grid][x_rightmost] === 0 && this.check_units()) {
                     this.y += this.speed;
                 }
             } else { /** player is trying to move off screen, align them to edge if valid location. */
@@ -364,7 +351,7 @@ var Sprite = function() {
             if ((player.x - this.speed) > 0) {
                 /** Check that the player can move based on top AND bottom bounding box */
                 if (sign_screen_bounds[y_upmost][x_leftmost - x_new_grid] === 0 &&
-                    sign_screen_bounds[y_downmost][x_leftmost - x_new_grid] === 0) {
+                    sign_screen_bounds[y_downmost][x_leftmost - x_new_grid] === 0 && this.check_units()) {
                     this.x -= this.speed;
                 }
             } else { /** player is trying to move off screen, align them to edge if valid location. */
@@ -397,7 +384,7 @@ var Sprite = function() {
             if ((player.x + BOX_WIDTH + this.speed) < (background.image.width - 1)) { // "+32" is width of player
                 /** Check that the player can move based on top AND bottom bounding box */
                 if (sign_screen_bounds[y_upmost][x_rightmost + x_new_grid] === 0 &&
-                    sign_screen_bounds[y_downmost][x_rightmost + x_new_grid] === 0) {
+                    sign_screen_bounds[y_downmost][x_rightmost + x_new_grid] === 0 && this.check_units()) {
                     this.x += this.speed;
                 }
             } else { /** player is trying to move off screen, align them to edge if valid location. */
@@ -444,9 +431,7 @@ var Sprite = function() {
             var space = this.x * 32 - 32
         }
             /*
-
               Kirsten's Interaction Code
-
             */
         // /** Kirsten testing queued actions for multiple text pop-ups.*/
         //   if (npc_Alden.talking === undefined) {
@@ -574,21 +559,6 @@ var Sprite = function() {
     this.update = function() {
 
     };
-
-    /**
-     * TODO: No longer being used. Here for reference only.
-     */
-    //this.bounds = function() {
-    //    var oldx = this.x;
-    //    var oldy = this.y;
-    //    this.x = m.clamp(this.x, 0 - this.width/2 + 20, 608 - 18 - this.width/2);
-    //    this.y = m.clamp(this.y, 0 - this.height/2 + 20, 928 - 35 - this.height/2);
-    //    if (Math.floor(oldx/32) !== Math.floor(this.x/32) ||
-    //        Math.floor(oldy/32) !== Math.floor(this.y/32)) {
-    //        console.log("(" + player.x + "," + player.y + ") [" +
-    //                    player.y / 32 + "," + player.x / 32 + "]");
-    //    }
-    //};
 };
 
 
@@ -694,9 +664,6 @@ var npc_Map5dummyOne = new Sprite();
 var npc_Map5dummyTwo = new Sprite();
 
 var npc_Map6lib = new Sprite();
-
-units.push(npc_Chin);
-units.push(npc_Alden);
 
 //var background = new Sprite();
 
@@ -826,7 +793,7 @@ npc_Map1StairWalker.update = function(clockTick) {
   var chinX = Math.floor(this.x/32) + 1;
   var chinY = Math.floor(this.y/32) + 1
   //Checks to see if you are next to chin
-  if(dist <= 50 && chinCounter === 0) {
+  if(is_collide(this, player) && chinCounter === 0) {
     chinDirection = chinFlip;
     chinFlip = 3;
     chinCounter = 1;
@@ -838,23 +805,23 @@ npc_Map1StairWalker.update = function(clockTick) {
     interactNPC = this;
     if(chinDirection === 0) {
       this.spriteRoll(640, 1,  clockTick, 0.5);
-      sign_screen_bounds[chinY][chinX] = 1;
-      sign_screen_bounds[chinY + 1][chinX] = 1;
-      sign_screen_bounds[chinY][chinX + 1] = 1;
-      sign_screen_bounds[chinY + 1][chinX + 1] = 1;
+      // sign_screen_bounds[chinY][chinX] = 1;
+      // sign_screen_bounds[chinY + 1][chinX] = 1;
+      // sign_screen_bounds[chinY][chinX + 1] = 1;
+      // sign_screen_bounds[chinY + 1][chinX + 1] = 1;
     }
     if(chinDirection === 1) {
       this.spriteRoll(512, 1, clockTick, 0.5);
-      sign_screen_bounds[chinY][chinX] = 1;
-      sign_screen_bounds[chinY + 1][chinX] = 1;
-      sign_screen_bounds[chinY][chinX + 1] = 1;
-      sign_screen_bounds[chinY + 1][chinX + 1] = 1;
+      // sign_screen_bounds[chinY][chinX] = 1;
+      // sign_screen_bounds[chinY + 1][chinX] = 1;
+      // sign_screen_bounds[chinY][chinX + 1] = 1;
+      // sign_screen_bounds[chinY + 1][chinX + 1] = 1;
     }
     if(dist >= 50) {
-      sign_screen_bounds[chinY][chinX] = 0;
-      sign_screen_bounds[chinY + 1][chinX] = 0;
-      sign_screen_bounds[chinY][chinX + 1] = 0;
-      sign_screen_bounds[chinY + 1][chinX + 1] = 0;
+      // sign_screen_bounds[chinY][chinX] = 0;
+      // sign_screen_bounds[chinY + 1][chinX] = 0;
+      // sign_screen_bounds[chinY][chinX + 1] = 0;
+      // sign_screen_bounds[chinY + 1][chinX + 1] = 0;
       chinFlip = chinDirection;
     }
   }
@@ -1401,7 +1368,7 @@ var Game = function() {
         midctx.clearRect(0, 0, midcanvas.width, midcanvas.height);
         midctx.save();
         midctx.translate(this.cam.x, this.cam.y);
-        getEntityArray = this.entiteZones[this.currentZone.id]
+        var getEntityArray = this.entiteZones[this.currentZone.id]
 
        if (getEntityArray !== undefined) {
            var entitiesCount = getEntityArray.length;
@@ -1415,6 +1382,10 @@ var Game = function() {
             var entity = getEntityArray[i];
             if(entity.load) {
               entity.render();
+              if (g.debug === true) {
+                  /** draws the bounding box for the player sprite */
+                  midctx.strokeRect(entity.x + 15.5, entity.y + 40.5, 29, 24);
+              }
             }
         }
         /** Only render things whose image is loaded in browser! */
@@ -1536,7 +1507,6 @@ g.addEntityZoneSix(npc_Map6lib);
 
 /**
 // Steps to load a zone (and correctly update the game state)
-
  1 realize you've triggered an exit.
  2 determine what exit.     var exit = currentZone[exits][player.x + "," + player.y]
  3 identify zone id to go to.   var new_zone_id = exit[go_to_zone]
@@ -1549,5 +1519,4 @@ g.addEntityZoneSix(npc_Map6lib);
         sign_screen_bounds = currentZone[bounds]
         // somehow alert NPC stuff that the zone changed. Should they be checking? or should
         // a zone somehow store who its npcs are? Does THEIR state need to reset too? Errrm...
-
  */
