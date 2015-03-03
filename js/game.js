@@ -74,10 +74,10 @@ function distance(a, b) {
 //http://stackoverflow.com/questions/306316/determine-if-two-rectangles-overlap-each-other
 function is_collide(a, b) {
 
-  var ax_1 = a.x + 15;
-  var ax_2 = a.x + BOX_WIDTH + 15; // + 32 is player width but 31 is smoother
-  var ay_1 = a.y + 40;
-  var ay_2 = a.y + BOX_HEIGHT + 40; // + 32 is height of player's box (ignores head collisions)
+  var ax_1 = a.x - 15;
+  var ax_2 = a.x + BOX_WIDTH + 45; // + 32 is player width but 31 is smoother
+  var ay_1 = a.y + 10;
+  var ay_2 = a.y + BOX_HEIGHT + 70; // + 32 is height of player's box (ignores head collisions)
 
   var bx_1 = b.x;
   var bx_2 = b.x + BOX_WIDTH; // + 32 is player width but 31 is smoother
@@ -212,6 +212,8 @@ var Sprite = function() {
             this.speed = speed;
             this.facing = "south";
             this.dialog = [];
+            this.faceArray = []; // Used to check if you want the dialog on left or right
+                                // O is left 1 is right
             this.face = new Image();
             this.visualRadius = 50; // TODO: What is this?
                                     // ^^ If I remember correctly this was for Duncan's
@@ -246,6 +248,7 @@ var Sprite = function() {
           if(entity.load) {
             entity.render();
             if(is_collide(entity, player)) {
+              interactNPC = entity;
               return false;
             }
           }
@@ -282,7 +285,7 @@ var Sprite = function() {
             if ((player.y - (this.speed)) > 0) {
                 /** Check that the player can move based on left AND right bounding box */
                 if (sign_screen_bounds[y_upmost - y_new_grid][x_leftmost] === 0 &&
-                    sign_screen_bounds[y_upmost - y_new_grid][x_rightmost] === 0 && this.check_units()) {
+                    sign_screen_bounds[y_upmost - y_new_grid][x_rightmost] === 0) {
                     this.y -= this.speed;
                 }
 
@@ -318,7 +321,7 @@ var Sprite = function() {
             if ((player.y + BOX_HEIGHT + this.speed) < (background.image.height - 1)) { // "+32" player height no head
                 /** Check that the player can move based on left AND right bounding box */
                 if (sign_screen_bounds[y_downmost + y_new_grid][x_leftmost] === 0 &&
-                    sign_screen_bounds[y_downmost + y_new_grid][x_rightmost] === 0 && this.check_units()) {
+                    sign_screen_bounds[y_downmost + y_new_grid][x_rightmost] === 0) {
                     this.y += this.speed;
                 }
             } else { /** player is trying to move off screen, align them to edge if valid location. */
@@ -351,7 +354,7 @@ var Sprite = function() {
             if ((player.x - this.speed) > 0) {
                 /** Check that the player can move based on top AND bottom bounding box */
                 if (sign_screen_bounds[y_upmost][x_leftmost - x_new_grid] === 0 &&
-                    sign_screen_bounds[y_downmost][x_leftmost - x_new_grid] === 0 && this.check_units()) {
+                    sign_screen_bounds[y_downmost][x_leftmost - x_new_grid] === 0) {
                     this.x -= this.speed;
                 }
             } else { /** player is trying to move off screen, align them to edge if valid location. */
@@ -384,7 +387,7 @@ var Sprite = function() {
             if ((player.x + BOX_WIDTH + this.speed) < (background.image.width - 1)) { // "+32" is width of player
                 /** Check that the player can move based on top AND bottom bounding box */
                 if (sign_screen_bounds[y_upmost][x_rightmost + x_new_grid] === 0 &&
-                    sign_screen_bounds[y_downmost][x_rightmost + x_new_grid] === 0 && this.check_units()) {
+                    sign_screen_bounds[y_downmost][x_rightmost + x_new_grid] === 0) {
                     this.x += this.speed;
                 }
             } else { /** player is trying to move off screen, align them to edge if valid location. */
@@ -492,13 +495,16 @@ var Sprite = function() {
         if (npc_Alden.talking === true) {
           var dialogSize = interactNPC.dialog.length;
           for(var i = 0; i < dialogSize; i++) {
+
             var text = interactNPC.dialog[i];
+            var face = interactNPC.faceArray[i];
+
             console.log(text);
-            g.queuedActions.push((function (text) {
+            g.queuedActions.push((function (text, face) {
                    return function () {
-                       window.uwetech.dialog.showRight(text, interactNPC.face);
+                       window.uwetech.dialog.showRight(text, face);
                    };
-                })(text));
+                })(text, face));
           }
           g.queuedActions.push(function () {window.uwetech.dialog.hide();});
           npc_Alden.talking = false;
@@ -652,6 +658,8 @@ var npc_Map3BottomWalker = new Sprite();
 var npc_Map3dummyOne = new Sprite();
 var npc_Map3dummyTwo = new Sprite();
 var npc_Map3dummyThree = new Sprite();
+var npc_Map3Jay = new Sprite();
+var npc_Map3SilentBob = new Sprite();
 
 var npc_Map4theChin = new Sprite();
 var npc_Map4frontStudentOne = new Sprite();
@@ -678,7 +686,7 @@ player.setOptions("./img/purple_orc.png", 0, 640, 64, 64,
 //npc_Mobus.setOptions("./img/mobus.png", 0, 640, 64, 64, 350, 10, 62, 62, 1);
 
 npc_Map1StairWalker.setOptions("./img/chin.png", 0, 140, 64, 64, 350,10, 62, 62, 1);
-npc_Map1BottomWalker.setOptions("./img/alden.png", 0, 140, 64, 64, 300, 880, 62, 62, 2);
+npc_Map1BottomWalker.setOptions("./img/spriteRobert.png", 0, 140, 64, 64, 300, 1020, 62, 62, 2);
 npc_Map1Blocker.setOptions("./img/alden.png", 0, 140, 64, 64, 530, 141, 62, 62, 2);
 
 
@@ -690,6 +698,8 @@ npc_Map3BottomWalker.setOptions("./img/alden.png", 0, 140, 64, 64, 900, 600, 62,
 npc_Map3dummyOne.setOptions("./img/alden.png", 0, 140, 64, 64, 800, 150, 62, 62, 2);
 npc_Map3dummyTwo.setOptions("./img/alden.png", 0, 140, 64, 64, 750, 175, 62, 62, 2);
 npc_Map3dummyThree.setOptions("./img/alden.png", 0, 140, 64, 64, 770, 135, 62, 62, 2);
+npc_Map3Jay.setOptions("./img/alden.png", 0, 140, 64, 64, 90, 180, 62, 62, 2);
+npc_Map3SilentBob.setOptions("./img/chin.png", 0, 140, 64, 64, 50, 180, 62, 62, 2);
 
 npc_Map4theChin.setOptions("./img/chin.png", 0, 140, 64, 64, 515,20, 62, 62, 0);
 npc_Map4frontStudentOne.setOptions("./img/chin.png", 0, 140, 64, 64, 440,20, 62, 62, 0);
@@ -741,6 +751,8 @@ npc_Map1StairWalker.image.onload = function() {
   npc_Map3dummyOne.load = true;
   npc_Map3dummyTwo.load = true;
   npc_Map3dummyThree.load = true;
+  npc_Map3Jay.load = true;
+  npc_Map3SilentBob.load = true;
 
   npc_Map4theChin.load = true;
   npc_Map4frontStudentOne.load = true;
@@ -767,8 +779,10 @@ npc_Map1StairWalker.dialog[1] = "My Name is Jim";
 
 npc_Map1BottomWalker.dialog[0] = "I could really use a beer, I think I am seeing things.";
 npc_Map1BottomWalker.dialog[1] = "Did you see that albino raptor? Never thought I could see those in the wild.";
+npc_Map1BottomWalker.faceArray[0] = npc_Map1BottomWalker.face;
+npc_Map1BottomWalker.faceArray[1] = npc_Map1BottomWalker.face;
 npc_Map1BottomWalker.face.src =  "./img/Robert.png";
-
+npc_Map1StairWalker.face.src =  "./img/Alden-plain.png";
 
 npc_Map1Blocker.update = function(clockTick) {
   if(player.y < 171) {
@@ -789,9 +803,6 @@ var chinDirection = 0;
 
 npc_Map1StairWalker.update = function(clockTick) {
   //console.log(player.y);
-  var dist = distance(this, player);
-  var chinX = Math.floor(this.x/32) + 1;
-  var chinY = Math.floor(this.y/32) + 1
   //Checks to see if you are next to chin
   if(is_collide(this, player) && chinCounter === 0) {
     chinDirection = chinFlip;
@@ -802,26 +813,15 @@ npc_Map1StairWalker.update = function(clockTick) {
   //If you are next to chin then this happens.
   if(chinFlip === 3) {
     this.y += 0;
-    interactNPC = this;
     if(chinDirection === 0) {
       this.spriteRoll(640, 1,  clockTick, 0.5);
-      // sign_screen_bounds[chinY][chinX] = 1;
-      // sign_screen_bounds[chinY + 1][chinX] = 1;
-      // sign_screen_bounds[chinY][chinX + 1] = 1;
-      // sign_screen_bounds[chinY + 1][chinX + 1] = 1;
+
     }
     if(chinDirection === 1) {
       this.spriteRoll(512, 1, clockTick, 0.5);
-      // sign_screen_bounds[chinY][chinX] = 1;
-      // sign_screen_bounds[chinY + 1][chinX] = 1;
-      // sign_screen_bounds[chinY][chinX + 1] = 1;
-      // sign_screen_bounds[chinY + 1][chinX + 1] = 1;
     }
-    if(dist >= 50) {
-      // sign_screen_bounds[chinY][chinX] = 0;
-      // sign_screen_bounds[chinY + 1][chinX] = 0;
-      // sign_screen_bounds[chinY][chinX + 1] = 0;
-      // sign_screen_bounds[chinY + 1][chinX + 1] = 0;
+    if(!is_collide(this, player)) {
+
       chinFlip = chinDirection;
     }
   }
@@ -855,13 +855,12 @@ var aldenFlip = 0;
 var aldenCounter = 0;
 var aldenDirection = 0;
 npc_Map1BottomWalker.update = function(clockTick) {
-  var dist = distance(this, player);
 
   var aldenX = Math.floor(this.x/32) + 1;
   var aldenY = Math.floor(this.y/32) + 1
 
   //Checks to see if you are next to alden
-  if(dist <= 50 && aldenCounter === 0) {
+  if(is_collide(this, player) && aldenCounter === 0) {
     aldenDirection = aldenFlip;
     aldenFlip = 3;
     aldenCounter = 1;
@@ -870,26 +869,16 @@ npc_Map1BottomWalker.update = function(clockTick) {
   //If you are next to alden then this happens.
   if(aldenFlip === 3) {
     this.y += 0;
-    interactNPC = this;
     if(aldenDirection === 0) {
       this.spriteRoll(704, 1,  clockTick, 0.5);
-      sign_screen_bounds[aldenY][aldenX] = 1;
-      sign_screen_bounds[aldenY + 1][aldenX] = 1;
-      sign_screen_bounds[aldenY][aldenX + 1] = 1;
-      sign_screen_bounds[aldenY + 1][aldenX + 1] = 1;
+
     }
     if(aldenDirection === 1) {
       this.spriteRoll(576, 1, clockTick, 0.5);
-      sign_screen_bounds[aldenY][aldenX] = 1;
-      sign_screen_bounds[aldenY + 1][aldenX] = 1;
-      sign_screen_bounds[aldenY][aldenX + 1] = 1;
-      sign_screen_bounds[aldenY + 1][aldenX + 1] = 1;
+
     }
-    if(dist >= 50) {
-      sign_screen_bounds[aldenY][aldenX] = 0;
-      sign_screen_bounds[aldenY + 1][aldenX] = 0;
-      sign_screen_bounds[aldenY][aldenX + 1] = 0;
-      sign_screen_bounds[aldenY + 1][aldenX + 1] = 0;
+    if(!is_collide(this, player)) {
+
       aldenFlip = aldenDirection;
     }
   }
@@ -924,9 +913,8 @@ Cashier - If the player gets close he will check you out. *wink*
 */
 
 npc_Map2Bookman.update = function(clockTick) {
-  var dist = distance(this, player);
   //console.log(dist);
-  if(dist <= 100) {
+  if(is_collide(this, player)) {
     this.spriteRoll(780, 5,  clockTick, 0.3);
   } else {
     this.spriteRoll(780, 1,  clockTick, 0.3);
@@ -934,9 +922,8 @@ npc_Map2Bookman.update = function(clockTick) {
 
 };
 npc_Map2Cashier.update = function(clockTick) {
-  var dist = distance(this, player);
   //console.log(dist);
-  if(dist <= 100) {
+  if(is_collide(this, player)) {
     this.spriteRoll(460, 8,  clockTick, 0.3);
   } else {
     this.spriteRoll(460, 1,  clockTick, 0.3);
@@ -962,15 +949,40 @@ npc_Map3dummyTwo.update = function(clockTick) {
 npc_Map3dummyThree.update = function(clockTick) {
   this.spriteRoll(900, 1,  clockTick, 0.1);
 }
+npc_Map3Jay.face.src =  "./img/Robert.png";
+npc_Map3Jay.dialog[0] = "Crap crap crap crap crap crap crap";
+npc_Map3Jay.dialog[1] = "......."
+npc_Map3Jay.dialog[2] = "Fifteen bucks little man, but that crap in my hand. "
+                        +"If that money doesn't show then you owe me owe me owe.";
+npc_Map3Jay.faceArray[0] = npc_Map3Jay.face;
+npc_Map3Jay.faceArray[1] = npc_Map3SilentBob.face;
+npc_Map3Jay.faceArray[2] = npc_Map3Jay.face;
+
+npc_Map3SilentBob.face.src =  "./img/Alden-plain.png";
+npc_Map3SilentBob.dialog[0] = "Crap crap crap crap crap crap crap";
+npc_Map3SilentBob.dialog[1] = "......."
+npc_Map3SilentBob.dialog[2] = "Fifteen bucks little man, but that crap in my hand. "
+                        +"If that money doesn't show then you owe me owe me owe.";
+npc_Map3SilentBob.faceArray[0] = npc_Map3Jay.face;
+npc_Map3SilentBob.faceArray[1] = npc_Map3SilentBob.face;
+npc_Map3SilentBob.faceArray[2] = npc_Map3Jay.face;
+
+npc_Map3Jay.update = function(clockTick) {
+  this.spriteRoll(900, 1,  clockTick, 0.1);
+}
+
+
+npc_Map3SilentBob.update = function(clockTick) {
+  this.spriteRoll(900, 1,  clockTick, 0.1);
+}
 
 npc_Map3BottomWalker.update = function(clockTick) {
-  var dist = distance(this, player);
 
   var aldenX = Math.floor(this.x/32) + 1;
   var aldenY = Math.floor(this.y/32) + 1
 
   //Checks to see if you are next to alden
-  if(dist <= 50 && aldenCounter === 0) {
+  if(is_collide(this, player) && aldenCounter === 0) {
     aldenDirection = aldenFlip;
     aldenFlip = 3;
     aldenCounter = 1;
@@ -981,23 +993,14 @@ npc_Map3BottomWalker.update = function(clockTick) {
     this.y += 0;
     if(aldenDirection === 0) {
       this.spriteRoll(704, 1,  clockTick, 0.5);
-      sign_screen_bounds[aldenY][aldenX] = 1;
-      sign_screen_bounds[aldenY + 1][aldenX] = 1;
-      sign_screen_bounds[aldenY][aldenX + 1] = 1;
-      sign_screen_bounds[aldenY + 1][aldenX + 1] = 1;
+
     }
     if(aldenDirection === 1) {
       this.spriteRoll(576, 1, clockTick, 0.5);
-      sign_screen_bounds[aldenY][aldenX] = 1;
-      sign_screen_bounds[aldenY + 1][aldenX] = 1;
-      sign_screen_bounds[aldenY][aldenX + 1] = 1;
-      sign_screen_bounds[aldenY + 1][aldenX + 1] = 1;
+
     }
-    if(dist >= 50) {
-      sign_screen_bounds[aldenY][aldenX] = 0;
-      sign_screen_bounds[aldenY + 1][aldenX] = 0;
-      sign_screen_bounds[aldenY][aldenX + 1] = 0;
-      sign_screen_bounds[aldenY + 1][aldenX + 1] = 0;
+    if(!is_collide(this, player)) {
+
       aldenFlip = aldenDirection;
     }
   }
@@ -1278,6 +1281,7 @@ var Game = function() {
       interactNPC = undefined;
       //player.bounds();
       player.movePlayer(clockTick);
+      player.check_units();
 
       /*
       Get the current zone you are in and draw the entites
@@ -1483,6 +1487,9 @@ g.addEntityZoneThree(npc_Map3BottomWalker);
 g.addEntityZoneThree(npc_Map3dummyOne);
 g.addEntityZoneThree(npc_Map3dummyTwo);
 g.addEntityZoneThree(npc_Map3dummyThree);
+g.addEntityZoneThree(npc_Map3Jay);
+g.addEntityZoneThree(npc_Map3SilentBob);
+
 
 g.addEntityZoneFour(npc_Map4theChin);
 g.addEntityZoneFour(npc_Map4frontStudentOne);
