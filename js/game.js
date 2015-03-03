@@ -212,6 +212,7 @@ var Sprite = function() {
             this.speed = speed;
             this.facing = "south";
             this.dialog = [];
+            this.talkTo = false;
             this.faceArray = []; // Used to check if you want the dialog on left or right
                                 // O is left 1 is right
             this.face = new Image();
@@ -506,6 +507,7 @@ var Sprite = function() {
                    };
                 })(text, face));
           }
+          interactNPC.talkTo ^= true;
           g.queuedActions.push(function () {window.uwetech.dialog.hide();});
           npc_Alden.talking = false;
         } else if (npc_Alden.talking === false) {
@@ -783,6 +785,13 @@ npc_Map1BottomWalker.face.src =  "./img/Robert.png";
 npc_Map1StairWalker.face.src =  "./img/Alden-plain.png";
 
 npc_Map1Blocker.update = function(clockTick) {
+  console.log(this.talkTo);
+  if(this.talkTo) {
+    npc_Map1Blocker.dialog[0] = "Try to get passed me";
+  }
+  if(!this.talkTo) {
+    npc_Map1Blocker.dialog[0] = "You can't pass me";
+  }
   if(player.y < 171) {
     if(W_KEY in keys) {
       this.spriteRoll(512, 8,  clockTick, 0.1);
