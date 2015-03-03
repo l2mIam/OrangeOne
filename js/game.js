@@ -212,6 +212,8 @@ var Sprite = function() {
             this.speed = speed;
             this.facing = "south";
             this.dialog = [];
+            this.faceArray = []; // Used to check if you want the dialog on left or right
+                                // O is left 1 is right
             this.face = new Image();
             this.visualRadius = 50; // TODO: What is this?
                                     // ^^ If I remember correctly this was for Duncan's
@@ -493,13 +495,16 @@ var Sprite = function() {
         if (npc_Alden.talking === true) {
           var dialogSize = interactNPC.dialog.length;
           for(var i = 0; i < dialogSize; i++) {
+
             var text = interactNPC.dialog[i];
+            var face = interactNPC.faceArray[i];
+
             console.log(text);
-            g.queuedActions.push((function (text) {
+            g.queuedActions.push((function (text, face) {
                    return function () {
-                       window.uwetech.dialog.showRight(text, interactNPC.face);
+                       window.uwetech.dialog.showRight(text, face);
                    };
-                })(text));
+                })(text, face));
           }
           g.queuedActions.push(function () {window.uwetech.dialog.hide();});
           npc_Alden.talking = false;
@@ -653,6 +658,8 @@ var npc_Map3BottomWalker = new Sprite();
 var npc_Map3dummyOne = new Sprite();
 var npc_Map3dummyTwo = new Sprite();
 var npc_Map3dummyThree = new Sprite();
+var npc_Map3Jay = new Sprite();
+var npc_Map3SilentBob = new Sprite();
 
 var npc_Map4theChin = new Sprite();
 var npc_Map4frontStudentOne = new Sprite();
@@ -691,6 +698,8 @@ npc_Map3BottomWalker.setOptions("./img/alden.png", 0, 140, 64, 64, 900, 600, 62,
 npc_Map3dummyOne.setOptions("./img/alden.png", 0, 140, 64, 64, 800, 150, 62, 62, 2);
 npc_Map3dummyTwo.setOptions("./img/alden.png", 0, 140, 64, 64, 750, 175, 62, 62, 2);
 npc_Map3dummyThree.setOptions("./img/alden.png", 0, 140, 64, 64, 770, 135, 62, 62, 2);
+npc_Map3Jay.setOptions("./img/alden.png", 0, 140, 64, 64, 90, 180, 62, 62, 2);
+npc_Map3SilentBob.setOptions("./img/chin.png", 0, 140, 64, 64, 50, 180, 62, 62, 2);
 
 npc_Map4theChin.setOptions("./img/chin.png", 0, 140, 64, 64, 515,20, 62, 62, 0);
 npc_Map4frontStudentOne.setOptions("./img/chin.png", 0, 140, 64, 64, 440,20, 62, 62, 0);
@@ -742,6 +751,8 @@ npc_Map1StairWalker.image.onload = function() {
   npc_Map3dummyOne.load = true;
   npc_Map3dummyTwo.load = true;
   npc_Map3dummyThree.load = true;
+  npc_Map3Jay.load = true;
+  npc_Map3SilentBob.load = true;
 
   npc_Map4theChin.load = true;
   npc_Map4frontStudentOne.load = true;
@@ -768,8 +779,10 @@ npc_Map1StairWalker.dialog[1] = "My Name is Jim";
 
 npc_Map1BottomWalker.dialog[0] = "I could really use a beer, I think I am seeing things.";
 npc_Map1BottomWalker.dialog[1] = "Did you see that albino raptor? Never thought I could see those in the wild.";
+npc_Map1BottomWalker.faceArray[0] = npc_Map1BottomWalker.face;
+npc_Map1BottomWalker.faceArray[1] = npc_Map1BottomWalker.face;
 npc_Map1BottomWalker.face.src =  "./img/Robert.png";
-
+npc_Map1StairWalker.face.src =  "./img/Alden-plain.png";
 
 npc_Map1Blocker.update = function(clockTick) {
   if(player.y < 171) {
@@ -934,6 +947,32 @@ npc_Map3dummyTwo.update = function(clockTick) {
   this.spriteRoll(512, 1,  clockTick, 0.1);
 }
 npc_Map3dummyThree.update = function(clockTick) {
+  this.spriteRoll(900, 1,  clockTick, 0.1);
+}
+npc_Map3Jay.face.src =  "./img/Robert.png";
+npc_Map3Jay.dialog[0] = "Crap crap crap crap crap crap crap";
+npc_Map3Jay.dialog[1] = "......."
+npc_Map3Jay.dialog[2] = "Fifteen bucks little man, but that crap in my hand. "
+                        +"If that money doesn't show then you owe me owe me owe.";
+npc_Map3Jay.faceArray[0] = npc_Map3Jay.face;
+npc_Map3Jay.faceArray[1] = npc_Map3SilentBob.face;
+npc_Map3Jay.faceArray[2] = npc_Map3Jay.face;
+
+npc_Map3SilentBob.face.src =  "./img/Alden-plain.png";
+npc_Map3SilentBob.dialog[0] = "Crap crap crap crap crap crap crap";
+npc_Map3SilentBob.dialog[1] = "......."
+npc_Map3SilentBob.dialog[2] = "Fifteen bucks little man, but that crap in my hand. "
+                        +"If that money doesn't show then you owe me owe me owe.";
+npc_Map3SilentBob.faceArray[0] = npc_Map3Jay.face;
+npc_Map3SilentBob.faceArray[1] = npc_Map3SilentBob.face;
+npc_Map3SilentBob.faceArray[2] = npc_Map3Jay.face;
+
+npc_Map3Jay.update = function(clockTick) {
+  this.spriteRoll(900, 1,  clockTick, 0.1);
+}
+
+
+npc_Map3SilentBob.update = function(clockTick) {
   this.spriteRoll(900, 1,  clockTick, 0.1);
 }
 
@@ -1448,6 +1487,9 @@ g.addEntityZoneThree(npc_Map3BottomWalker);
 g.addEntityZoneThree(npc_Map3dummyOne);
 g.addEntityZoneThree(npc_Map3dummyTwo);
 g.addEntityZoneThree(npc_Map3dummyThree);
+g.addEntityZoneThree(npc_Map3Jay);
+g.addEntityZoneThree(npc_Map3SilentBob);
+
 
 g.addEntityZoneFour(npc_Map4theChin);
 g.addEntityZoneFour(npc_Map4frontStudentOne);
