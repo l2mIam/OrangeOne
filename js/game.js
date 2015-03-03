@@ -1171,6 +1171,7 @@ Timer.prototype.tick = function () {
 
 var interactNPC;
 
+smallButton = new Image();
 var Game = function() {
     //Creating an array of arrays for the entites
     this.entiteZones = [];
@@ -1286,6 +1287,7 @@ var Game = function() {
      * TODO: Describe this function.
      */
     this.start = function() {
+
       this.cam  = new Camera();
       this.cam.setup(player);
       this.timer = new Timer();
@@ -1360,6 +1362,18 @@ var Game = function() {
      * TODO: Describe this function.
      */
     this.render = function() {
+      topctx.clearRect(0, 0, topcanvas.width, topcanvas.height);
+      if(interactNPC === undefined) {
+        smallButton.src = './img/doButtonInactive.png';
+        topctx.drawImage(smallButton, 0, 0, smallButton.width, smallButton.height,
+            0, 0, smallButton.width, smallButton.height);
+      }
+      if(interactNPC !== undefined) {
+        smallButton.src = './img/doButtonActive.png';
+        topctx.drawImage(smallButton, 0, 0, smallButton.width, smallButton.height,
+            0, 0, smallButton.width, smallButton.height);
+      }
+
         midctx.clearRect(0, 0, midcanvas.width, midcanvas.height);
         midctx.save();
         midctx.translate(this.cam.x, this.cam.y);
