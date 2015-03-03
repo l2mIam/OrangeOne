@@ -833,8 +833,8 @@ BottomWalker - Walks left to right at the bottom of the stairs.. like a normal p
 npc_Map1StairWalker.dialog[0] = "Hi there";
 npc_Map1StairWalker.dialog[1] = "My Name is Jim";
 
-npc_Map1BottomWalker.dialog[0] = "I am death";
-npc_Map1BottomWalker.dialog[1] = "You can not escape me";
+npc_Map1BottomWalker.dialog[0] = "I could really use a beer, I think I am seeing things.";
+npc_Map1BottomWalker.dialog[1] = "Did you see that albino raptor? Never thought I could see those in the wild.";
 
 npc_Map1Blocker.update = function(clockTick) {
   if(player.y < 171) {
