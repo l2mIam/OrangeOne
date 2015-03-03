@@ -679,7 +679,7 @@ player.setOptions("./img/purple_orc.png", 0, 640, 64, 64,
 //npc_Mobus.setOptions("./img/mobus.png", 0, 640, 64, 64, 350, 10, 62, 62, 1);
 
 npc_Map1StairWalker.setOptions("./img/chin.png", 0, 140, 64, 64, 350,10, 62, 62, 1);
-npc_Map1BottomWalker.setOptions("./img/alden.png", 0, 140, 64, 64, 300, 880, 62, 62, 2);
+npc_Map1BottomWalker.setOptions("./img/spriteRobert.png", 0, 140, 64, 64, 300, 1020, 62, 62, 2);
 npc_Map1Blocker.setOptions("./img/alden.png", 0, 140, 64, 64, 530, 141, 62, 62, 2);
 
 
