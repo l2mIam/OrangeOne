@@ -837,6 +837,15 @@ BottomWalker - Walks left to right at the bottom of the stairs.. like a normal p
 npc_Map1StairWalker.dialog[0] = "Hi there";
 npc_Map1StairWalker.dialog[1] = "My Name is Jim";
 
+npc_Map1dummyTwo.dialog[0] = "Can you direct me to WCG?  I'm looking for Dr. Chinn.  He's lost his marbles...or was it spilled his fruit."
+npc_Map1dummyTwo.dialog[1] = "Anyway, he needs some help solving this mystery.  I heard he gives easy A's."
+
+npc_Map1dummyOne.dialog[0] = "Do you know where the Science Building is?  Professor Alden is up there exposing the inner workings of something called..."
+npc_Map1dummyOne.dialog[1] = "computers, yeah that's it.  I heard there's a secret code to solving his puzzle."
+
+npc_Map1dummyThree.dialog[0] = "Professor Fowler is over in Cherry Parks.  He said my code is...how did he put it..."
+npc_Map1dummyThree.dialog[1] = "'Your code is strange and unexpected. It is full of bugs.  Debug them if you can'"
+
 npc_Map1BottomWalker.dialog[0] = "I could really use a beer, I think I am seeing things.";
 npc_Map1BottomWalker.faceArray[0] = npc_Map1BottomWalker.face;
 npc_Map1BottomWalker.face.src =  "./img/Robert.png";
@@ -845,10 +854,10 @@ npc_Map1StairWalker.face.src =  "./img/Alden-plain.png";
 npc_Map1Blocker.update = function(clockTick) {
   console.log(this.talkTo);
   if(this.talkTo) {
-    npc_Map1Blocker.dialog[0] = "Try to get passed me";
+    npc_Map1Blocker.dialog[0] = "Just go around me, why dontcha?";
   }
   if(!this.talkTo) {
-    npc_Map1Blocker.dialog[0] = "You can't pass me";
+    npc_Map1Blocker.dialog[0] = "Would you mind not blocking my path?";
   }
   if(player.y < 171) {
     if(W_KEY in keys) {
@@ -986,7 +995,7 @@ Map2(BookStore) Npc update functions are below
 Bookman - If the player gets close he looks for a book.
 Cashier - If the player gets close he will check you out. *wink*
 */
-
+npc_Map2Bookman.dialog[0] = "Donald Chinn taught me that a monkey can peel a Banana in O(log n) time.  That's pretty fast."
 npc_Map2Bookman.update = function(clockTick) {
   //console.log(dist);
   if(is_collide(this, player)) {
@@ -1148,12 +1157,15 @@ npc_Map5dummyTwo.update = function(clockTick) {
 
 npc_Map6lib.update = function(clockTick) {
 }
+npc_Map7dummyOne.dialog[0] = "These schnazberries taste like schnazberries!. I could eat O(n!) schnazberries."
 npc_Map7dummyOne.update = function(clockTick) {
 }
+npc_Map7dummyTwo.dialog[0] = "I like O(n) green apples and ham.  Sam prefers blueberries.  He has O(n^2) of them!"
 npc_Map7dummyTwo.update = function(clockTick) {
 }
 npc_Map7dummyThree.update = function(clockTick) {
 }
+npc_Map7dummyFour.dialog[0] = "I have O(n^2) blueberries.  Katie prefers green apples and ham.  She has O(n) of them!"
 npc_Map7dummyFour.update = function(clockTick) {
 }
 
