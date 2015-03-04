@@ -1131,6 +1131,7 @@ npc_Map4frontStudentOne.update = function (clockTick) {
   this.spriteRoll(704, 1,  clockTick, 0.1);
 
 }
+npc_Map4frontStudentTwo.dialog[0] = "One annoying orange, is O(1) too many";
 npc_Map4frontStudentTwo.update = function (clockTick) {
   this.spriteRoll(704, 1,  clockTick, 0.1);
 
@@ -1139,10 +1140,12 @@ npc_Map4middleStudentOne.update = function (clockTick) {
   this.spriteRoll(704, 1,  clockTick, 0.1);
 
 }
+npc_Map4middleStudentTwo.dialog[0] = "Gillmore girls is my favorite show too!";
 npc_Map4middleStudentTwo.update = function (clockTick) {
   this.spriteRoll(704, 1,  clockTick, 0.1);
 
 }
+npc_Map4backStudentOne.dialog[0] = "What's the deal with corn nuts?";
 npc_Map4backStudentOne.update = function (clockTick) {
   this.spriteRoll(704, 1,  clockTick, 0.1);
 
