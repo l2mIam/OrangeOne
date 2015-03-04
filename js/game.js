@@ -663,6 +663,9 @@ var npc_Alden = new Sprite();
 
 var npc_Map1StairWalker = new Sprite();
 var npc_Map1BottomWalker = new Sprite();
+var npc_Map1dummyOne = new Sprite();
+var npc_Map1dummyTwo = new Sprite();
+var npc_Map1dummyThree = new Sprite();
 var npc_Map1Blocker = new Sprite();
 
 var npc_Map2Cashier = new Sprite();
@@ -672,6 +675,9 @@ var npc_Map3BottomWalker = new Sprite();
 var npc_Map3dummyOne = new Sprite();
 var npc_Map3dummyTwo = new Sprite();
 var npc_Map3dummyThree = new Sprite();
+var npc_Map3dummyFour = new Sprite();
+var npc_Map3dummyFive = new Sprite();
+var npc_Map3dummySix = new Sprite();
 var npc_Map3Jay = new Sprite();
 var npc_Map3SilentBob = new Sprite();
 
@@ -687,6 +693,15 @@ var npc_Map5dummyTwo = new Sprite();
 
 var npc_Map6lib = new Sprite();
 
+var npc_Map7dummyOne = new Sprite();
+var npc_Map7dummyTwo = new Sprite();
+var npc_Map7dummyThree = new Sprite();
+var npc_Map7dummyFour = new Sprite();
+
+var npc_Map8dummyOne = new Sprite();
+var npc_Map8dummyTwo = new Sprite();
+var npc_Map8dummyThree = new Sprite();
+var npc_Map8dummyFour = new Sprite();
 //var background = new Sprite();
 
 // var alden_por = new Dialog();
@@ -702,16 +717,21 @@ player.setOptions("./img/purple_orc.png", 0, 640, 64, 64,
 npc_Map1StairWalker.setOptions("./img/NPC/guyOne.png", 0, 140, 64, 64, 350,10, 62, 62, 1);
 npc_Map1BottomWalker.setOptions("./img/NPC/spriteRobert.png", 0, 140, 64, 64, 300, 1020, 62, 62, 2);
 npc_Map1Blocker.setOptions("./img/NPC/girlOne.png", 0, 140, 64, 64, 530, 141, 62, 62, 2);
+npc_Map1dummyOne.setOptions("./img/NPC/girlOne.png", 0, 140, 64, 64, 100, 500, 62, 62, 2);
+npc_Map1dummyTwo.setOptions("./img/NPC/monk.png", 0, 140, 64, 64, 150, 900, 62, 62, 2);
+npc_Map1dummyThree.setOptions("./img/NPC/Skeleton.png", 0, 140, 64, 64, 150, 150, 62, 62, 2);
 
 
 npc_Map2Cashier.setOptions("./img/NPC/guyTwo.png", 0, 140, 64, 64, -15,155, 62, 62, 0);
 npc_Map2Bookman.setOptions("./img/NPC/girlTwo.png", 0, 140, 64, 64, 430, 40, 62, 62, 0);
 
 npc_Map3BottomWalker.setOptions("./img/NPC/monk.png", 0, 140, 64, 64, 900, 600, 62, 62, 2);
-
 npc_Map3dummyOne.setOptions("./img/NPC/girlOne.png", 0, 140, 64, 64, 800, 150, 62, 62, 2);
 npc_Map3dummyTwo.setOptions("./img/NPC/girlTwo.png", 0, 140, 64, 64, 750, 175, 62, 62, 2);
 npc_Map3dummyThree.setOptions("./img/NPC/girlThree.png", 0, 140, 64, 64, 770, 135, 62, 62, 2);
+npc_Map3dummyFour.setOptions("./img/NPC/girlThree.png", 0, 140, 64, 64, 900, 400, 62, 62, 2);
+npc_Map3dummyFive.setOptions("./img/NPC/Skeleton.png", 0, 140, 64, 64, 400, 500, 62, 62, 2);
+npc_Map3dummySix.setOptions("./img/NPC/monk.png", 0, 140, 64, 64, 400, -20, 62, 62, 2);
 npc_Map3Jay.setOptions("./img/NPC/guyTwo.png", 0, 140, 64, 64, 90, 180, 62, 62, 2);
 npc_Map3SilentBob.setOptions("./img/NPC/guyThree.png", 0, 140, 64, 64, 50, 180, 62, 62, 2);
 
@@ -726,6 +746,16 @@ npc_Map5dummyOne.setOptions("./img/NPC/chin.png", 0, 140, 64, 64, 110,260, 62, 6
 npc_Map5dummyTwo.setOptions("./img/NPC/chin.png", 0, 140, 64, 64, 20,20, 62, 62, 0);
 
 npc_Map6lib.setOptions("./img/NPC/chin.png", 0, 140, 64, 64, 150,145, 62, 62, 0);
+
+npc_Map7dummyOne.setOptions("./img/NPC/girlOne.png", 0, 140, 64, 64, 50, 700, 62, 62, 2);
+npc_Map7dummyTwo.setOptions("./img/NPC/girlTwo.png", 0, 140, 64, 64, 170, 200, 62, 62, 2);
+npc_Map7dummyThree.setOptions("./img/NPC/girlThree.png", 0, 140, 64, 64, 350, 580, 62, 62, 2);
+npc_Map7dummyFour.setOptions("./img/NPC/monk.png", 0, 140, 64, 64, 150, 200, 62, 62, 2);
+
+npc_Map8dummyOne.setOptions("./img/NPC/girlOne.png", 0, 140, 64, 64, 50, 700, 62, 62, 2);
+npc_Map8dummyTwo.setOptions("./img/NPC/girlTwo.png", 0, 140, 64, 64, 150, 0, 62, 62, 2);
+npc_Map8dummyThree.setOptions("./img/NPC/girlThree.png", 0, 140, 64, 64, 350, 580, 62, 62, 2);
+npc_Map8dummyFour.setOptions("./img/NPC/monk.png", 0, 140, 64, 64, 500, 900, 62, 62, 2);
 
 
 npc_Alden.face = (function () {
@@ -757,6 +787,9 @@ npc_Map1StairWalker.image.onload = function() {
   npc_Map1StairWalker.load = true;
   npc_Map1Blocker.load = true;
   npc_Map1BottomWalker.load = true;
+  npc_Map1dummyOne.load = true;
+  npc_Map1dummyTwo.load = true;
+  npc_Map1dummyThree.load = true;
 
   npc_Map2Cashier.load = true;
   npc_Map2Bookman.load = true;
@@ -765,6 +798,9 @@ npc_Map1StairWalker.image.onload = function() {
   npc_Map3dummyOne.load = true;
   npc_Map3dummyTwo.load = true;
   npc_Map3dummyThree.load = true;
+  npc_Map3dummyFour.load = true;
+  npc_Map3dummyFive.load = true;
+  npc_Map3dummySix.load = true;
   npc_Map3Jay.load = true;
   npc_Map3SilentBob.load = true;
 
@@ -779,6 +815,16 @@ npc_Map1StairWalker.image.onload = function() {
   npc_Map5dummyTwo.load = true;
 
   npc_Map6lib.load = true;
+
+  npc_Map7dummyOne.load = true;
+  npc_Map7dummyTwo.load = true;
+  npc_Map7dummyThree.load = true;
+  npc_Map7dummyFour.load = true;
+
+  npc_Map8dummyOne.load = true;
+  npc_Map8dummyTwo.load = true;
+  npc_Map8dummyThree.load = true;
+  npc_Map8dummyFour.load = true;
 
 };
 
@@ -815,6 +861,16 @@ npc_Map1Blocker.update = function(clockTick) {
     }
   }
 };
+npc_Map1dummyOne.update = function(clockTick) {
+  this.spriteRoll(576, 1,  clockTick, 0.1);
+};
+npc_Map1dummyTwo.update = function(clockTick) {
+  this.spriteRoll(576, 1,  clockTick, 0.1);
+};
+npc_Map1dummyThree.update = function(clockTick) {
+  this.spriteRoll(576, 1,  clockTick, 0.1);
+};
+
 
 var chinFlip = 0;
 var chinCounter = 0;
@@ -968,6 +1024,15 @@ npc_Map3dummyTwo.update = function(clockTick) {
 npc_Map3dummyThree.update = function(clockTick) {
   this.spriteRoll(900, 1,  clockTick, 0.1);
 }
+npc_Map3dummyFour.update = function(clockTick) {
+  this.spriteRoll(900, 1,  clockTick, 0.1);
+}
+npc_Map3dummyFive.update = function(clockTick) {
+  this.spriteRoll(900, 1,  clockTick, 0.1);
+}
+npc_Map3dummySix.update = function(clockTick) {
+  this.spriteRoll(900, 1,  clockTick, 0.1);
+}
 npc_Map3Jay.face.src =  "./img/Robert.png";
 npc_Map3Jay.dialog[0] = "Crap crap crap crap crap crap crap";
 npc_Map3Jay.dialog[1] = "......."
@@ -1083,6 +1148,23 @@ npc_Map5dummyTwo.update = function(clockTick) {
 
 npc_Map6lib.update = function(clockTick) {
 }
+npc_Map7dummyOne.update = function(clockTick) {
+}
+npc_Map7dummyTwo.update = function(clockTick) {
+}
+npc_Map7dummyThree.update = function(clockTick) {
+}
+npc_Map7dummyFour.update = function(clockTick) {
+}
+
+npc_Map8dummyOne.update = function(clockTick) {
+}
+npc_Map8dummyTwo.update = function(clockTick) {
+}
+npc_Map8dummyThree.update = function(clockTick) {
+}
+npc_Map8dummyFour.update = function(clockTick) {
+}
 
 /** When player's spritesheet loads in browser, sets player.load to true. */
 player.image.onload = function() {
@@ -1154,6 +1236,8 @@ var Game = function() {
     this.entiteZones[4] = this.zoneFourEntites = [];
     this.entiteZones[5] = this.zoneFiveEntites = [];
     this.entiteZones[6] = this.zoneSixEntites = [];
+    this.entiteZones[7] = this.zoneSevenEntites = [];
+    this.entiteZones[8] = this.zoneEightEntites = [];
     // Game or zone wide entities?
     this.currentZone;
 
@@ -1292,6 +1376,12 @@ var Game = function() {
     };
     this.addEntityZoneSix = function (entity) {
         this.zoneSixEntites.push(entity);
+    };
+    this.addEntityZoneSeven = function (entity) {
+        this.zoneSevenEntites.push(entity);
+    };
+    this.addEntityZoneEight = function (entity) {
+        this.zoneEightEntites.push(entity);
     };
 
     /**
@@ -1501,6 +1591,9 @@ ZoneTwo is getting Map2 entities.
 g.addEntityZoneOne(npc_Map1Blocker);
 g.addEntityZoneOne(npc_Map1BottomWalker);
 g.addEntityZoneOne(npc_Map1StairWalker);
+g.addEntityZoneOne(npc_Map1dummyOne);
+g.addEntityZoneOne(npc_Map1dummyTwo);
+g.addEntityZoneOne(npc_Map1dummyThree);
 
 g.addEntityZoneTwo(npc_Map2Bookman);
 g.addEntityZoneTwo(npc_Map2Cashier);
@@ -1509,6 +1602,9 @@ g.addEntityZoneThree(npc_Map3BottomWalker);
 g.addEntityZoneThree(npc_Map3dummyOne);
 g.addEntityZoneThree(npc_Map3dummyTwo);
 g.addEntityZoneThree(npc_Map3dummyThree);
+g.addEntityZoneThree(npc_Map3dummyFour);
+g.addEntityZoneThree(npc_Map3dummyFive);
+g.addEntityZoneThree(npc_Map3dummySix);
 g.addEntityZoneThree(npc_Map3Jay);
 g.addEntityZoneThree(npc_Map3SilentBob);
 
@@ -1524,6 +1620,16 @@ g.addEntityZoneFive(npc_Map5dummyOne);
 g.addEntityZoneFive(npc_Map5dummyTwo);
 
 g.addEntityZoneSix(npc_Map6lib);
+
+g.addEntityZoneSeven(npc_Map7dummyOne);
+g.addEntityZoneSeven(npc_Map7dummyTwo);
+g.addEntityZoneSeven(npc_Map7dummyThree);
+g.addEntityZoneSeven(npc_Map7dummyFour);
+
+g.addEntityZoneEight(npc_Map8dummyOne);
+g.addEntityZoneEight(npc_Map8dummyTwo);
+g.addEntityZoneEight(npc_Map8dummyThree);
+g.addEntityZoneEight(npc_Map8dummyFour);
 
 
 
