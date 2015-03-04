@@ -699,33 +699,33 @@ player.setOptions("./img/purple_orc.png", 0, 640, 64, 64,
                                     0, 0, 64, 64, 3);
 //npc_Mobus.setOptions("./img/mobus.png", 0, 640, 64, 64, 350, 10, 62, 62, 1);
 
-npc_Map1StairWalker.setOptions("./img/chin.png", 0, 140, 64, 64, 350,10, 62, 62, 1);
-npc_Map1BottomWalker.setOptions("./img/spriteRobert.png", 0, 140, 64, 64, 300, 1020, 62, 62, 2);
-npc_Map1Blocker.setOptions("./img/alden.png", 0, 140, 64, 64, 530, 141, 62, 62, 2);
+npc_Map1StairWalker.setOptions("./img/NPC/guyOne.png", 0, 140, 64, 64, 350,10, 62, 62, 1);
+npc_Map1BottomWalker.setOptions("./img/NPC/spriteRobert.png", 0, 140, 64, 64, 300, 1020, 62, 62, 2);
+npc_Map1Blocker.setOptions("./img/NPC/girlOne.png", 0, 140, 64, 64, 530, 141, 62, 62, 2);
 
 
-npc_Map2Cashier.setOptions("./img/chin.png", 0, 140, 64, 64, -15,155, 62, 62, 0);
-npc_Map2Bookman.setOptions("./img/alden.png", 0, 140, 64, 64, 430, 40, 62, 62, 0);
+npc_Map2Cashier.setOptions("./img/NPC/guyTwo.png", 0, 140, 64, 64, -15,155, 62, 62, 0);
+npc_Map2Bookman.setOptions("./img/NPC/girlTwo.png", 0, 140, 64, 64, 430, 40, 62, 62, 0);
 
-npc_Map3BottomWalker.setOptions("./img/alden.png", 0, 140, 64, 64, 900, 600, 62, 62, 2);
+npc_Map3BottomWalker.setOptions("./img/NPC/monk.png", 0, 140, 64, 64, 900, 600, 62, 62, 2);
 
-npc_Map3dummyOne.setOptions("./img/alden.png", 0, 140, 64, 64, 800, 150, 62, 62, 2);
-npc_Map3dummyTwo.setOptions("./img/alden.png", 0, 140, 64, 64, 750, 175, 62, 62, 2);
-npc_Map3dummyThree.setOptions("./img/alden.png", 0, 140, 64, 64, 770, 135, 62, 62, 2);
-npc_Map3Jay.setOptions("./img/alden.png", 0, 140, 64, 64, 90, 180, 62, 62, 2);
-npc_Map3SilentBob.setOptions("./img/chin.png", 0, 140, 64, 64, 50, 180, 62, 62, 2);
+npc_Map3dummyOne.setOptions("./img/NPC/girlOne.png", 0, 140, 64, 64, 800, 150, 62, 62, 2);
+npc_Map3dummyTwo.setOptions("./img/NPC/girlTwo.png", 0, 140, 64, 64, 750, 175, 62, 62, 2);
+npc_Map3dummyThree.setOptions("./img/NPC/girlThree.png", 0, 140, 64, 64, 770, 135, 62, 62, 2);
+npc_Map3Jay.setOptions("./img/NPC/guyTwo.png", 0, 140, 64, 64, 90, 180, 62, 62, 2);
+npc_Map3SilentBob.setOptions("./img/NPC/guyThree.png", 0, 140, 64, 64, 50, 180, 62, 62, 2);
 
-npc_Map4theChin.setOptions("./img/chin.png", 0, 140, 64, 64, 515,20, 62, 62, 0);
-npc_Map4frontStudentOne.setOptions("./img/chin.png", 0, 140, 64, 64, 440,20, 62, 62, 0);
-npc_Map4frontStudentTwo.setOptions("./img/alden.png", 0, 140, 64, 64, 440,100, 62, 62, 0);
-npc_Map4middleStudentOne.setOptions("./img/alden.png", 0, 140, 64, 64, 370,20, 62, 62, 0);
-npc_Map4middleStudentTwo.setOptions("./img/chin.png", 0, 140, 64, 64, 370,100, 62, 62, 0);
-npc_Map4backStudentOne.setOptions("./img/chin.png", 0, 140, 64, 64, 250,100, 62, 62, 0);
+npc_Map4theChin.setOptions("./img/NPC/chin.png", 0, 140, 64, 64, 515,20, 62, 62, 0);
+npc_Map4frontStudentOne.setOptions("./img/NPC/Skeleton.png", 0, 140, 64, 64, 440,20, 62, 62, 0);
+npc_Map4frontStudentTwo.setOptions("./img/NPC/Skeleton.png", 0, 140, 64, 64, 440,100, 62, 62, 0);
+npc_Map4middleStudentOne.setOptions("./img/NPC/Skeleton.png", 0, 140, 64, 64, 370,20, 62, 62, 0);
+npc_Map4middleStudentTwo.setOptions("./img/NPC/Skeleton.png", 0, 140, 64, 64, 370,100, 62, 62, 0);
+npc_Map4backStudentOne.setOptions("./img/NPC/Skeleton.png", 0, 140, 64, 64, 250,100, 62, 62, 0);
 
-npc_Map5dummyOne.setOptions("./img/chin.png", 0, 140, 64, 64, 110,260, 62, 62, 0);
-npc_Map5dummyTwo.setOptions("./img/alden.png", 0, 140, 64, 64, 20,20, 62, 62, 0);
+npc_Map5dummyOne.setOptions("./img/NPC/chin.png", 0, 140, 64, 64, 110,260, 62, 62, 0);
+npc_Map5dummyTwo.setOptions("./img/NPC/chin.png", 0, 140, 64, 64, 20,20, 62, 62, 0);
 
-npc_Map6lib.setOptions("./img/chin.png", 0, 140, 64, 64, 150,145, 62, 62, 0);
+npc_Map6lib.setOptions("./img/NPC/chin.png", 0, 140, 64, 64, 150,145, 62, 62, 0);
 
 
 npc_Alden.face = (function () {
