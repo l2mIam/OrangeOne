@@ -871,13 +871,10 @@ npc_Map1Blocker.update = function(clockTick) {
   }
 };
 npc_Map1dummyOne.update = function(clockTick) {
-  this.spriteRoll(576, 1,  clockTick, 0.1);
 };
 npc_Map1dummyTwo.update = function(clockTick) {
-  this.spriteRoll(576, 1,  clockTick, 0.1);
 };
 npc_Map1dummyThree.update = function(clockTick) {
-  this.spriteRoll(576, 1,  clockTick, 0.1);
 };
 
 
