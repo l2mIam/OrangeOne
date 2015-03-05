@@ -1224,22 +1224,22 @@ Timer.prototype.tick = function () {
 var interactNPC;
 
 interactionButton = new Image();
-interactionButton.src = './img/doButtonInactive.png';
-interactionButton.load = true;
 
 wButton = new Image();
-wButton.src = './img/button_W.png';
-wButton.load = true;
 sButton = new Image();
-sButton.src = './img/button_S.png';
-sButton.load = true;
 aButton = new Image();
-aButton.src = './img/button_A.png';
-aButton.load = true;
 dButton = new Image();
-dButton.src = './img/button_D.png';
-dButton.load = true;
 var Game = function() {
+  wButton.src = './img/button_W.png';
+  wButton.load = true;
+  dButton.src = './img/button_D.png';
+  dButton.load = true;
+  aButton.src = './img/button_A.png';
+  aButton.load = true;
+  sButton.src = './img/button_S.png';
+  sButton.load = true;
+  interactionButton.src = './img/doButtonInactive.png';
+  interactionButton.load = true;
     //Creating an array of arrays for the entites
     this.entiteZones = [];
     this.debug = false;
@@ -1456,47 +1456,47 @@ var Game = function() {
 
       if(W_KEY in keys) {
         wButton.src = './img/pressed_W.png';
-        topctx.drawImage(wButton, 0, 0, interactionButton.width, interactionButton.height,
+        topctx.drawImage(wButton, 0, 0, wButton.width, wButton.height,
           (wButton.width * 1.5),
            topcanvas.height - (wButton.height * 2), wButton.width, wButton.height);
       } else {
         wButton.src = './img/button_W.png';
-        topctx.drawImage(wButton, 0, 0, interactionButton.width, interactionButton.height,
+        topctx.drawImage(wButton, 0, 0, wButton.width, wButton.height,
           (wButton.width * 1.5),
            topcanvas.height - (wButton.height * 2), wButton.width, wButton.height);
       }
 
       if(S_KEY in keys) {
         sButton.src = './img/pressed_S.png';
-        topctx.drawImage(sButton, 0, 0, interactionButton.width , interactionButton.height ,
+        topctx.drawImage(sButton, 0, 0, sButton.width , sButton.height ,
           (sButton.width * 1.5),
            topcanvas.height - sButton.height , sButton.width, sButton.height);
       } else {
         sButton.src = './img/button_S.png';
-        topctx.drawImage(sButton, 0, 0, interactionButton.width, interactionButton.height,
+        topctx.drawImage(sButton, 0, 0, sButton.width, sButton.height,
           (sButton.width * 1.5),
            topcanvas.height - sButton.height , sButton.width, sButton.height);
       }
 
       if(A_KEY in keys) {
         aButton.src = './img/pressed_A.png';
-        topctx.drawImage(aButton, 0, 0, interactionButton.width, interactionButton.height,
+        topctx.drawImage(aButton, 0, 0, aButton.width, aButton.height,
           (aButton.width * .5) ,
            topcanvas.height - (aButton.height * 1.5), aButton.width, aButton.height);
       } else {
         aButton.src = './img/button_A.png';
-        topctx.drawImage(aButton, 0, 0, interactionButton.width, interactionButton.height,
+        topctx.drawImage(aButton, 0, 0, aButton.width, aButton.height,
           (aButton.width * .5),
            topcanvas.height - (aButton.height * 1.5), aButton.width, aButton.height);
       }
       if(D_KEY in keys) {
         dButton.src = './img/pressed_D.png';
-        topctx.drawImage(dButton, 0, 0, interactionButton.width, interactionButton.height,
+        topctx.drawImage(dButton, 0, 0, dButton.width, dButton.height,
           (dButton.width * 2.5) ,
            topcanvas.height - (dButton.height * 1.5), dButton.width, dButton.height);
       } else {
         dButton.src = './img/button_D.png';
-        topctx.drawImage(dButton, 0, 0, interactionButton.width, interactionButton.height,
+        topctx.drawImage(dButton, 0, 0, dButton.width, dButton.height,
           (dButton.width * 2.5),
            topcanvas.height - (dButton.height * 1.5), dButton.width, dButton.height);
       }
