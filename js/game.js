@@ -1224,14 +1224,21 @@ Timer.prototype.tick = function () {
 var interactNPC;
 
 interactionButton = new Image();
+interactionButton.src = './img/doButtonInactive.png';
+interactionButton.load = true;
+
 wButton = new Image();
 wButton.src = './img/button_W.png';
+wButton.load = true;
 sButton = new Image();
 sButton.src = './img/button_S.png';
+sButton.load = true;
 aButton = new Image();
 aButton.src = './img/button_A.png';
+aButton.load = true;
 dButton = new Image();
 dButton.src = './img/button_D.png';
+dButton.load = true;
 var Game = function() {
     //Creating an array of arrays for the entites
     this.entiteZones = [];
