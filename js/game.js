@@ -1204,6 +1204,7 @@ function Timer() {
     this.gameTime = 0;
     this.maxStep = 0.05;
     this.wallLastTimestamp = 0;
+    this.maxTime = 301;
 }
 
 Timer.prototype.tick = function () {
@@ -1217,7 +1218,18 @@ Timer.prototype.tick = function () {
 };
 
 Timer.prototype.render = function () {
-
+    topctx.save();
+    topctx.font = "50px sans-serif";
+    topctx.fillStyle = "#ffffff";
+    if (this.gameTime <= this.maxTime) {
+        var timeRemaining = Math.floor((this.maxTime - this.gameTime) / 60) + ":" +
+            Math.floor(((this.maxTime - this.gameTime) % 60) / 10) +
+            Math.floor((this.maxTime - this.gameTime) % 60) % 10;
+    } else {
+        var timeRemaining = "0:00";
+    }
+    topctx.fillText(timeRemaining, topcanvas.width - 110, 50);
+    topctx.restore();
 };
 
 /**
