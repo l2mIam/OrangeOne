@@ -1225,9 +1225,13 @@ var interactNPC;
 
 interactionButton = new Image();
 wButton = new Image();
+wButton.src = './img/button_W.png';
 sButton = new Image();
+sButton.src = './img/button_S.png';
 aButton = new Image();
+aButton.src = './img/button_A.png';
 dButton = new Image();
+dButton.src = './img/button_D.png';
 var Game = function() {
     //Creating an array of arrays for the entites
     this.entiteZones = [];
