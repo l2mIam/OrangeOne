@@ -1574,6 +1574,8 @@ var Game = function() {
      */
     this.restartGame = function() {
 
+        this.gameOver = false;
+
         /**
          * NOTE: Anything that can change state needs to be reset after a game over.
          * If you notice anything missing from this list, add it! */
