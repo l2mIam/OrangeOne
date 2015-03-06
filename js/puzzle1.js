@@ -44,6 +44,9 @@ window.requestAnimFrame = (function () {
 var alden_canvas = document.getElementById('puzzle');
 alden_ctx = alden_canvas.getContext('2d');
 
+var alden_canvas_top = document.getElementById('puzzle-top');
+var alden_ctx_top = alden_canvas_top.getContext('2d');
+
 // your main puzzle object!
 var puzzle_alden;
 
@@ -85,8 +88,6 @@ function loadImages(sources, callback) {
     images[src].src = sources[src];
   }
 }
-var alden_canvas = document.getElementById('puzzle');
-var alden_ctx = alden_canvas.getContext('2d');
 
 var sources = {
   puzzle1_img1:     "./img/puzzle1/puzzle1_img1.jpg",
@@ -111,6 +112,7 @@ function init() {
   alden_state = 1;
   puzzle_correct = 0;
   alden_ctx.drawImage(images.puzzle1_img1,0,0);
+  lastX = lastY = 0;
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -132,13 +134,15 @@ var dragObject;
 var dragging;
 var mouseX;
 var mouseY;
+var lastX;
+var lastY;
 var dragHoldX;
 var dragHoldY;
-var rect = alden_canvas.getBoundingClientRect();
-var transX = alden_canvas.width /rect.width;
-var transY = alden_canvas.height / rect.height
+var rect = alden_canvas_top.getBoundingClientRect();
+var transX = alden_canvas_top.width /rect.width;
+var transY = alden_canvas_top.height / rect.height
 
-function getMousePos(alden_canvas, evt) {
+function getMousePos(alden_canvas_top, evt) {
   return {
     // client position is in actual pixels on the client
     // canvas may be stretched.
@@ -148,8 +152,8 @@ function getMousePos(alden_canvas, evt) {
   };
 }
 
-alden_canvas.addEventListener('mousedown', function(evt) {
-  var mousePos = getMousePos(alden_canvas, evt);
+alden_canvas_top.addEventListener('mousedown', function(evt) {
+  var mousePos = getMousePos(alden_canvas_top, evt);
   // var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y;
   switch(alden_state) {
     case 1:
@@ -175,7 +179,7 @@ alden_canvas.addEventListener('mousedown', function(evt) {
         alden_ctx.drawImage(images.puzzle1,0,0);
         alden_state = 5;
         // add other mouse listeners now needed, move to state 5
-        alden_canvas.addEventListener("mousedown", mouseDownListener, false);
+        alden_canvas_top.addEventListener("mousedown", mouseDownListener, false);
 
       }
       break
@@ -254,7 +258,7 @@ function mouseDownListener(evt) {
 
       window.addEventListener("mousemove", mouseMoveListener, false);
     }
-    alden_canvas.removeEventListener("mousedown", mouseDownListener, false);
+    alden_canvas_top.removeEventListener("mousedown", mouseDownListener, false);
     window.addEventListener("mouseup", mouseUpListener, false);
     console.log("mouseUpAdded");
 
@@ -272,7 +276,7 @@ function mouseDownListener(evt) {
 function mouseUpListener(evt) {
   console.log("mouseUp");
 
-  alden_canvas.addEventListener("mousedown", mouseDownListener, false);
+  alden_canvas_top.addEventListener("mousedown", mouseDownListener, false);
   window.removeEventListener("mouseup", mouseUpListener, false);
   if (dragging) {
     dragging = false;
@@ -286,9 +290,9 @@ function mouseMoveListener(evt) {
   var posX;
   var posY;
   var minX = 64;
-  var maxX = alden_canvas.width - 64;
+  var maxX = alden_canvas_top.width - 64;
   var minY = 64;
-  var maxY = alden_canvas.height - 64;
+  var maxY = alden_canvas_top.height - 64;
 
   mouseX = Math.floor((evt.clientX - rect.left) * transX),
   mouseY = Math.floor((evt.clientY - rect.top)  * transY)
@@ -299,9 +303,12 @@ function mouseMoveListener(evt) {
   posY = mouseY - dragHoldY;
   posY = (posY < minY) ? minY : ((posY > maxY) ? maxY : posY);
 
+  // Clear last drawn block before drawing next
+  alden_ctx_top.clearRect(lastX, lastY, 64, 64);
+  lastX = mouseX - dragHoldX;
+  lastY = mouseY - dragHoldY;
   // Draw selected block on mouseDrag
-  alden_ctx.drawImage(images.puzzle1,0,0);
-  alden_ctx.drawImage(images.numbers, 0 + ( (dragObject.obj - 1) *64), 0, 64, 64, mouseX - dragHoldX, mouseY - dragHoldY, 64, 64);
+  alden_ctx_top.drawImage(images.numbers, 0 + ( (dragObject.obj - 1) *64), 0, 64, 64, lastX, lastY, 64, 64);
 
 }
 
