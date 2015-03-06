@@ -145,47 +145,6 @@ var Camera = function () {
       //};
 };
 
-//
-//// TODO: Remove Dialog and instead use window.uwetech.show/hide in dialoghelper.js
-//var Dialog = function() {
-//  this.load = false;
-//  this.imgX = 0;
-//
-//  this.setOptions = function(src, srcX, srcY, dtx, dty, x, y, width, height) {
-//          this.srcX = srcX;
-//          this.srcY = srcY;
-//          this.dtx = dtx;
-//          this.dty = dty;
-//          this.x = x;
-//          this.y = y;
-//          this.width = width;
-//          this.height = height;
-//          this.draw = false;
-//
-//          this.image = new Image();
-//          this.image.src = src;
-//          //console.log(" " + src + "=" + this.image.height); // announce resource height
-//
-//      /**
-//       * Renders this sprite (using the correct animation step previously "rolled").
-//       */
-//      this.render = function() {
-//          topctx.drawImage(this.image, this.srcX, this.srcY, this.dtx, this.dty,
-//              this.x, this.y, this.width, this.height);
-//        };
-//      /**
-//       * Special function to render the background image.
-//       * @param xoffset
-//       * @param yoffset
-//       */
-//      this.renderBackground = function(xoffset, yoffset) {
-//          btmctx.drawImage(this.image, this.srcX + xoffset, this.srcY + yoffset,
-//                                          this.dtx, this.dty,
-//              this.x, this.y, this.width, this.height);
-//      };
-//  };
-//};
-
 /**
  * Creates a new sprite. What is a sprite? A sprite is an object that has a visual
  * representation (spritesheet image), has a location in the world (x, y). Some
@@ -256,7 +215,7 @@ var Sprite = function() {
           }
       }
       return true;
-    }
+    };
 
     this.movePlayer = function(clockTick) {
 
@@ -309,7 +268,7 @@ var Sprite = function() {
         }
 
         if(S_KEY in keys) { // S
-            this.spriteRoll(640, 8,  clockTick, 0.1); // even if player doesn't move, animate them!
+            this.spriteRoll(640, 8, clockTick, 0.1); // even if player doesn't move, animate them!
 
             /** Determine if moving the player will result in entering a new grid location*/
             y_new_grid = 0;
@@ -534,10 +493,12 @@ var Sprite = function() {
          * results in the queue now being empty, the game is also un-paused. */
         if (g.queuedActions.length > 0 && g.queuedActions !== undefined) {
             g.isPaused = true;
+            g.timer.isPaused = true;
             g.queuedActions.shift()();
 
             if (g.queuedActions.length === 0) {
                 g.isPaused = false;
+                g.timer.isPaused = false;
             }
         }
 
@@ -586,7 +547,6 @@ var Sprite = function() {
  * Kirsten's added this code for Background Object. This is really just to
  * render the background of a zone. I just didn't want it as part of the
  * Sprite code because it is so simple and doesn't really "do" stuff.
- *
  */
 var BackgroundObject = function() {
     this.load = false;
@@ -607,7 +567,6 @@ var BackgroundObject = function() {
     this.set = function(image_object) {
         this.image = image_object;
 
-
         this.renderBackground = function(xoffset, yoffset) {
             btmctx.drawImage(this.image, this.srcX + xoffset, this.srcY + yoffset,
                 this.dtx, this.dty,
@@ -615,47 +574,20 @@ var BackgroundObject = function() {
         };
 
         this.debugOn = function (xoffset, yoffset) {
-
             //btmctx.clearRect(0, 0, topcanvas.width, topcanvas.height);
             btmctx.font = "bold 16px sans-serif";
             btmctx.fillStyle = "#ff00ee";
 
             for (var y = Math.floor(yoffset / 32); y < sign_screen_bounds.length; y += 1) {
                 for (var x = Math.floor(xoffset / 32); x < sign_screen_bounds[0].length; x += 1) {
-
                     var value = sign_screen_bounds[y][x];
-
                     btmctx.fillText(value,x * 32 - xoffset + 10,
                         32 + y * 32 - yoffset - 10);
-
                 }
             }
-
-
-
         };
-        //this.renderGrid = function() {
-        //
-        //    topctx.clearRect(0, 0, topcanvas.width, topcanvas.height);
-        //    topctx.beginPath();
-        //
-        //    for (var x = 0; x <= this.image.width; x += 32) {
-        //        topctx.moveTo(0.5 + x, 0);
-        //        topctx.lineTo(0.5 + x, this.image.height);
-        //    }
-        //
-        //    for (var y = 0; y <= this.image.height; y += 32) {
-        //        topctx.moveTo(0, 0.5 + y);
-        //        topctx.lineTo(this.image.width, 0.5 + y);
-        //    }
-        //
-        //    topctx.strokeStyle = "black";
-        //    topctx.stroke();
-        //
-        //};
     };
 };
-
 
 var player = new Sprite();
 var npc_Chin = new Sprite();
@@ -768,11 +700,6 @@ console.log(npc_Alden.face);
 //Faces
 // alden_por.setOptions("./img/Alden-plain.png", 0, 0, 480, 638, 100, 100, 480, 638);
 
-/** Kirsten commented out
-// Backgrounds
-background.setOptions("./img/UWTmap1.jpg", 0, 0, btmcanvas.width, btmcanvas.height,
-                                        0, 0, btmcanvas.width, btmcanvas.height, 0);
-*/
 var background = new BackgroundObject();
 var initialBackground = new Image();
 initialBackground.src = "./img/ext_stairs_lower.jpg";
@@ -834,8 +761,8 @@ Blocker - If the player gets close he block you from going around.
 Stairwalker - Walks up and down the stairs.. like a normal person.
 BottomWalker - Walks left to right at the bottom of the stairs.. like a normal person.
 */
-npc_Map1StairWalker.dialog[0] = "Hi there";
-npc_Map1StairWalker.dialog[1] = "My Name is Jim";
+npc_Map1StairWalker.dialog[0] = "I feel so animated! Running up! Running down!";
+npc_Map1StairWalker.dialog[1] = "Up down, up down! Whoo, such an animated feeling!";
 
 npc_Map1dummyTwo.dialog[0] = "Can you direct me to WCG?  I'm looking for Dr. Chinn.  He's lost his marbles...or was it spilled his fruit."
 npc_Map1dummyTwo.dialog[1] = "Anyway, he needs some help solving this mystery.  I heard he gives easy A's."
@@ -846,7 +773,8 @@ npc_Map1dummyOne.dialog[1] = "computers, yeah that's it.  I heard there's a secr
 npc_Map1dummyThree.dialog[0] = "Professor Fowler is over in Cherry Parks.  He said my code is...how did he put it..."
 npc_Map1dummyThree.dialog[1] = "'Your code is strange and unexpected. It is full of bugs.  Debug them if you can'"
 
-npc_Map1BottomWalker.dialog[0] = "I could really use a beer, I think I am seeing things.";
+npc_Map1BottomWalker.dialog[0] = "This stream of cars is never ending and the walk sign won't change! " +
+                                 "I'll never be able to cross. I suggest you don't try either!";
 npc_Map1BottomWalker.faceArray[0] = npc_Map1BottomWalker.face;
 npc_Map1BottomWalker.face.src =  "./img/Robert.png";
 npc_Map1StairWalker.face.src =  "./img/Alden-plain.png";
@@ -1023,38 +951,37 @@ bottomWalker - Walks left to right at the bottom of the stairs.. like a normal p
 
 npc_Map3dummyOne.update = function(clockTick) {
   this.spriteRoll(576, 1,  clockTick, 0.1);
-}
+};
 npc_Map3dummyTwo.update = function(clockTick) {
   this.spriteRoll(512, 1,  clockTick, 0.1);
-}
+};
 npc_Map3dummyThree.update = function(clockTick) {
   this.spriteRoll(900, 1,  clockTick, 0.1);
-}
+};
 npc_Map3dummyFour.update = function(clockTick) {
   this.spriteRoll(900, 1,  clockTick, 0.1);
-}
+};
 npc_Map3dummyFive.update = function(clockTick) {
   this.spriteRoll(900, 1,  clockTick, 0.1);
-}
+};
 npc_Map3dummySix.update = function(clockTick) {
   this.spriteRoll(900, 1,  clockTick, 0.1);
-}
+};
+
+// Kirsten and Loren veto'd cussing. We found a different jay/silent bob quote.
 npc_Map3Jay.face.src =  "./img/Robert.png";
-npc_Map3Jay.dialog[0] = "Crap crap crap crap crap crap crap";
-npc_Map3Jay.dialog[1] = "......."
-npc_Map3Jay.dialog[2] = "Fifteen bucks little man, but that crap in my hand. "
-                        +"If that money doesn't show then you owe me owe me owe.";
+npc_Map3Jay.dialog[0] = "See those two over there? Yeah, they had a Star Wars themed wedding. ";
+npc_Map3Jay.dialog[1] = ".......";
+npc_Map3Jay.dialog[2] = "AND they tied the knot dressed as Storm Troopers!";
 npc_Map3Jay.faceArray[0] = npc_Map3Jay.face;
 npc_Map3Jay.faceArray[1] = npc_Map3SilentBob.face;
 npc_Map3Jay.faceArray[2] = npc_Map3Jay.face;
 
-
 npc_Map3SilentBob.faceSpot = 1;
 npc_Map3SilentBob.face.src =  "./img/Alden-plain.png";
-npc_Map3SilentBob.dialog[0] = "Crap crap crap crap crap crap crap";
-npc_Map3SilentBob.dialog[1] = "......."
-npc_Map3SilentBob.dialog[2] = "Fifteen bucks little man, but that crap in my hand. "
-                        +"If that money doesn't show then you owe me owe me owe.";
+npc_Map3SilentBob.dialog[0] = "See those two over there? Yeah, they had a Star Wars themed wedding. ";
+npc_Map3SilentBob.dialog[1] = ".......";
+npc_Map3SilentBob.dialog[2] = "AND they tied the knot dressed as Storm Troopers!";
 npc_Map3SilentBob.faceArray[0] = npc_Map3Jay.face;
 npc_Map3SilentBob.faceArray[1] = npc_Map3SilentBob.face;
 npc_Map3SilentBob.faceArray[2] = npc_Map3Jay.face;
@@ -1062,7 +989,7 @@ npc_Map3SilentBob.faceArray[2] = npc_Map3Jay.face;
 
 npc_Map3Jay.update = function(clockTick) {
   this.spriteRoll(900, 1,  clockTick, 0.1);
-}
+};
 
 
 npc_Map3SilentBob.update = function(clockTick) {
@@ -1205,6 +1132,7 @@ function Timer() {
     this.maxStep = 0.05;
     this.wallLastTimestamp = 0;
     this.maxTime = 301;
+    this.isPaused = false;
 }
 
 Timer.prototype.tick = function () {
@@ -1221,12 +1149,13 @@ Timer.prototype.render = function () {
     topctx.save();
     topctx.font = "50px sans-serif";
     topctx.fillStyle = "#ffffff";
+    var timeRemaining = "0:00";
     if (this.gameTime <= this.maxTime) {
-        var timeRemaining = Math.floor((this.maxTime - this.gameTime) / 60) + ":" +
+        timeRemaining = Math.floor((this.maxTime - this.gameTime) / 60) + ":" +
             Math.floor(((this.maxTime - this.gameTime) % 60) / 10) +
             Math.floor((this.maxTime - this.gameTime) % 60) % 10;
     } else {
-        var timeRemaining = "0:00";
+        g.gameOver = true;
     }
     topctx.fillText(timeRemaining, topcanvas.width - 110, 50);
     topctx.restore();
@@ -1363,29 +1292,29 @@ var controller = new Controller();
 
 
 var Game = function() {
-  //wButton.src = './img/button_W.png';
-  //wButton.load = true;
-  //dButton.src = './img/button_D.png';
-  //dButton.load = true;
-  //aButton.src = './img/button_A.png';
-  //aButton.load = true;
-  //sButton.src = './img/button_S.png';
-  //sButton.load = true;
-  //interactionButton.src = './img/doButtonInactive.png';
-  //interactionButton.load = true;
-    //Creating an array of arrays for the entites
-    this.entiteZones = [];
+    /** Game-wide debugger flag. */
     this.debug = false;
     console.log("DEBUG IS OFF. Hit the Tilde (~ `) key to turn it on!");
     /** Tracks if game is currently in a paused state. */
     this.isPaused = false;
+    /** The ID number of the currently loaded zone. */
+    this.currentZone;
+    /** Set to "true" if the player has triggered gameover and game needs to be reset. */
+    this.gameOver = false;
+    /** Represents which puzzles have been flagged as completed. */
+    this.puzzleWins = [false, false, false];
+    /** Defined only while a puzzle is currently active. */
+    this.currentPuzzle = undefined;
+
     /** Array of queued actions. Sets isPaused to true when queuedActions length is > 0. */
     this.queuedActions = [];
+    /** Creating an array of arrays for the entites. */
+    this.entiteZones = [];
 
-    /*
-    I made it so that at each index it would hold the entities
-    for the appropriate zone
-    */
+    /**
+     * I made it so that at each index it would hold the entities
+     * for the appropriate zone
+     */
     this.entiteZones[1] = this.zoneOneEntites = [];
     this.entiteZones[2] = this.zoneTwoEntites = [];
     this.entiteZones[3] = this.zoneThreeEntites = [];
@@ -1394,8 +1323,35 @@ var Game = function() {
     this.entiteZones[6] = this.zoneSixEntites = [];
     this.entiteZones[7] = this.zoneSevenEntites = [];
     this.entiteZones[8] = this.zoneEightEntites = [];
-    // Game or zone wide entities?
-    this.currentZone;
+
+    /**
+     * Collection of methods to handle adding entities to specific zones.
+     * @param entity
+     */
+    this.addEntityZoneOne = function (entity) {
+        this.zoneOneEntites.push(entity);
+    };
+    this.addEntityZoneTwo = function (entity) {
+        this.zoneTwoEntites.push(entity);
+    };
+    this.addEntityZoneThree = function (entity) {
+        this.zoneThreeEntites.push(entity);
+    };
+    this.addEntityZoneFour = function (entity) {
+        this.zoneFourEntites.push(entity);
+    };
+    this.addEntityZoneFive = function (entity) {
+        this.zoneFiveEntites.push(entity);
+    };
+    this.addEntityZoneSix = function (entity) {
+        this.zoneSixEntites.push(entity);
+    };
+    this.addEntityZoneSeven = function (entity) {
+        this.zoneSevenEntites.push(entity);
+    };
+    this.addEntityZoneEight = function (entity) {
+        this.zoneEightEntites.push(entity);
+    };
 
     /**
      * Fetches a zone's data by it's ID and loads it in. This will update the
@@ -1421,6 +1377,7 @@ var Game = function() {
 
             /** insert cool code to go to black screen briefly here... */
             if (this.currentZone !== undefined) { // don't show on the first load
+                g.timer.isPaused = true;
                 g.isPaused = true;
                 loadctx.fillStyle = "#000000";
                 loadctx.fillRect(0, 0, topcanvas.width, topcanvas.height);
@@ -1431,6 +1388,7 @@ var Game = function() {
                 setTimeout(function () {
                     loadctx.clearRect(0, 0, loadcanvas.width, loadcanvas.height);
                     g.isPaused = false;
+                    g.timer.isPaused = false;
                 }, 300);
             }
 
@@ -1504,8 +1462,22 @@ var Game = function() {
      * The callback rate may be reduced to a lower rate when running in background tabs."
      */
     this.loop = function() {
+        if (g.gameOver === true) {
+            g.restartGame();
+        }
+
+        var elapsedTime = 0;
+        if (this.timer.isPaused === false) {
+            elapsedTime = this.timer.tick();
+        }
+
+        if (g.currentPuzzle !== undefined) {
+            g.currentPuzzle.update(elapsedTime);
+            g.currentPuzzle.render();
+        }
+
         if (g.isPaused === false) {
-            this.update(this.timer.tick());
+            this.update(elapsedTime);
             this.render();
         }
         requestAnimFrame(this.loop.bind(this));
@@ -1513,47 +1485,18 @@ var Game = function() {
 
     /**
      * TODO: Describe this function.
-     * @param entity
-     */
-    this.addEntityZoneOne = function (entity) {
-        this.zoneOneEntites.push(entity);
-    };
-    this.addEntityZoneTwo = function (entity) {
-        this.zoneTwoEntites.push(entity);
-    };
-    this.addEntityZoneThree = function (entity) {
-        this.zoneThreeEntites.push(entity);
-    };
-    this.addEntityZoneFour = function (entity) {
-        this.zoneFourEntites.push(entity);
-    };
-    this.addEntityZoneFive = function (entity) {
-        this.zoneFiveEntites.push(entity);
-    };
-    this.addEntityZoneSix = function (entity) {
-        this.zoneSixEntites.push(entity);
-    };
-    this.addEntityZoneSeven = function (entity) {
-        this.zoneSevenEntites.push(entity);
-    };
-    this.addEntityZoneEight = function (entity) {
-        this.zoneEightEntites.push(entity);
-    };
-
-    /**
-     * TODO: Describe this function.
      * @param clockTick
      */
     this.update = function(clockTick) {
-      this.cam.getPosition(player);
-      interactNPC = undefined;
-      //player.bounds();
-      player.movePlayer(clockTick);
-      player.check_units();
+        this.cam.getPosition(player);
+        interactNPC = undefined;
+        //player.bounds();
+        player.movePlayer(clockTick);
+        player.check_units();
 
-      /*
-      Get the current zone you are in and draw the entites
-      */
+        /*
+         Get the current zone you are in and draw the entites
+         */
 
         if (this.currentZone.id <= this.entiteZones.length) { // kirsten adding in catches
             var getEntityArray = this.entiteZones[this.currentZone.id]
@@ -1567,11 +1510,10 @@ var Game = function() {
                 }
             }
         }
-
     };
 
     /**
-     * TODO: Describe this function.
+     * Handles rendering the game.
      */
     this.render = function() {
         topctx.clearRect(0, 0, topcanvas.width, topcanvas.height);
@@ -1643,7 +1585,10 @@ var Game = function() {
         this.timer.wallLastTimestamp = 0;
 
         /** 2) Reset the win conditions back to none. */
-        // TODO: First we need to add variables that track which win conditions are done.
+        this.puzzleWins[0] = false;
+        this.puzzleWins[1] = false;
+        this.puzzleWins[2] = false;
+        this.currentPuzzle = undefined;
 
         /** 3) Reset the queued actions array. */
         this.queuedActions = [];
@@ -1667,8 +1612,9 @@ var Game = function() {
         this.currentZone = undefined; // when undefined, prevents loading screen.
         this.loadZone(1, 10, 27); // player starts in zone 1 at x=10, y=27
 
-        /** 10) Un-pause the game. */  // TODO: Not sure if we need this or not.
+        /** 10) Un-pause the timer and game. */  // TODO: Not sure if we need this or not.
         g.isPaused = false;
+        g.timer.isPaused = false;
 
     };
 
