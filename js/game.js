@@ -1,3 +1,4 @@
+
 // Relate animation drawing to window frame rate
 window.requestAnimFrame = (function () {
     return window.requestAnimationFrame  ||
@@ -20,6 +21,9 @@ window.addEventListener('keyup', function (e) {
 /** Array containing all currently pressed keys. This is for animations/movement. */
 var keys = window.uwetech.Input.keys; // code is in input.js
 
+var BOX_WIDTH = 29; // width of the player bounding box for collisions
+var BOX_HEIGHT = 24; // height of the player bounding box for collisions
+
 //  constants!     W 87, S 83, A 65, D 68, space 32
 var W_KEY = 87;
 var S_KEY = 83;
@@ -27,8 +31,6 @@ var A_KEY = 65;
 var D_KEY = 68;
 var SPACE_KEY = 32;
 var DEBUG_KEY = 192;  // ` key ~ key  is the debug key
-
-//var dialogs = []; // TODO: What is this?
 
 /** Bottom canvas is for the background. NO ANIMATIONS. */
 var btmcanvas = document.getElementById('bottomlayer'),
@@ -45,7 +47,6 @@ var topcanvas = document.getElementById('toplayer'),
 /** Loading screen canvas, or something. */
 var loadcanvas = document.getElementById('loadlayer'),
     loadctx = loadcanvas.getContext('2d');
-
 
 /** BTW: Other canvases exist you don't know about are in the HTML file. */
 
@@ -68,6 +69,22 @@ function distance(a, b) {
     var dx = a.x - b.x;
     var dy = a.y - b.y;
     return Math.sqrt(dx * dx + dy * dy);
+}
+
+//http://stackoverflow.com/questions/306316/determine-if-two-rectangles-overlap-each-other
+function is_collide(a, b) {
+
+  var ax_1 = a.x - 15;
+  var ax_2 = a.x + BOX_WIDTH + 45; // + 32 is player width but 31 is smoother
+  var ay_1 = a.y + 10;
+  var ay_2 = a.y + BOX_HEIGHT + 70; // + 32 is height of player's box (ignores head collisions)
+
+  var bx_1 = b.x;
+  var bx_2 = b.x + BOX_WIDTH; // + 32 is player width but 31 is smoother
+  var by_1 = b.y;
+  var by_2 = b.y + BOX_HEIGHT;
+
+  return (ax_1 < bx_2 && ax_2 > bx_1 && ay_1 < by_2 && ay_2 > by_1);
 }
 
 /**
@@ -128,47 +145,6 @@ var Camera = function () {
       //};
 };
 
-//
-//// TODO: Remove Dialog and instead use window.uwetech.show/hide in dialoghelper.js
-//var Dialog = function() {
-//  this.load = false;
-//  this.imgX = 0;
-//
-//  this.setOptions = function(src, srcX, srcY, dtx, dty, x, y, width, height) {
-//          this.srcX = srcX;
-//          this.srcY = srcY;
-//          this.dtx = dtx;
-//          this.dty = dty;
-//          this.x = x;
-//          this.y = y;
-//          this.width = width;
-//          this.height = height;
-//          this.draw = false;
-//
-//          this.image = new Image();
-//          this.image.src = src;
-//          //console.log(" " + src + "=" + this.image.height); // announce resource height
-//
-//      /**
-//       * Renders this sprite (using the correct animation step previously "rolled").
-//       */
-//      this.render = function() {
-//          topctx.drawImage(this.image, this.srcX, this.srcY, this.dtx, this.dty,
-//              this.x, this.y, this.width, this.height);
-//        };
-//      /**
-//       * Special function to render the background image.
-//       * @param xoffset
-//       * @param yoffset
-//       */
-//      this.renderBackground = function(xoffset, yoffset) {
-//          btmctx.drawImage(this.image, this.srcX + xoffset, this.srcY + yoffset,
-//                                          this.dtx, this.dty,
-//              this.x, this.y, this.width, this.height);
-//      };
-//  };
-//};
-
 /**
  * Creates a new sprite. What is a sprite? A sprite is an object that has a visual
  * representation (spritesheet image), has a location in the world (x, y). Some
@@ -194,12 +170,21 @@ var Sprite = function() {
             this.height = height;
             this.speed = speed;
             this.facing = "south";
+            this.dialog = [];
+            this.talkTo = false;
+            this.faceSpot = 0;// Used to check if you want the dialog on left or right
+                                // O is left 1 is right
+            this.faceArray = []; // Used to check which face you want to show
+            this.face = new Image();
             this.visualRadius = 50; // TODO: What is this?
+                                    // ^^ If I remember correctly this was for Duncan's
+                                    // bounding box, so if the npc is within 50 of you
+                                    // he will stop.
 
             this.x_hook = 0;
             this.y_hook = 0;
 
-            this.elapsedTime = 0; // TODO: What is this? How does it relate to sprite?
+            this.elapsedTime = 0; // TODO: This tracks how fast it should animate - Dylan.
             this.image = new Image();
             this.image.src = src;
             //console.log(" " + src + "=" + this.image.height); // announce resource height
@@ -213,71 +198,26 @@ var Sprite = function() {
 
         };
     };
-    // TODO: OLD move code for reference only. New code is further down.
-    /**
-     *
-     * @param clockTick
-     */
-    //this.move = function(clockTick) {
-    //    console.log("(" + player.x + "," + player.y + ") [" + player.y/32 + "," + player.x/32 + "]");
-    //    //console.log(player.x/32);
-    //    //console.log(player.y);
-    //    //console.log(player.y/32);
-    //  var x = Math.floor(player.x/32) + 1;
-    //  var y = Math.floor(player.y/32) + 1;
-    //
-    //
-    //  if(87 in keys) { // W
-    //      this.spriteRoll(512, 8, clockTick, 0.1);
-    //      if (y > 0 && sign_screen_bounds[y - 1][x] === 0) {
-    //        this.y -= this.speed;
-    //      }
-    //      this.facing = "north";
-    //  }
-    //
-    //  if(83 in keys) { // S
-    //      this.spriteRoll(640, 8,  clockTick, 0.1);
-    //      if (y < 28 && sign_screen_bounds[y + 1][x] === 0) {
-    //        this.y += this.speed;
-    //      }
-    //      this.facing = "south";
-    //  }
-    //
-    //  if(65 in keys) { // A
-    //      this.spriteRoll(576, 8,  clockTick, 0.1);
-    //      if (x > 0 && sign_screen_bounds[y][x - 1] === 0) {
-    //        this.x -= this.speed;
-    //      }
-    //      this.facing = "west";
-    //  }
-    //
-    //  if(68 in keys) { // D
-    //      this.spriteRoll(704, 8,  clockTick, 0.1);
-    //      if (x < 18 && sign_screen_bounds[y][x + 1] === 0) {
-    //        this.x += this.speed;
-    //      }
-    //      this.facing = "east";
-    //  }
-    //
-    //
-    //  if(32 in keys) { // Spacebar
-    //    this.interact();
-    //    console.log("space");
-    //
-    //      g.loadZone(2, 1, 8);
-    //  }
-    //};
+
+    this.check_units = function() {
+      var getEntityArray = g.entiteZones[g.currentZone.id]
+      if (getEntityArray !== undefined) {
+        var entitiesCount = getEntityArray.length;
+      }
+      for (var i = 0; i < entitiesCount; i++) {
+          var entity = getEntityArray[i];
+          if(entity.load) {
+            entity.render();
+            if(is_collide(entity, player)) {
+              interactNPC = entity;
+              return false;
+            }
+          }
+      }
+      return true;
+    };
 
     this.movePlayer = function(clockTick) {
-        //console.log("(" + player.x + "," + player.y + ") [" + player.y/32 + "," + player.x/32 + "]");
-        //console.log(player.x/32);
-        //console.log(player.y);
-        //console.log(player.y/32);
-        //var oldx = this.x; // kirsten debug code
-        //var oldy = this.y; // kirsten debug code
-        var BOX_WIDTH = 30; // width of the player bounding box for collisions
-        var BOX_HEIGHT = 24; // height of the player bounding box for collisions
-
 
         /** Collision detection needs to consider the whole square the character occupies. */
         var x_leftmost = Math.floor(player.x/32);
@@ -291,7 +231,8 @@ var Sprite = function() {
         var exit; // tracks if the player's movement has triggered an exit and zone change
 
         /** Checks which keys are being currently pressed and moves player if new location is valid. */
-        if(W_KEY in keys) { // W
+        if(W_KEY in keys) {
+          // W
             this.spriteRoll(512, 8, clockTick, 0.1); // even if player doesn't move, animate them!
 
             /** Determine if moving the player will result in entering a new grid location. */
@@ -302,17 +243,18 @@ var Sprite = function() {
                 y_new_grid =  1;
             }
 
-            /** If player would move off screen, move to edge instead, IF edge is a valid location */
             if ((player.y - (this.speed)) > 0) {
                 /** Check that the player can move based on left AND right bounding box */
                 if (sign_screen_bounds[y_upmost - y_new_grid][x_leftmost] === 0 &&
                     sign_screen_bounds[y_upmost - y_new_grid][x_rightmost] === 0) {
                     this.y -= this.speed;
                 }
+
+
             } else { /** player is trying to move off screen, align them to edge if valid location. */
                 if (sign_screen_bounds[0][x_leftmost] === 0 &&
                     sign_screen_bounds[0][x_rightmost] === 0) {
-                    this.y = 0;
+                    this.y = 1;
                 }
             }
 
@@ -326,18 +268,18 @@ var Sprite = function() {
         }
 
         if(S_KEY in keys) { // S
-            this.spriteRoll(640, 8,  clockTick, 0.1); // even if player doesn't move, animate them!
+            this.spriteRoll(640, 8, clockTick, 0.1); // even if player doesn't move, animate them!
 
             /** Determine if moving the player will result in entering a new grid location*/
             y_new_grid = 0;
             // if player would enter new grid and that grid isn't offscreen
             if (Math.floor((player.y + BOX_HEIGHT + this.speed) / 32) !== y_downmost &&
-                          ((y_downmost + 1) <= sign_screen_bounds.length - 1)) {
+                          ((y_downmost + 1) <= (sign_screen_bounds.length - 1))) {
                 y_new_grid = 1;
             }
 
             /** If player would move off screen, move to edge instead, IF edge is a valid location */
-            if ((player.y + BOX_HEIGHT + this.speed) < background.image.height) { // "+32" player height no head
+            if ((player.y + BOX_HEIGHT + this.speed) < (background.image.height - 1)) { // "+32" player height no head
                 /** Check that the player can move based on left AND right bounding box */
                 if (sign_screen_bounds[y_downmost + y_new_grid][x_leftmost] === 0 &&
                     sign_screen_bounds[y_downmost + y_new_grid][x_rightmost] === 0) {
@@ -346,7 +288,7 @@ var Sprite = function() {
             } else { /** player is trying to move off screen, align them to edge if valid location. */
                 if (sign_screen_bounds[sign_screen_bounds.length - 1][x_leftmost] === 0 &&
                     sign_screen_bounds[sign_screen_bounds.length - 1][x_rightmost] === 0) {
-                    this.y = background.image.height - BOX_HEIGHT; // "-32" is height of player minus head
+                    this.y = (background.image.height - 1) - BOX_HEIGHT; // "-32" is height of player minus head
                 }
             }
 
@@ -403,7 +345,7 @@ var Sprite = function() {
             }
 
             /** If player would move off screen, move to edge instead, IF edge is a valid location */
-            if ((player.x + BOX_WIDTH + this.speed) < background.image.width) { // "+32" is width of player
+            if ((player.x + BOX_WIDTH + this.speed) < (background.image.width - 1)) { // "+32" is width of player
                 /** Check that the player can move based on top AND bottom bounding box */
                 if (sign_screen_bounds[y_upmost][x_rightmost + x_new_grid] === 0 &&
                     sign_screen_bounds[y_downmost][x_rightmost + x_new_grid] === 0) {
@@ -412,7 +354,7 @@ var Sprite = function() {
             } else { /** player is trying to move off screen, align them to edge if valid location. */
                 if (sign_screen_bounds[y_upmost][sign_screen_bounds[y_upmost].length - 1] === 0 &&
                     sign_screen_bounds[y_downmost][sign_screen_bounds[y_upmost].length - 1] === 0) {
-                    this.x = background.image.width - 32; // "-32" is width of player
+                    this.x = (background.image.width - 1) - BOX_WIDTH; // "-32" is width of player
                 }
             }
 
@@ -437,33 +379,12 @@ var Sprite = function() {
 
     };
 
-    this.interact = function() {
+    /**
+     * This code is triggered when the interact button/key was pressed.
+     */
+    this.interact = function(interactNPC) {
 
-        /** Kirsten testing queued actions for multiple text pop-ups.*/
-        if (npc_Alden.talking === undefined) {
-            npc_Alden.talking = true;
-        }
-        if (npc_Alden.talking === true) {
-            //console.log(npc_Alden.face); // kirsten test code
-            g.queuedActions.push(function (){window.uwetech.dialog.show(
-                "I am testing the length requirements for this section of all of the awesome " +
-                "stuff we are doing it is quite amazing yes?!", npc_Alden.face);}); // kirsten test code
-
-            g.queuedActions.push(function (){window.uwetech.dialog.show(
-                "I'm a little teappot, short and stout. Here is my handle and here is my stout." +
-                " When I get all steamed up, here me shout! Tip me over and pour me out. This is a " +
-                "test of the second dialog while talking to same npc trick. Yay for queues!!!", npc_Alden.face);});
-            g.queuedActions.push(function () {window.uwetech.dialog.hide();}); // kirsten test code
-            //console.log(g.queuedActions[0]);
-            npc_Alden.talking = false;
-        } else if (npc_Alden.talking === false) {
-            // topctx.clearRect(0, 0, topcanvas.width, topcanvas.height);
-            if (g.queuedActions.length <= 1) {
-                npc_Alden.talking = true; // make him talk on next spacebar press
-            }
-        }
-        // somehow kirsten deleted the above code. OOPS.
-
+        /** Dylan/Duncan code. */
         if(this.facing === "north") {
             var space = this.y * 32 + 32
         } else if (this.facing === "south") {
@@ -473,15 +394,112 @@ var Sprite = function() {
         } else {
             var space = this.x * 32 - 32
         }
+            /*
+              Kirsten's Interaction Code
+            */
+        // /** Kirsten testing queued actions for multiple text pop-ups.*/
+        //   if (npc_Alden.talking === undefined) {
+        //       npc_Alden.talking = true;   // test code forces Alden to start talking.
+        //   }
+        //   if (npc_Alden.talking === true) { // queues up some dialog since Alden is talking.
+        //     //console.log(npc_Alden.face); // kirsten test code
+        //         g.queuedActions.push(function (){window.uwetech.dialog.show(
+        //           "I am testing the word wrap functionality of the dialog.show method. If everything " +
+        //           "works out, then this should word wrap in a very nice way. This box displays, at most, " +
+        //           "four lines of text, with words being wrapped after 75 characters.", npc_Alden.face);});
+        //     // kirsten test code
+        //
+        //       g.queuedActions.push(function (){window.uwetech.dialog.showRight(
+        //           "This dialog box is for showing how queuedActions could work with multiple dialog " +
+        //           "boxes you want to display in a series. I am also showing the functionality of" +
+        //           "aligning a portrait to the right instead of the left. Neat huh?", npc_Alden.face);});
+        //     // Of course, always make sure you call a dialog.hide() when you are done showing text!!
+        //       g.queuedActions.push(function () {window.uwetech.dialog.hide();});
+        //     //console.log(g.queuedActions[0]);
+        //       npc_Alden.talking = false;
+        //   } else if (npc_Alden.talking === false) {
+        //     // test code to start alden talking again if the queue will be empty after this cycle.
+        //       if (g.queuedActions.length <= 1) {
+        //           npc_Alden.talking = true; // make him talk on next spacebar press
+        //       }
+        //   }
 
-        if (g.queuedActions.length > 0) {
+
+        if(interactNPC === undefined) {
+
+        /** Kirsten testing queued actions for multiple text pop-ups.*/
+          if (npc_Alden.talking === undefined) {
+              npc_Alden.talking = true;   // test code forces Alden to start talking.
+          }
+          if (npc_Alden.talking === true) { // queues up some dialog since Alden is talking.
+            //console.log(npc_Alden.face); // kirsten test code
+                g.queuedActions.push(function (){window.uwetech.dialog.show(
+                  "You hear students in the distance having fun without you.", npc_Alden.face);});
+            // kirsten test code
+
+              g.queuedActions.push(function (){window.uwetech.dialog.showRight(
+                  "Maybe you should go talk to them.", npc_Alden.face);});
+            // Of course, always make sure you call a dialog.hide() when you are done showing text!!
+              g.queuedActions.push(function () {window.uwetech.dialog.hide();});
+            //console.log(g.queuedActions[0]);
+              npc_Alden.talking = false;
+          } else if (npc_Alden.talking === false) {
+            // test code to start alden talking again if the queue will be empty after this cycle.
+              if (g.queuedActions.length <= 1) {
+                  npc_Alden.talking = true; // make him talk on next spacebar press
+              }
+          }
+      } else {
+        if (npc_Alden.talking === undefined) {
+            npc_Alden.talking = true;   // test code forces Alden to start talking.
+        }
+        if (npc_Alden.talking === true) {
+          var dialogSize = interactNPC.dialog.length;
+          for(var i = 0; i < dialogSize; i++) {
+
+            var text = interactNPC.dialog[i];
+            var face = interactNPC.faceArray[i];
+            var faceSpot = interactNPC.faceSpot;
+
+            if(faceSpot === 0 ){
+              g.queuedActions.push((function (text, face) {
+                     return function () {
+                         window.uwetech.dialog.showRight(text, face);
+                     };
+                  })(text, face));
+            }
+            if(faceSpot === 1) {
+              g.queuedActions.push((function (text, face) {
+                     return function () {
+                         window.uwetech.dialog.show(text, face);
+                     };
+                  })(text, face));
+            }
+
+            console.log(text);
+          }
+          interactNPC.talkTo ^= true;
+          g.queuedActions.push(function () {window.uwetech.dialog.hide();});
+          npc_Alden.talking = false;
+        } else if (npc_Alden.talking === false) {
+          // test code to start alden talking again if the queue will be empty after this cycle.
+            if (g.queuedActions.length <= 1) {
+                npc_Alden.talking = true; // make him talk on next spacebar press
+            }
+        }
+      }
+        /** This logic will check if any actions are currently queued and pause the game.
+         * Then the action at the front of the queue is called. If the action just called
+         * results in the queue now being empty, the game is also un-paused. */
+        if (g.queuedActions.length > 0 && g.queuedActions !== undefined) {
             g.isPaused = true;
+            g.timer.isPaused = true;
             g.queuedActions.shift()();
 
             if (g.queuedActions.length === 0) {
                 g.isPaused = false;
+                g.timer.isPaused = false;
             }
-            //action();
         }
 
 
@@ -522,21 +540,6 @@ var Sprite = function() {
     this.update = function() {
 
     };
-
-    /**
-     * TODO: No longer being used. Here for reference only.
-     */
-    //this.bounds = function() {
-    //    var oldx = this.x;
-    //    var oldy = this.y;
-    //    this.x = m.clamp(this.x, 0 - this.width/2 + 20, 608 - 18 - this.width/2);
-    //    this.y = m.clamp(this.y, 0 - this.height/2 + 20, 928 - 35 - this.height/2);
-    //    if (Math.floor(oldx/32) !== Math.floor(this.x/32) ||
-    //        Math.floor(oldy/32) !== Math.floor(this.y/32)) {
-    //        console.log("(" + player.x + "," + player.y + ") [" +
-    //                    player.y / 32 + "," + player.x / 32 + "]");
-    //    }
-    //};
 };
 
 
@@ -544,7 +547,6 @@ var Sprite = function() {
  * Kirsten's added this code for Background Object. This is really just to
  * render the background of a zone. I just didn't want it as part of the
  * Sprite code because it is so simple and doesn't really "do" stuff.
- *
  */
 var BackgroundObject = function() {
     this.load = false;
@@ -565,7 +567,6 @@ var BackgroundObject = function() {
     this.set = function(image_object) {
         this.image = image_object;
 
-
         this.renderBackground = function(xoffset, yoffset) {
             btmctx.drawImage(this.image, this.srcX + xoffset, this.srcY + yoffset,
                 this.dtx, this.dty,
@@ -573,47 +574,20 @@ var BackgroundObject = function() {
         };
 
         this.debugOn = function (xoffset, yoffset) {
-
             //btmctx.clearRect(0, 0, topcanvas.width, topcanvas.height);
             btmctx.font = "bold 16px sans-serif";
             btmctx.fillStyle = "#ff00ee";
 
             for (var y = Math.floor(yoffset / 32); y < sign_screen_bounds.length; y += 1) {
                 for (var x = Math.floor(xoffset / 32); x < sign_screen_bounds[0].length; x += 1) {
-
                     var value = sign_screen_bounds[y][x];
-
                     btmctx.fillText(value,x * 32 - xoffset + 10,
                         32 + y * 32 - yoffset - 10);
-
                 }
             }
-
-
-
         };
-        //this.renderGrid = function() {
-        //
-        //    topctx.clearRect(0, 0, topcanvas.width, topcanvas.height);
-        //    topctx.beginPath();
-        //
-        //    for (var x = 0; x <= this.image.width; x += 32) {
-        //        topctx.moveTo(0.5 + x, 0);
-        //        topctx.lineTo(0.5 + x, this.image.height);
-        //    }
-        //
-        //    for (var y = 0; y <= this.image.height; y += 32) {
-        //        topctx.moveTo(0, 0.5 + y);
-        //        topctx.lineTo(this.image.width, 0.5 + y);
-        //    }
-        //
-        //    topctx.strokeStyle = "black";
-        //    topctx.stroke();
-        //
-        //};
     };
 };
-
 
 var player = new Sprite();
 var npc_Chin = new Sprite();
@@ -621,6 +595,9 @@ var npc_Alden = new Sprite();
 
 var npc_Map1StairWalker = new Sprite();
 var npc_Map1BottomWalker = new Sprite();
+var npc_Map1dummyOne = new Sprite();
+var npc_Map1dummyTwo = new Sprite();
+var npc_Map1dummyThree = new Sprite();
 var npc_Map1Blocker = new Sprite();
 
 var npc_Map2Cashier = new Sprite();
@@ -630,6 +607,11 @@ var npc_Map3BottomWalker = new Sprite();
 var npc_Map3dummyOne = new Sprite();
 var npc_Map3dummyTwo = new Sprite();
 var npc_Map3dummyThree = new Sprite();
+var npc_Map3dummyFour = new Sprite();
+var npc_Map3dummyFive = new Sprite();
+var npc_Map3dummySix = new Sprite();
+var npc_Map3Jay = new Sprite();
+var npc_Map3SilentBob = new Sprite();
 
 var npc_Map4theChin = new Sprite();
 var npc_Map4frontStudentOne = new Sprite();
@@ -643,6 +625,15 @@ var npc_Map5dummyTwo = new Sprite();
 
 var npc_Map6lib = new Sprite();
 
+var npc_Map7dummyOne = new Sprite();
+var npc_Map7dummyTwo = new Sprite();
+var npc_Map7dummyThree = new Sprite();
+var npc_Map7dummyFour = new Sprite();
+
+var npc_Map8dummyOne = new Sprite();
+var npc_Map8dummyTwo = new Sprite();
+var npc_Map8dummyThree = new Sprite();
+var npc_Map8dummyFour = new Sprite();
 //var background = new Sprite();
 
 // var alden_por = new Dialog();
@@ -655,31 +646,48 @@ player.setOptions("./img/purple_orc.png", 0, 640, 64, 64,
                                     0, 0, 64, 64, 3);
 //npc_Mobus.setOptions("./img/mobus.png", 0, 640, 64, 64, 350, 10, 62, 62, 1);
 
-npc_Map1StairWalker.setOptions("./img/chin.png", 0, 140, 64, 64, 350,10, 62, 62, 1);
-npc_Map1BottomWalker.setOptions("./img/alden.png", 0, 140, 64, 64, 300, 880, 62, 62, 2);
-npc_Map1Blocker.setOptions("./img/alden.png", 0, 140, 64, 64, 530, 141, 62, 62, 2);
+npc_Map1StairWalker.setOptions("./img/NPC/guyOne.png", 0, 140, 64, 64, 350,10, 62, 62, 1);
+npc_Map1BottomWalker.setOptions("./img/NPC/spriteRobert.png", 0, 140, 64, 64, 300, 1020, 62, 62, 2);
+npc_Map1Blocker.setOptions("./img/NPC/girlOne.png", 0, 140, 64, 64, 530, 141, 62, 62, 2);
+npc_Map1dummyOne.setOptions("./img/NPC/girlOne.png", 0, 140, 64, 64, 100, 500, 62, 62, 2);
+npc_Map1dummyTwo.setOptions("./img/NPC/monk.png", 0, 140, 64, 64, 150, 900, 62, 62, 2);
+npc_Map1dummyThree.setOptions("./img/NPC/Skeleton.png", 0, 140, 64, 64, 150, 150, 62, 62, 2);
 
 
-npc_Map2Cashier.setOptions("./img/chin.png", 0, 140, 64, 64, -15,155, 62, 62, 0);
-npc_Map2Bookman.setOptions("./img/alden.png", 0, 140, 64, 64, 430, 40, 62, 62, 0);
+npc_Map2Cashier.setOptions("./img/NPC/guyTwo.png", 0, 140, 64, 64, -15,155, 62, 62, 0);
+npc_Map2Bookman.setOptions("./img/NPC/girlTwo.png", 0, 140, 64, 64, 430, 40, 62, 62, 0);
 
-npc_Map3BottomWalker.setOptions("./img/alden.png", 0, 140, 64, 64, 900, 600, 62, 62, 2);
+npc_Map3BottomWalker.setOptions("./img/NPC/monk.png", 0, 140, 64, 64, 900, 600, 62, 62, 2);
+npc_Map3dummyOne.setOptions("./img/NPC/girlOne.png", 0, 140, 64, 64, 800, 150, 62, 62, 2);
+npc_Map3dummyTwo.setOptions("./img/NPC/girlTwo.png", 0, 140, 64, 64, 750, 175, 62, 62, 2);
+npc_Map3dummyThree.setOptions("./img/NPC/girlThree.png", 0, 140, 64, 64, 770, 135, 62, 62, 2);
+npc_Map3dummyFour.setOptions("./img/NPC/girlThree.png", 0, 140, 64, 64, 900, 400, 62, 62, 2);
+npc_Map3dummyFive.setOptions("./img/NPC/Skeleton.png", 0, 140, 64, 64, 400, 500, 62, 62, 2);
+npc_Map3dummySix.setOptions("./img/NPC/monk.png", 0, 140, 64, 64, 400, -20, 62, 62, 2);
+npc_Map3Jay.setOptions("./img/NPC/guyTwo.png", 0, 140, 64, 64, 90, 180, 62, 62, 2);
+npc_Map3SilentBob.setOptions("./img/NPC/guyThree.png", 0, 140, 64, 64, 50, 180, 62, 62, 2);
 
-npc_Map3dummyOne.setOptions("./img/alden.png", 0, 140, 64, 64, 800, 150, 62, 62, 2);
-npc_Map3dummyTwo.setOptions("./img/alden.png", 0, 140, 64, 64, 750, 175, 62, 62, 2);
-npc_Map3dummyThree.setOptions("./img/alden.png", 0, 140, 64, 64, 770, 135, 62, 62, 2);
+npc_Map4theChin.setOptions("./img/NPC/chin.png", 0, 140, 64, 64, 515,20, 62, 62, 0);
+npc_Map4frontStudentOne.setOptions("./img/NPC/Skeleton.png", 0, 140, 64, 64, 440,20, 62, 62, 0);
+npc_Map4frontStudentTwo.setOptions("./img/NPC/Skeleton.png", 0, 140, 64, 64, 440,100, 62, 62, 0);
+npc_Map4middleStudentOne.setOptions("./img/NPC/Skeleton.png", 0, 140, 64, 64, 370,20, 62, 62, 0);
+npc_Map4middleStudentTwo.setOptions("./img/NPC/Skeleton.png", 0, 140, 64, 64, 370,100, 62, 62, 0);
+npc_Map4backStudentOne.setOptions("./img/NPC/Skeleton.png", 0, 140, 64, 64, 250,100, 62, 62, 0);
 
-npc_Map4theChin.setOptions("./img/chin.png", 0, 140, 64, 64, 515,20, 62, 62, 0);
-npc_Map4frontStudentOne.setOptions("./img/chin.png", 0, 140, 64, 64, 440,20, 62, 62, 0);
-npc_Map4frontStudentTwo.setOptions("./img/alden.png", 0, 140, 64, 64, 440,100, 62, 62, 0);
-npc_Map4middleStudentOne.setOptions("./img/alden.png", 0, 140, 64, 64, 370,20, 62, 62, 0);
-npc_Map4middleStudentTwo.setOptions("./img/chin.png", 0, 140, 64, 64, 370,100, 62, 62, 0);
-npc_Map4backStudentOne.setOptions("./img/chin.png", 0, 140, 64, 64, 250,100, 62, 62, 0);
+npc_Map5dummyOne.setOptions("./img/NPC/chin.png", 0, 140, 64, 64, 110,260, 62, 62, 0);
+npc_Map5dummyTwo.setOptions("./img/NPC/chin.png", 0, 140, 64, 64, 20,20, 62, 62, 0);
 
-npc_Map5dummyOne.setOptions("./img/chin.png", 0, 140, 64, 64, 110,260, 62, 62, 0);
-npc_Map5dummyTwo.setOptions("./img/alden.png", 0, 140, 64, 64, 20,20, 62, 62, 0);
+npc_Map6lib.setOptions("./img/NPC/chin.png", 0, 140, 64, 64, 150,145, 62, 62, 0);
 
-npc_Map6lib.setOptions("./img/chin.png", 0, 140, 64, 64, 150,145, 62, 62, 0);
+npc_Map7dummyOne.setOptions("./img/NPC/girlOne.png", 0, 140, 64, 64, 50, 700, 62, 62, 2);
+npc_Map7dummyTwo.setOptions("./img/NPC/girlTwo.png", 0, 140, 64, 64, 170, 200, 62, 62, 2);
+npc_Map7dummyThree.setOptions("./img/NPC/girlThree.png", 0, 140, 64, 64, 350, 580, 62, 62, 2);
+npc_Map7dummyFour.setOptions("./img/NPC/monk.png", 0, 140, 64, 64, 150, 200, 62, 62, 2);
+
+npc_Map8dummyOne.setOptions("./img/NPC/girlOne.png", 0, 140, 64, 64, 50, 700, 62, 62, 2);
+npc_Map8dummyTwo.setOptions("./img/NPC/girlTwo.png", 0, 140, 64, 64, 150, 0, 62, 62, 2);
+npc_Map8dummyThree.setOptions("./img/NPC/girlThree.png", 0, 140, 64, 64, 350, 580, 62, 62, 2);
+npc_Map8dummyFour.setOptions("./img/NPC/monk.png", 0, 140, 64, 64, 500, 900, 62, 62, 2);
 
 
 npc_Alden.face = (function () {
@@ -692,11 +700,6 @@ console.log(npc_Alden.face);
 //Faces
 // alden_por.setOptions("./img/Alden-plain.png", 0, 0, 480, 638, 100, 100, 480, 638);
 
-/** Kirsten commented out
-// Backgrounds
-background.setOptions("./img/UWTmap1.jpg", 0, 0, btmcanvas.width, btmcanvas.height,
-                                        0, 0, btmcanvas.width, btmcanvas.height, 0);
-*/
 var background = new BackgroundObject();
 var initialBackground = new Image();
 initialBackground.src = "./img/ext_stairs_lower.jpg";
@@ -707,36 +710,13 @@ var gridimage = new Image();
 gridimage.src = "./img/32x32grid.png";
 grid.set(gridimage);
 
-// npc_Mobus.image.onload = function() {
-//   npc_Mobus.load = true;
-// }
-
-// var mobusCounter = 0;
-// npc_Mobus.update = function(clockTick) {
-//   if(mobusCounter === 0) {
-//     this.spriteRoll(640, 8,  clockTick, 0.1);
-//     this.y += this.speed;
-//
-//     if(this.y >= 700) {
-//       mobusCounter = 1;
-//     }
-//
-//   }
-//   if(mobusCounter === 1) {
-//     this.spriteRoll(512, 8, clockTick, 0.1);
-//     this.y -= this.speed;
-//
-//     if(this.y <= 10) {
-//       mobusCounter = 0;
-//     }
-//   }
-//
-// }
-
 npc_Map1StairWalker.image.onload = function() {
   npc_Map1StairWalker.load = true;
   npc_Map1Blocker.load = true;
   npc_Map1BottomWalker.load = true;
+  npc_Map1dummyOne.load = true;
+  npc_Map1dummyTwo.load = true;
+  npc_Map1dummyThree.load = true;
 
   npc_Map2Cashier.load = true;
   npc_Map2Bookman.load = true;
@@ -745,6 +725,11 @@ npc_Map1StairWalker.image.onload = function() {
   npc_Map3dummyOne.load = true;
   npc_Map3dummyTwo.load = true;
   npc_Map3dummyThree.load = true;
+  npc_Map3dummyFour.load = true;
+  npc_Map3dummyFive.load = true;
+  npc_Map3dummySix.load = true;
+  npc_Map3Jay.load = true;
+  npc_Map3SilentBob.load = true;
 
   npc_Map4theChin.load = true;
   npc_Map4frontStudentOne.load = true;
@@ -758,6 +743,16 @@ npc_Map1StairWalker.image.onload = function() {
 
   npc_Map6lib.load = true;
 
+  npc_Map7dummyOne.load = true;
+  npc_Map7dummyTwo.load = true;
+  npc_Map7dummyThree.load = true;
+  npc_Map7dummyFour.load = true;
+
+  npc_Map8dummyOne.load = true;
+  npc_Map8dummyTwo.load = true;
+  npc_Map8dummyThree.load = true;
+  npc_Map8dummyFour.load = true;
+
 };
 
 /*
@@ -766,8 +761,32 @@ Blocker - If the player gets close he block you from going around.
 Stairwalker - Walks up and down the stairs.. like a normal person.
 BottomWalker - Walks left to right at the bottom of the stairs.. like a normal person.
 */
+npc_Map1StairWalker.dialog[0] = "I feel so animated! Running up! Running down!";
+npc_Map1StairWalker.dialog[1] = "Up down, up down! Whoo, such an animated feeling!";
+
+npc_Map1dummyTwo.dialog[0] = "Can you direct me to WCG?  I'm looking for Dr. Chinn.  He's lost his marbles...or was it spilled his fruit."
+npc_Map1dummyTwo.dialog[1] = "Anyway, he needs some help solving this mystery.  I heard he gives easy A's."
+
+npc_Map1dummyOne.dialog[0] = "Do you know where the Science Building is?  Professor Alden is up there exposing the inner workings of something called..."
+npc_Map1dummyOne.dialog[1] = "computers, yeah that's it.  I heard there's a secret code to solving his puzzle."
+
+npc_Map1dummyThree.dialog[0] = "Professor Fowler is over in Cherry Parks.  He said my code is...how did he put it..."
+npc_Map1dummyThree.dialog[1] = "'Your code is strange and unexpected. It is full of bugs.  Debug them if you can'"
+
+npc_Map1BottomWalker.dialog[0] = "This stream of cars is never ending and the walk sign won't change! " +
+                                 "I'll never be able to cross. I suggest you don't try either!";
+npc_Map1BottomWalker.faceArray[0] = npc_Map1BottomWalker.face;
+npc_Map1BottomWalker.face.src =  "./img/Robert.png";
+npc_Map1StairWalker.face.src =  "./img/Alden-plain.png";
 
 npc_Map1Blocker.update = function(clockTick) {
+  //console.log(this.talkTo);
+  if(this.talkTo) {
+    npc_Map1Blocker.dialog[0] = "Just go around me, why dontcha?";
+  }
+  if(!this.talkTo) {
+    npc_Map1Blocker.dialog[0] = "Would you mind not blocking my path?";
+  }
   if(player.y < 171) {
     if(W_KEY in keys) {
       this.spriteRoll(512, 8,  clockTick, 0.1);
@@ -779,18 +798,22 @@ npc_Map1Blocker.update = function(clockTick) {
     }
   }
 };
+npc_Map1dummyOne.update = function(clockTick) {
+};
+npc_Map1dummyTwo.update = function(clockTick) {
+};
+npc_Map1dummyThree.update = function(clockTick) {
+};
+
 
 var chinFlip = 0;
 var chinCounter = 0;
 var chinDirection = 0;
 
 npc_Map1StairWalker.update = function(clockTick) {
-  console.log(player.y);
-  var dist = distance(this, player);
-  var chinX = Math.floor(this.x/32) + 1;
-  var chinY = Math.floor(this.y/32) + 1
+  //console.log(player.y);
   //Checks to see if you are next to chin
-  if(dist <= 50 && chinCounter === 0) {
+  if(is_collide(this, player) && chinCounter === 0) {
     chinDirection = chinFlip;
     chinFlip = 3;
     chinCounter = 1;
@@ -801,23 +824,13 @@ npc_Map1StairWalker.update = function(clockTick) {
     this.y += 0;
     if(chinDirection === 0) {
       this.spriteRoll(640, 1,  clockTick, 0.5);
-      sign_screen_bounds[chinY][chinX] = 1;
-      sign_screen_bounds[chinY + 1][chinX] = 1;
-      sign_screen_bounds[chinY][chinX + 1] = 1;
-      sign_screen_bounds[chinY + 1][chinX + 1] = 1;
+
     }
     if(chinDirection === 1) {
       this.spriteRoll(512, 1, clockTick, 0.5);
-      sign_screen_bounds[chinY][chinX] = 1;
-      sign_screen_bounds[chinY + 1][chinX] = 1;
-      sign_screen_bounds[chinY][chinX + 1] = 1;
-      sign_screen_bounds[chinY + 1][chinX + 1] = 1;
     }
-    if(dist >= 50) {
-      sign_screen_bounds[chinY][chinX] = 0;
-      sign_screen_bounds[chinY + 1][chinX] = 0;
-      sign_screen_bounds[chinY][chinX + 1] = 0;
-      sign_screen_bounds[chinY + 1][chinX + 1] = 0;
+    if(!is_collide(this, player)) {
+
       chinFlip = chinDirection;
     }
   }
@@ -851,13 +864,12 @@ var aldenFlip = 0;
 var aldenCounter = 0;
 var aldenDirection = 0;
 npc_Map1BottomWalker.update = function(clockTick) {
-  var dist = distance(this, player);
 
   var aldenX = Math.floor(this.x/32) + 1;
   var aldenY = Math.floor(this.y/32) + 1
 
   //Checks to see if you are next to alden
-  if(dist <= 50 && aldenCounter === 0) {
+  if(is_collide(this, player) && aldenCounter === 0) {
     aldenDirection = aldenFlip;
     aldenFlip = 3;
     aldenCounter = 1;
@@ -868,23 +880,14 @@ npc_Map1BottomWalker.update = function(clockTick) {
     this.y += 0;
     if(aldenDirection === 0) {
       this.spriteRoll(704, 1,  clockTick, 0.5);
-      sign_screen_bounds[aldenY][aldenX] = 1;
-      sign_screen_bounds[aldenY + 1][aldenX] = 1;
-      sign_screen_bounds[aldenY][aldenX + 1] = 1;
-      sign_screen_bounds[aldenY + 1][aldenX + 1] = 1;
+
     }
     if(aldenDirection === 1) {
       this.spriteRoll(576, 1, clockTick, 0.5);
-      sign_screen_bounds[aldenY][aldenX] = 1;
-      sign_screen_bounds[aldenY + 1][aldenX] = 1;
-      sign_screen_bounds[aldenY][aldenX + 1] = 1;
-      sign_screen_bounds[aldenY + 1][aldenX + 1] = 1;
+
     }
-    if(dist >= 50) {
-      sign_screen_bounds[aldenY][aldenX] = 0;
-      sign_screen_bounds[aldenY + 1][aldenX] = 0;
-      sign_screen_bounds[aldenY][aldenX + 1] = 0;
-      sign_screen_bounds[aldenY + 1][aldenX + 1] = 0;
+    if(!is_collide(this, player)) {
+
       aldenFlip = aldenDirection;
     }
   }
@@ -917,11 +920,10 @@ Map2(BookStore) Npc update functions are below
 Bookman - If the player gets close he looks for a book.
 Cashier - If the player gets close he will check you out. *wink*
 */
-
+npc_Map2Bookman.dialog[0] = "Donald Chinn taught me that a monkey can peel a Banana in O(log n) time.  That's pretty fast."
 npc_Map2Bookman.update = function(clockTick) {
-  var dist = distance(this, player);
   //console.log(dist);
-  if(dist <= 100) {
+  if(is_collide(this, player)) {
     this.spriteRoll(780, 5,  clockTick, 0.3);
   } else {
     this.spriteRoll(780, 1,  clockTick, 0.3);
@@ -929,9 +931,8 @@ npc_Map2Bookman.update = function(clockTick) {
 
 };
 npc_Map2Cashier.update = function(clockTick) {
-  var dist = distance(this, player);
   //console.log(dist);
-  if(dist <= 100) {
+  if(is_collide(this, player)) {
     this.spriteRoll(460, 8,  clockTick, 0.3);
   } else {
     this.spriteRoll(460, 1,  clockTick, 0.3);
@@ -950,22 +951,58 @@ bottomWalker - Walks left to right at the bottom of the stairs.. like a normal p
 
 npc_Map3dummyOne.update = function(clockTick) {
   this.spriteRoll(576, 1,  clockTick, 0.1);
-}
+};
 npc_Map3dummyTwo.update = function(clockTick) {
   this.spriteRoll(512, 1,  clockTick, 0.1);
-}
+};
 npc_Map3dummyThree.update = function(clockTick) {
+  this.spriteRoll(900, 1,  clockTick, 0.1);
+};
+npc_Map3dummyFour.update = function(clockTick) {
+  this.spriteRoll(900, 1,  clockTick, 0.1);
+};
+npc_Map3dummyFive.update = function(clockTick) {
+  this.spriteRoll(900, 1,  clockTick, 0.1);
+};
+npc_Map3dummySix.update = function(clockTick) {
+  this.spriteRoll(900, 1,  clockTick, 0.1);
+};
+
+// Kirsten and Loren veto'd cussing. We found a different jay/silent bob quote.
+npc_Map3Jay.face.src =  "./img/Robert.png";
+npc_Map3Jay.dialog[0] = "See those two over there? Yeah, they had a Star Wars themed wedding. ";
+npc_Map3Jay.dialog[1] = ".......";
+npc_Map3Jay.dialog[2] = "AND they tied the knot dressed as Storm Troopers!";
+npc_Map3Jay.faceArray[0] = npc_Map3Jay.face;
+npc_Map3Jay.faceArray[1] = npc_Map3SilentBob.face;
+npc_Map3Jay.faceArray[2] = npc_Map3Jay.face;
+
+npc_Map3SilentBob.faceSpot = 1;
+npc_Map3SilentBob.face.src =  "./img/Alden-plain.png";
+npc_Map3SilentBob.dialog[0] = "See those two over there? Yeah, they had a Star Wars themed wedding. ";
+npc_Map3SilentBob.dialog[1] = ".......";
+npc_Map3SilentBob.dialog[2] = "AND they tied the knot dressed as Storm Troopers!";
+npc_Map3SilentBob.faceArray[0] = npc_Map3Jay.face;
+npc_Map3SilentBob.faceArray[1] = npc_Map3SilentBob.face;
+npc_Map3SilentBob.faceArray[2] = npc_Map3Jay.face;
+
+
+npc_Map3Jay.update = function(clockTick) {
+  this.spriteRoll(900, 1,  clockTick, 0.1);
+};
+
+
+npc_Map3SilentBob.update = function(clockTick) {
   this.spriteRoll(900, 1,  clockTick, 0.1);
 }
 
 npc_Map3BottomWalker.update = function(clockTick) {
-  var dist = distance(this, player);
 
   var aldenX = Math.floor(this.x/32) + 1;
   var aldenY = Math.floor(this.y/32) + 1
 
   //Checks to see if you are next to alden
-  if(dist <= 50 && aldenCounter === 0) {
+  if(is_collide(this, player) && aldenCounter === 0) {
     aldenDirection = aldenFlip;
     aldenFlip = 3;
     aldenCounter = 1;
@@ -976,23 +1013,14 @@ npc_Map3BottomWalker.update = function(clockTick) {
     this.y += 0;
     if(aldenDirection === 0) {
       this.spriteRoll(704, 1,  clockTick, 0.5);
-      sign_screen_bounds[aldenY][aldenX] = 1;
-      sign_screen_bounds[aldenY + 1][aldenX] = 1;
-      sign_screen_bounds[aldenY][aldenX + 1] = 1;
-      sign_screen_bounds[aldenY + 1][aldenX + 1] = 1;
+
     }
     if(aldenDirection === 1) {
       this.spriteRoll(576, 1, clockTick, 0.5);
-      sign_screen_bounds[aldenY][aldenX] = 1;
-      sign_screen_bounds[aldenY + 1][aldenX] = 1;
-      sign_screen_bounds[aldenY][aldenX + 1] = 1;
-      sign_screen_bounds[aldenY + 1][aldenX + 1] = 1;
+
     }
-    if(dist >= 50) {
-      sign_screen_bounds[aldenY][aldenX] = 0;
-      sign_screen_bounds[aldenY + 1][aldenX] = 0;
-      sign_screen_bounds[aldenY][aldenX + 1] = 0;
-      sign_screen_bounds[aldenY + 1][aldenX + 1] = 0;
+    if(!is_collide(this, player)) {
+
       aldenFlip = aldenDirection;
     }
   }
@@ -1027,6 +1055,7 @@ npc_Map4frontStudentOne.update = function (clockTick) {
   this.spriteRoll(704, 1,  clockTick, 0.1);
 
 }
+npc_Map4frontStudentTwo.dialog[0] = "One annoying orange, is O(1) too many";
 npc_Map4frontStudentTwo.update = function (clockTick) {
   this.spriteRoll(704, 1,  clockTick, 0.1);
 
@@ -1035,10 +1064,12 @@ npc_Map4middleStudentOne.update = function (clockTick) {
   this.spriteRoll(704, 1,  clockTick, 0.1);
 
 }
+npc_Map4middleStudentTwo.dialog[0] = "Gillmore girls is my favorite show too!";
 npc_Map4middleStudentTwo.update = function (clockTick) {
   this.spriteRoll(704, 1,  clockTick, 0.1);
 
 }
+npc_Map4backStudentOne.dialog[0] = "What's the deal with corn nuts?";
 npc_Map4backStudentOne.update = function (clockTick) {
   this.spriteRoll(704, 1,  clockTick, 0.1);
 
@@ -1053,15 +1084,35 @@ npc_Map5dummyTwo.update = function(clockTick) {
 
 npc_Map6lib.update = function(clockTick) {
 }
+npc_Map7dummyOne.dialog[0] = "These schnazberries taste like schnazberries!. I could eat O(n!) schnazberries."
+npc_Map7dummyOne.update = function(clockTick) {
+}
+npc_Map7dummyTwo.dialog[0] = "I like O(n) green apples and ham.  Sam prefers blueberries.  He has O(n^2) of them!"
+npc_Map7dummyTwo.update = function(clockTick) {
+}
+npc_Map7dummyThree.update = function(clockTick) {
+}
+npc_Map7dummyFour.dialog[0] = "I have O(n^2) blueberries.  Katie prefers green apples and ham.  She has O(n) of them!"
+npc_Map7dummyFour.update = function(clockTick) {
+}
+
+npc_Map8dummyOne.update = function(clockTick) {
+}
+npc_Map8dummyTwo.update = function(clockTick) {
+}
+npc_Map8dummyThree.update = function(clockTick) {
+}
+npc_Map8dummyFour.update = function(clockTick) {
+}
 
 /** When player's spritesheet loads in browser, sets player.load to true. */
 player.image.onload = function() {
-  player.load = true;
-    //console.log(player.dty);
-    player.y_hook = player.dty / 2 + 6;
-    player.x_hook = (player.dtx / 4 ) ;
-//  alden_por.load = true; // TODO: Why is Alden in here?
- // dialogs.push(alden_por);
+    player.load = true;
+
+    /** Hooks position the player's image relative to player's x,y values.
+     * This offset is necessary due to the sprite sheet's alignment. */
+    player.y_hook = player.dty / 2 + 8;
+    player.x_hook = (player.dtx / 4 ) + 1  ;
 };
 
 /** When background's spritesheet loads in browser, sets background.load to true. */
@@ -1072,8 +1123,6 @@ grid.image.onload = function() {
     grid.load = true;
 };
 
-//var sign_screen_bounds = window.uwetech.zones[1].bounds;
-
 /**
  * TODO: Explain this object.
  * @constructor
@@ -1082,6 +1131,8 @@ function Timer() {
     this.gameTime = 0;
     this.maxStep = 0.05;
     this.wallLastTimestamp = 0;
+    this.maxTime = 301;
+    this.isPaused = false;
 }
 
 Timer.prototype.tick = function () {
@@ -1094,34 +1145,213 @@ Timer.prototype.tick = function () {
     return gameDelta;
 };
 
+Timer.prototype.render = function () {
+    topctx.save();
+    topctx.font = "50px sans-serif";
+    topctx.fillStyle = "#ffffff";
+    var timeRemaining = "0:00";
+    if (this.gameTime <= this.maxTime) {
+        timeRemaining = Math.floor((this.maxTime - this.gameTime) / 60) + ":" +
+            Math.floor(((this.maxTime - this.gameTime) % 60) / 10) +
+            Math.floor((this.maxTime - this.gameTime) % 60) % 10;
+    } else {
+        g.gameOver = true;
+    }
+    topctx.fillText(timeRemaining, topcanvas.width - 110, 50);
+    topctx.restore();
+};
+
 /**
  * TODO: Explain this object.
  * @constructor
  */
-var Game = function() {
-    //Creating an array of arrays for the entites
-    this.entiteZones = [];
-    this.debug = true;
-    console.log("DEBUG IS ON. Hit the Tilde (~ `) key to turn it off!");
-    this.isPaused = false;
-    this.queuedActions = [];
-        //function (){window.uwetech.dialog.show(
-        //"I am testing the length requirements for this section of all of the awesome " +
-        //"stuff we are doing it is quite amazing yes?!", npc_Alden.face);}, // kirsten test code
-        //function () {window.uwetech.dialog.hide();}]; // kirsten test code
 
-    /*
-    I made it so that at each index it would hold the entities
-    for the appropriate zone
-    */
+var interactNPC;
+
+/**
+ * Handles drawing the correct controller button at the appropriate moments.
+ * @constructor
+ */
+var Controller = function() {
+    this.load = false;
+
+    var interactionButton = new Image();
+    interactionButton.src = './img/doButtonInactive.png';
+    interactionButton.onload = function () {
+        interactionButton.load = true;
+    };
+
+    var sButton = new Image();
+    sButton.src = './img/button_S.png';
+    sButton.onload = function () {
+        sButton.load = true;
+    };
+
+    var aButton = new Image();
+    aButton.src = './img/button_A.png';
+    aButton.onload = function () {
+        aButton.load = true;
+    };
+
+    var dButton = new Image();
+    dButton.src = './img/button_D.png';
+    dButton.onload = function () {
+        dButton.load = true;
+    };
+
+    var wButton = new Image();
+    wButton.src = './img/button_W.png';
+    wButton.onload = function () {
+        wButton.load = true;
+    };
+
+
+    this.render = function() {
+        if (this.load === false) {
+            if (interactionButton.load === true && sButton.load === true &&
+                aButton.load === true && dButton.load === true && wButton.load === true) {
+                this.load = true;
+            }
+        }
+
+        if (this.load) {
+            if (interactNPC === undefined) {
+                interactionButton.src = './img/doButtonInactive.png';
+                topctx.drawImage(interactionButton, 0, 0,
+                    interactionButton.width, interactionButton.height,
+                    topcanvas.width - (interactionButton.width * 1.5),
+                    topcanvas.height - (interactionButton.height * 1.2),
+                    interactionButton.width, interactionButton.height);
+            }
+            if (interactNPC !== undefined) {
+                interactionButton.src = './img/doButtonActive.png';
+                topctx.drawImage(interactionButton, 0, 0,
+                    interactionButton.width, interactionButton.height,
+                    topcanvas.width - (interactionButton.width * 1.5),
+                    topcanvas.height - (interactionButton.height * 1.2),
+                    interactionButton.width, interactionButton.height);
+            }
+
+            if (W_KEY in keys) {
+                wButton.src = './img/pressed_W.png';
+                topctx.drawImage(wButton, 0, 0, wButton.width, wButton.height,
+                    (wButton.width * 1.5),
+                    topcanvas.height - (wButton.height * 2),
+                    wButton.width, wButton.height);
+            } else {
+                wButton.src = './img/button_W.png';
+                topctx.drawImage(wButton, 0, 0, wButton.width, wButton.height,
+                    (wButton.width * 1.5),
+                    topcanvas.height - (wButton.height * 2),
+                    wButton.width, wButton.height);
+            }
+
+            if (S_KEY in keys) {
+                sButton.src = './img/pressed_S.png';
+                topctx.drawImage(sButton, 0, 0, sButton.width, sButton.height,
+                    (sButton.width * 1.5),
+                    topcanvas.height - sButton.height, sButton.width, sButton.height);
+            } else {
+                sButton.src = './img/button_S.png';
+                topctx.drawImage(sButton, 0, 0, sButton.width, sButton.height,
+                    (sButton.width * 1.5),
+                    topcanvas.height - sButton.height, sButton.width, sButton.height);
+            }
+
+            if (A_KEY in keys) {
+                aButton.src = './img/pressed_A.png';
+                topctx.drawImage(aButton, 0, 0, aButton.width, aButton.height,
+                    (aButton.width * .5),
+                    topcanvas.height - (aButton.height * 1.5),
+                    aButton.width, aButton.height);
+            } else {
+                aButton.src = './img/button_A.png';
+                topctx.drawImage(aButton, 0, 0, aButton.width, aButton.height,
+                    (aButton.width * .5),
+                    topcanvas.height - (aButton.height * 1.5),
+                    aButton.width, aButton.height);
+            }
+            if (D_KEY in keys) {
+                dButton.src = './img/pressed_D.png';
+                topctx.drawImage(dButton, 0, 0, dButton.width, dButton.height,
+                    (dButton.width * 2.5),
+                    topcanvas.height - (dButton.height * 1.5),
+                    dButton.width, dButton.height);
+            } else {
+                dButton.src = './img/button_D.png';
+                topctx.drawImage(dButton, 0, 0, dButton.width, dButton.height,
+                    (dButton.width * 2.5),
+                    topcanvas.height - (dButton.height * 1.5),
+                    dButton.width, dButton.height);
+            }
+        }
+    }
+}
+
+var controller = new Controller();
+
+
+var Game = function() {
+    /** Game-wide debugger flag. */
+    this.debug = false;
+    console.log("DEBUG IS OFF. Hit the Tilde (~ `) key to turn it on!");
+    /** Tracks if game is currently in a paused state. */
+    this.isPaused = false;
+    /** The ID number of the currently loaded zone. */
+    this.currentZone;
+    /** Set to "true" if the player has triggered gameover and game needs to be reset. */
+    this.gameOver = false;
+    /** Represents which puzzles have been flagged as completed. */
+    this.puzzleWins = [false, false, false];
+    /** Defined only while a puzzle is currently active. */
+    this.currentPuzzle = undefined;
+
+    /** Array of queued actions. Sets isPaused to true when queuedActions length is > 0. */
+    this.queuedActions = [];
+    /** Creating an array of arrays for the entites. */
+    this.entiteZones = [];
+
+    /**
+     * I made it so that at each index it would hold the entities
+     * for the appropriate zone
+     */
     this.entiteZones[1] = this.zoneOneEntites = [];
     this.entiteZones[2] = this.zoneTwoEntites = [];
     this.entiteZones[3] = this.zoneThreeEntites = [];
     this.entiteZones[4] = this.zoneFourEntites = [];
     this.entiteZones[5] = this.zoneFiveEntites = [];
     this.entiteZones[6] = this.zoneSixEntites = [];
-    // Game or zone wide entities?
-    this.currentZone;
+    this.entiteZones[7] = this.zoneSevenEntites = [];
+    this.entiteZones[8] = this.zoneEightEntites = [];
+
+    /**
+     * Collection of methods to handle adding entities to specific zones.
+     * @param entity
+     */
+    this.addEntityZoneOne = function (entity) {
+        this.zoneOneEntites.push(entity);
+    };
+    this.addEntityZoneTwo = function (entity) {
+        this.zoneTwoEntites.push(entity);
+    };
+    this.addEntityZoneThree = function (entity) {
+        this.zoneThreeEntites.push(entity);
+    };
+    this.addEntityZoneFour = function (entity) {
+        this.zoneFourEntites.push(entity);
+    };
+    this.addEntityZoneFive = function (entity) {
+        this.zoneFiveEntites.push(entity);
+    };
+    this.addEntityZoneSix = function (entity) {
+        this.zoneSixEntites.push(entity);
+    };
+    this.addEntityZoneSeven = function (entity) {
+        this.zoneSevenEntites.push(entity);
+    };
+    this.addEntityZoneEight = function (entity) {
+        this.zoneEightEntites.push(entity);
+    };
 
     /**
      * Fetches a zone's data by it's ID and loads it in. This will update the
@@ -1147,6 +1377,7 @@ var Game = function() {
 
             /** insert cool code to go to black screen briefly here... */
             if (this.currentZone !== undefined) { // don't show on the first load
+                g.timer.isPaused = true;
                 g.isPaused = true;
                 loadctx.fillStyle = "#000000";
                 loadctx.fillRect(0, 0, topcanvas.width, topcanvas.height);
@@ -1157,6 +1388,7 @@ var Game = function() {
                 setTimeout(function () {
                     loadctx.clearRect(0, 0, loadcanvas.width, loadcanvas.height);
                     g.isPaused = false;
+                    g.timer.isPaused = false;
                 }, 300);
             }
 
@@ -1176,7 +1408,7 @@ var Game = function() {
 
         // 87, 83, 65, 68, 32
         if (key_id === SPACE_KEY) { // Spacebar
-            player.interact();
+            player.interact(interactNPC);
             console.log("space");
             //g.loadZone(2, 1, 8); // kirsten debug, tested zone loading via button press
         } else if (key_id === W_KEY) {
@@ -1213,6 +1445,7 @@ var Game = function() {
      * TODO: Describe this function.
      */
     this.start = function() {
+
       this.cam  = new Camera();
       this.cam.setup(player);
       this.timer = new Timer();
@@ -1221,11 +1454,30 @@ var Game = function() {
     };
 
     /**
-     * TODO: Describe this function.
+     * This method is called on every screen refresh the browser alerts us about.
+     * There is no guarantee how often this is called. As per mozilla.org:
+     *
+     * "The number of callbacks is usually 60 times per second, but will generally
+     * match the display refresh rate in most web browsers as per W3C recommendation.
+     * The callback rate may be reduced to a lower rate when running in background tabs."
      */
     this.loop = function() {
+        if (g.gameOver === true) {
+            g.restartGame();
+        }
+
+        var elapsedTime = 0;
+        if (this.timer.isPaused === false) {
+            elapsedTime = this.timer.tick();
+        }
+
+        if (g.currentPuzzle !== undefined) {
+            g.currentPuzzle.update(elapsedTime);
+            g.currentPuzzle.render();
+        }
+
         if (g.isPaused === false) {
-            this.update(this.timer.tick());
+            this.update(elapsedTime);
             this.render();
         }
         requestAnimFrame(this.loop.bind(this));
@@ -1233,41 +1485,20 @@ var Game = function() {
 
     /**
      * TODO: Describe this function.
-     * @param entity
-     */
-    this.addEntityZoneOne = function (entity) {
-        this.zoneOneEntites.push(entity);
-    };
-    this.addEntityZoneTwo = function (entity) {
-        this.zoneTwoEntites.push(entity);
-    };
-    this.addEntityZoneThree = function (entity) {
-        this.zoneThreeEntites.push(entity);
-    };
-    this.addEntityZoneFour = function (entity) {
-        this.zoneFourEntites.push(entity);
-    };
-    this.addEntityZoneFive = function (entity) {
-        this.zoneFiveEntites.push(entity);
-    };
-    this.addEntityZoneSix = function (entity) {
-        this.zoneSixEntites.push(entity);
-    };
-
-    /**
-     * TODO: Describe this function.
      * @param clockTick
      */
     this.update = function(clockTick) {
-      this.cam.getPosition(player);
-      //player.bounds();
-      player.movePlayer(clockTick);
+        this.cam.getPosition(player);
+        interactNPC = undefined;
+        //player.bounds();
+        player.movePlayer(clockTick);
+        player.check_units();
 
-      /*
-      Get the current zone you are in and draw the entites
-      */
+        /*
+         Get the current zone you are in and draw the entites
+         */
 
-        if (this.entiteZones.length >= this.currentZone.id) { // kirsten adding in catches
+        if (this.currentZone.id <= this.entiteZones.length) { // kirsten adding in catches
             var getEntityArray = this.entiteZones[this.currentZone.id]
 
             if (getEntityArray !== undefined) { // kirsten adding in catches
@@ -1279,13 +1510,16 @@ var Game = function() {
                 }
             }
         }
-
     };
 
     /**
-     * TODO: Describe this function.
+     * Handles rendering the game.
      */
     this.render = function() {
+        topctx.clearRect(0, 0, topcanvas.width, topcanvas.height);
+        controller.render();
+        this.timer.render();
+
         midctx.clearRect(0, 0, midcanvas.width, midcanvas.height);
         midctx.save();
         midctx.translate(this.cam.x, this.cam.y);
@@ -1303,6 +1537,10 @@ var Game = function() {
             var entity = getEntityArray[i];
             if(entity.load) {
               entity.render();
+              if (g.debug === true) {
+                  /** draws the bounding box for the player sprite */
+                  midctx.strokeRect(entity.x + 15.5, entity.y + 40.5, 29, 24);
+              }
             }
         }
         /** Only render things whose image is loaded in browser! */
@@ -1322,17 +1560,66 @@ var Game = function() {
 
             if (g.debug === true) {
                 /** draws the bounding box for the player sprite */
-                midctx.strokeRect(player.x, player.y, 30, 24);
+                midctx.strokeRect(player.x +0.5, player.y +0.5, 29, 24);
             }
         }
 
-
-      //  if(alden_por.draw) {
-      //    alden_por.render();
-      //  }
-
         midctx.restore();
     };
+
+    /**
+     * TODO: This function needs to be completed.
+     * Call this method to re-initialize the game's state. Useful
+     * for when a game-over occurs and the game needs to restart.
+     */
+    this.restartGame = function() {
+
+        this.gameOver = false;
+
+        /**
+         * NOTE: Anything that can change state needs to be reset after a game over.
+         * If you notice anything missing from this list, add it! */
+
+
+        /** 1) Timer needs to be reset. */
+        // TODO: I think this will reset the timer :-)
+        this.timer.gameTime = 0;
+        this.timer.wallLastTimestamp = 0;
+
+        /** 2) Reset the win conditions back to none. */
+        this.puzzleWins[0] = false;
+        this.puzzleWins[1] = false;
+        this.puzzleWins[2] = false;
+        this.currentPuzzle = undefined;
+
+        /** 3) Reset the queued actions array. */
+        this.queuedActions = [];
+
+        /** 4) Reset all of the NPCS back to initial state. */
+        // TODO: Can someone show me how to reset the npcs?
+
+        /** 5) Reset Spriteroll state. (?)   */
+        // TODO: Do we need to reset the player or npcs's sprite roll animation state thing?
+
+        /** 6)    */
+
+
+        /** 7)    */
+
+
+        /** 8) Play the quick-start opening cutscene. */
+        // TODO: This code doesn't exist yet. Add it here once it does.
+
+        /** 9) Player needs to be sent back to the starting zone. */
+        this.currentZone = undefined; // when undefined, prevents loading screen.
+        this.loadZone(1, 10, 27); // player starts in zone 1 at x=10, y=27
+
+        /** 10) Un-pause the timer and game. */  // TODO: Not sure if we need this or not.
+        g.isPaused = false;
+        g.timer.isPaused = false;
+
+    };
+
 };
 
 
@@ -1351,6 +1638,9 @@ ZoneTwo is getting Map2 entities.
 g.addEntityZoneOne(npc_Map1Blocker);
 g.addEntityZoneOne(npc_Map1BottomWalker);
 g.addEntityZoneOne(npc_Map1StairWalker);
+g.addEntityZoneOne(npc_Map1dummyOne);
+g.addEntityZoneOne(npc_Map1dummyTwo);
+g.addEntityZoneOne(npc_Map1dummyThree);
 
 g.addEntityZoneTwo(npc_Map2Bookman);
 g.addEntityZoneTwo(npc_Map2Cashier);
@@ -1359,6 +1649,12 @@ g.addEntityZoneThree(npc_Map3BottomWalker);
 g.addEntityZoneThree(npc_Map3dummyOne);
 g.addEntityZoneThree(npc_Map3dummyTwo);
 g.addEntityZoneThree(npc_Map3dummyThree);
+g.addEntityZoneThree(npc_Map3dummyFour);
+g.addEntityZoneThree(npc_Map3dummyFive);
+g.addEntityZoneThree(npc_Map3dummySix);
+g.addEntityZoneThree(npc_Map3Jay);
+g.addEntityZoneThree(npc_Map3SilentBob);
+
 
 g.addEntityZoneFour(npc_Map4theChin);
 g.addEntityZoneFour(npc_Map4frontStudentOne);
@@ -1372,6 +1668,16 @@ g.addEntityZoneFive(npc_Map5dummyTwo);
 
 g.addEntityZoneSix(npc_Map6lib);
 
+g.addEntityZoneSeven(npc_Map7dummyOne);
+g.addEntityZoneSeven(npc_Map7dummyTwo);
+g.addEntityZoneSeven(npc_Map7dummyThree);
+g.addEntityZoneSeven(npc_Map7dummyFour);
+
+g.addEntityZoneEight(npc_Map8dummyOne);
+g.addEntityZoneEight(npc_Map8dummyTwo);
+g.addEntityZoneEight(npc_Map8dummyThree);
+g.addEntityZoneEight(npc_Map8dummyFour);
+
 
 
 /** Notes for Kirsten to keep track of stuff. */
@@ -1383,7 +1689,6 @@ g.addEntityZoneSix(npc_Map6lib);
 
 /**
 // Steps to load a zone (and correctly update the game state)
-
  1 realize you've triggered an exit.
  2 determine what exit.     var exit = currentZone[exits][player.x + "," + player.y]
  3 identify zone id to go to.   var new_zone_id = exit[go_to_zone]
@@ -1396,5 +1701,4 @@ g.addEntityZoneSix(npc_Map6lib);
         sign_screen_bounds = currentZone[bounds]
         // somehow alert NPC stuff that the zone changed. Should they be checking? or should
         // a zone somehow store who its npcs are? Does THEIR state need to reset too? Errrm...
-
  */
