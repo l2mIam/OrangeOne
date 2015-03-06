@@ -97,6 +97,23 @@ function is_collide(a, b) {
   return (ax_1 < bx_2 && ax_2 > bx_1 && ay_1 < by_2 && ay_2 > by_1);
 }
 
+function will_collide(x, y, b) {
+
+  var ax_1 = x;
+  var ax_2 = x + BOX_WIDTH; // + 32 is player width but 31 is smoother
+  var ay_1 = y;
+  var ay_2 = y + BOX_HEIGHT; // + 32 is height of player's box (ignores head collisions)
+
+  var bx_1 = b.x + 17;
+  var bx_2 = b.x + BOX_WIDTH + 17; // + 32 is player width but 31 is smoother
+  var by_1 = b.y + 40;
+  var by_2 = b.y + BOX_HEIGHT + 40;
+
+  return (ax_1 < bx_2 && ax_2 > bx_1 && ay_1 < by_2 && ay_2 > by_1);
+}
+
+
+
 /**
  *  The camera will control what part of a map we're viewing and where
  *  the entities will be drawn on screen relative to current camera view
@@ -239,11 +256,27 @@ var Sprite = function() {
         var x_new_grid = 0; // tracks if moving player will cause them to enter new grid
 
         var exit; // tracks if the player's movement has triggered an exit and zone change
+        var collides = false;
+        var getEntityArray = g.entiteZones[g.currentZone.id]
 
         /** Checks which keys are being currently pressed and moves player if new location is valid. */
         if(CURR_INPUT === "UP") {
           // W
             this.spriteRoll(512, 8, clockTick, 0.1); // even if player doesn't move, animate them!
+
+            if (getEntityArray !== undefined) { // kirsten adding in catches
+                var entitiesCount = getEntityArray.length;
+                for (var i = 0; i < entitiesCount; i++) {
+                    var entity = getEntityArray[i];
+                    if (will_collide(player.x, player.y - 5, entity)) {
+                      collides = true;
+                    }
+                }
+            }
+
+            if (collides) {
+              this.y += 0;
+            }
 
             /** Determine if moving the player will result in entering a new grid location. */
             y_new_grid = 0;
@@ -256,7 +289,7 @@ var Sprite = function() {
             if ((player.y - (this.speed)) > 0) {
                 /** Check that the player can move based on left AND right bounding box */
                 if (sign_screen_bounds[y_upmost - y_new_grid][x_leftmost] === 0 &&
-                    sign_screen_bounds[y_upmost - y_new_grid][x_rightmost] === 0) {
+                    sign_screen_bounds[y_upmost - y_new_grid][x_rightmost] === 0 && !collides) {
                     this.y -= this.speed;
                 }
 
@@ -275,10 +308,25 @@ var Sprite = function() {
             } else if (sign_screen_bounds[y_upmost - y_new_grid][x_rightmost] === 2) {
                 exit = g.currentZone.exits[x_rightmost + "," + (y_upmost - y_new_grid)];
             }
+            collides = false;
         }
 
         if(CURR_INPUT === "DOWN") { // S
             this.spriteRoll(640, 8, clockTick, 0.1); // even if player doesn't move, animate them!
+
+            if (getEntityArray !== undefined) { // kirsten adding in catches
+                var entitiesCount = getEntityArray.length;
+                for (var i = 0; i < entitiesCount; i++) {
+                    var entity = getEntityArray[i];
+                    if (will_collide(player.x, player.y + 10, entity)) {
+                      collides = true;
+                    }
+                }
+            }
+
+            if (collides) {
+              this.y += 0;
+            }
 
             /** Determine if moving the player will result in entering a new grid location*/
             y_new_grid = 0;
@@ -292,7 +340,7 @@ var Sprite = function() {
             if ((player.y + BOX_HEIGHT + this.speed) < (background.image.height - 1)) { // "+32" player height no head
                 /** Check that the player can move based on left AND right bounding box */
                 if (sign_screen_bounds[y_downmost + y_new_grid][x_leftmost] === 0 &&
-                    sign_screen_bounds[y_downmost + y_new_grid][x_rightmost] === 0) {
+                    sign_screen_bounds[y_downmost + y_new_grid][x_rightmost] === 0 && !collides) {
                     this.y += this.speed;
                 }
             } else { /** player is trying to move off screen, align them to edge if valid location. */
@@ -303,16 +351,29 @@ var Sprite = function() {
             }
 
             /** Check for exits to the south. */
-            if (sign_screen_bounds[y_downmost + y_new_grid][x_leftmost] === 2) {
+            if (sign_screen_bounds[y_downmost + y_new_grid][x_leftmost] === 2 && !collides) {
                 exit = g.currentZone.exits[x_leftmost + "," + (y_downmost + y_new_grid)];
             } else if (sign_screen_bounds[y_downmost + y_new_grid][x_rightmost] === 2) {
                 exit = g.currentZone.exits[x_rightmost + "," + (y_downmost + y_new_grid)];
             }
+            collides = false;
         }
 
         if(CURR_INPUT === "LEFT") { // A
             this.spriteRoll(576, 8, clockTick, 0.1); // even if player doesn't move, animate them!
+            if (getEntityArray !== undefined) { // kirsten adding in catches
+                var entitiesCount = getEntityArray.length;
+                for (var i = 0; i < entitiesCount; i++) {
+                    var entity = getEntityArray[i];
+                    if (will_collide(player.x - 5, player.y, entity)) {
+                      collides = true;
+                    }
+                }
+            }
 
+            if (collides) {
+              this.x += 0;
+            }
             /** Determine if moving the player will result in entering a new grid location*/
             x_new_grid = 0;
             // if player would enter new grid and that grid isn't offscreen
@@ -325,7 +386,7 @@ var Sprite = function() {
             if ((player.x - this.speed) > 0) {
                 /** Check that the player can move based on top AND bottom bounding box */
                 if (sign_screen_bounds[y_upmost][x_leftmost - x_new_grid] === 0 &&
-                    sign_screen_bounds[y_downmost][x_leftmost - x_new_grid] === 0) {
+                    sign_screen_bounds[y_downmost][x_leftmost - x_new_grid] === 0 && !collides) {
                     this.x -= this.speed;
                 }
             } else { /** player is trying to move off screen, align them to edge if valid location. */
@@ -341,10 +402,24 @@ var Sprite = function() {
             } else if (sign_screen_bounds[y_downmost][x_leftmost - x_new_grid] === 2) {
                 exit = g.currentZone.exits[(x_leftmost - x_new_grid) + "," + y_downmost];
             }
+            collides = false;
         }
 
         if(CURR_INPUT === "RIGHT") { // D
             this.spriteRoll(704, 8, clockTick, 0.1); // even if player doesn't move, animate them!
+            if (getEntityArray !== undefined) { // kirsten adding in catches
+                var entitiesCount = getEntityArray.length;
+                for (var i = 0; i < entitiesCount; i++) {
+                    var entity = getEntityArray[i];
+                    if (will_collide(player.x + 7, player.y, entity)) {
+                      collides = true;
+                    }
+                }
+            }
+
+            if (collides) {
+              this.x += 0;
+            }
 
             /** Determine if moving the player will result in entering a new grid location*/
             x_new_grid = 0;
@@ -358,7 +433,7 @@ var Sprite = function() {
             if ((player.x + BOX_WIDTH + this.speed) < (background.image.width - 1)) { // "+32" is width of player
                 /** Check that the player can move based on top AND bottom bounding box */
                 if (sign_screen_bounds[y_upmost][x_rightmost + x_new_grid] === 0 &&
-                    sign_screen_bounds[y_downmost][x_rightmost + x_new_grid] === 0) {
+                    sign_screen_bounds[y_downmost][x_rightmost + x_new_grid] === 0 && !collides) {
                     this.x += this.speed;
                 }
             } else { /** player is trying to move off screen, align them to edge if valid location. */
@@ -374,6 +449,7 @@ var Sprite = function() {
             } else if (sign_screen_bounds[y_downmost][x_rightmost + x_new_grid] === 2) {
                 exit = g.currentZone.exits[(x_rightmost + x_new_grid) + "," + y_downmost];
             }
+            collides = false;
         }
 
         /** Kirsten debug code */
