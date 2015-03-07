@@ -197,7 +197,8 @@ var Sprite = function() {
                                 // O is left 1 is right
             this.faceArray = []; // Used to check which face you want to show
             this.face = new Image();
-            this.visualRadius = 50; // TODO: What is this?
+            this.visualRadius = 50;
+            this.puzzleName = ""; // TODO: What is this?
                                     // ^^ If I remember correctly this was for Duncan's
                                     // bounding box, so if the npc is within 50 of you
                                     // he will stop.
@@ -404,6 +405,9 @@ var Sprite = function() {
      * This code is triggered when the interact button/key was pressed.
      */
     this.interact = function(interactNPC) {
+      if(interactNPC.puzzleName === "Alden") {
+        g.currentPuzzle = uwetech.puzzle_alden;
+      }
 
         /** Dylan/Duncan code. */
         //if(this.facing === "north") {
@@ -716,6 +720,7 @@ npc_Map8dummyTwo.setOptions("./img/NPC/girlTwo.png", 0, 140, 64, 64, 150, 0, 62,
 npc_Map8dummyThree.setOptions("./img/NPC/girlThree.png", 0, 140, 64, 64, 350, 580, 62, 62, 2);
 npc_Map8dummyFour.setOptions("./img/NPC/monk.png", 0, 140, 64, 64, 500, 900, 62, 62, 2);
 
+npc_Map8dummyFour.puzzleName = "Alden";
 
 npc_Alden.face = (function () {
     var temp = new Image();
@@ -1130,6 +1135,7 @@ npc_Map8dummyTwo.update = function(clockTick) {
 npc_Map8dummyThree.update = function(clockTick) {
 }
 npc_Map8dummyFour.update = function(clockTick) {
+
 }
 
 /** When player's spritesheet loads in browser, sets player.load to true. */
