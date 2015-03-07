@@ -1,4 +1,3 @@
-
 // Relate animation drawing to window frame rate
 window.requestAnimFrame = (function () {
     return window.requestAnimationFrame  ||
@@ -36,11 +35,6 @@ var DOWN_KEY  = 40;
 var ENTER_KEY = 13;
 var SPACE_KEY = 32;
 var DEBUG_KEY = 192;  // ` key ~ key  is the debug key
-
-// Loren: to abstract the keyPress / mouseClick functionalty
-// We need to know what key is currently being pressed
-// Or which item is being clicked
-var CURR_INPUT; // values: NONE, UP, DOWN, LEFT, RIGHT, INERACT
 
 /** Bottom canvas is for the background. NO ANIMATIONS. */
 var btmcanvas = document.getElementById('bottomlayer'),
@@ -241,7 +235,7 @@ var Sprite = function() {
         var exit; // tracks if the player's movement has triggered an exit and zone change
 
         /** Checks which keys are being currently pressed and moves player if new location is valid. */
-        if(CURR_INPUT === "UP") {
+        if(W_KEY in keys || UP_KEY in keys) {
           // W
             this.spriteRoll(512, 8, clockTick, 0.1); // even if player doesn't move, animate them!
 
@@ -277,7 +271,7 @@ var Sprite = function() {
             }
         }
 
-        if(CURR_INPUT === "DOWN") { // S
+        if(S_KEY in keys || DOWN_KEY in keys) { // S
             this.spriteRoll(640, 8, clockTick, 0.1); // even if player doesn't move, animate them!
 
             /** Determine if moving the player will result in entering a new grid location*/
@@ -310,7 +304,7 @@ var Sprite = function() {
             }
         }
 
-        if(CURR_INPUT === "LEFT") { // A
+        if(A_KEY in keys || LEFT_KEY in keys) { // A
             this.spriteRoll(576, 8, clockTick, 0.1); // even if player doesn't move, animate them!
 
             /** Determine if moving the player will result in entering a new grid location*/
@@ -343,7 +337,7 @@ var Sprite = function() {
             }
         }
 
-        if(CURR_INPUT === "RIGHT") { // D
+        if(D_KEY in keys || RIGHT_KEY in keys) { // D
             this.spriteRoll(704, 8, clockTick, 0.1); // even if player doesn't move, animate them!
 
             /** Determine if moving the player will result in entering a new grid location*/
@@ -798,11 +792,11 @@ npc_Map1Blocker.update = function(clockTick) {
     npc_Map1Blocker.dialog[0] = "Would you mind not blocking my path?";
   }
   if(player.y < 171) {
-    if(CURR_INPUT === "UP") {
+    if(W_KEY in keys || UP_KEY in keys) {
       this.spriteRoll(512, 8,  clockTick, 0.1);
       this.y = (player.y - 30);
     }
-    if(CURR_INPUT === "DOWN") {
+    if(S_KEY in keys || DOWN_KEY in keys) {
       this.spriteRoll(640, 8,  clockTick, 0.1);
       this.y = (player.y - 30);
     }
@@ -1242,7 +1236,7 @@ var Controller = function() {
                     interactionButton.width, interactionButton.height);
             }
 
-            if (CURR_INPUT === "UP") {
+            if (W_KEY in keys || UP_KEY in keys) {
                 wButton.src = './img/pressed_W.png';
                 topctx.drawImage(wButton, 0, 0, wButton.width, wButton.height,
                     (wButton.width * 1.5),
@@ -1256,7 +1250,7 @@ var Controller = function() {
                     wButton.width, wButton.height);
             }
 
-            if (CURR_INPUT === "DOWN") {
+            if (S_KEY in keys || DOWN_KEY in keys) {
                 sButton.src = './img/pressed_S.png';
                 topctx.drawImage(sButton, 0, 0, sButton.width, sButton.height,
                     (sButton.width * 1.5),
@@ -1268,7 +1262,7 @@ var Controller = function() {
                     topcanvas.height - sButton.height, sButton.width, sButton.height);
             }
 
-            if (CURR_INPUT === "LEFT") {
+            if (A_KEY in keys || LEFT_KEY in keys) {
                 aButton.src = './img/pressed_A.png';
                 topctx.drawImage(aButton, 0, 0, aButton.width, aButton.height,
                     (aButton.width * .5),
@@ -1281,7 +1275,7 @@ var Controller = function() {
                     topcanvas.height - (aButton.height * 1.5),
                     aButton.width, aButton.height);
             }
-            if (CURR_INPUT === "RIGHT") {
+            if (D_KEY in keys || RIGHT_KEY in keys) {
                 dButton.src = './img/pressed_D.png';
                 topctx.drawImage(dButton, 0, 0, dButton.width, dButton.height,
                     (dButton.width * 2.5),
@@ -1415,23 +1409,19 @@ var Game = function() {
      * @param key_id The int value of the key that triggered this event.
      */
     this.handleKeyDown = function (key_id) {
-        console.log(key_id);
+
         // 87, 83, 65, 68, 32
         if (key_id === SPACE_KEY || key_id === ENTER_KEY) { // Spacebar
-            CURR_INPUT = "INTERACT";
             player.interact(interactNPC);
+            console.log("space");
             //g.loadZone(2, 1, 8); // kirsten debug, tested zone loading via button press
         } else if (key_id === W_KEY || key_id === UP_KEY) {
-            CURR_INPUT = "UP";
             player.facing = "north";
         } else if (key_id === A_KEY || key_id === LEFT_KEY) {
-            CURR_INPUT = "LEFT";
             player.facing = "west";
         } else if (key_id === S_KEY || key_id === DOWN_KEY) {
-            CURR_INPUT = "DOWN";
             player.facing = "south";
         } else if (key_id === D_KEY || key_id === RIGHT_KEY) {
-            CURR_INPUT = "RIGHT";
             player.facing = "east";
         } else if (key_id === DEBUG_KEY) {
             if (g.debug === true) {
@@ -1452,7 +1442,6 @@ var Game = function() {
      * @param key_id
      */
     this.handleKeyUp = function (key_id) {
-        CURR_INPUT = "NONE";
         // did we want to track when a key is released??
     };
 
