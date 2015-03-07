@@ -10,11 +10,23 @@ window.requestAnimFrame = (function () {
 
 /** NOT for animations/movement! This is strictly for single key press logic. */
 window.addEventListener('keydown', function (e) {
-    g.handleKeyDown(e.keyCode);
+    if (g.currentPuzzle === undefined) {
+        //console.log("no puzzle");
+        g.handleKeyDownEvent(e.keyCode);
+    } else {
+        //console.log("yes puzzle");
+        // TODO: do puzzles want to hear key events??
+        //g.currentPuzzle.handleKeyDownEvent(e.keyCode);
+    }
 });
 
 window.addEventListener('keyup', function (e) {
-    g.handleKeyUp(e.keyCode);
+    if (g.currentPuzzle === undefined) {
+        g.handleKeyUpEvent(e.keyCode);
+    } else {
+        // TODO: do puzzles want to hear key events??
+        //g.currentPuzzle.handleKeyUpEvent(e.keyCode);
+    }
 });
 
 /** Array containing all currently pressed keys. This is for animations/movement. */
@@ -28,6 +40,7 @@ var W_KEY = 87;
 var S_KEY = 83;
 var A_KEY = 65;
 var D_KEY = 68;
+var P_KEY = 80;
 var LEFT_KEY  = 37;
 var UP_KEY    = 38;
 var RIGHT_KEY = 39;
@@ -51,6 +64,10 @@ var topcanvas = document.getElementById('toplayer'),
 /** Loading screen canvas, or something. */
 var loadcanvas = document.getElementById('loadlayer'),
     loadctx = loadcanvas.getContext('2d');
+
+/** Loading screen canvas, or something. */
+var timercanvas = document.getElementById('timerlayer'),
+    timerctx = timercanvas.getContext('2d');
 
 /** BTW: Other canvases exist you don't know about are in the HTML file. */
 
@@ -173,7 +190,7 @@ var Sprite = function() {
             this.width = width;
             this.height = height;
             this.speed = speed;
-            this.facing = "south";
+           // this.facing = "south";
             this.dialog = [];
             this.talkTo = false;
             this.faceSpot = 0;// Used to check if you want the dialog on left or right
@@ -389,15 +406,15 @@ var Sprite = function() {
     this.interact = function(interactNPC) {
 
         /** Dylan/Duncan code. */
-        if(this.facing === "north") {
-            var space = this.y * 32 + 32
-        } else if (this.facing === "south") {
-            var space = this.y * 32 - 32
-        } else if (this.facing === "west") {
-            var space = this.x * 32 + 32
-        } else {
-            var space = this.x * 32 - 32
-        }
+        //if(this.facing === "north") {
+        //    var space = this.y * 32 + 32
+        //} else if (this.facing === "south") {
+        //    var space = this.y * 32 - 32
+        //} else if (this.facing === "west") {
+        //    var space = this.x * 32 + 32
+        //} else {
+        //    var space = this.x * 32 - 32
+        //}
             /*
               Kirsten's Interaction Code
             */
@@ -1150,9 +1167,9 @@ Timer.prototype.tick = function () {
 };
 
 Timer.prototype.render = function () {
-    topctx.save();
-    topctx.font = "50px sans-serif";
-    topctx.fillStyle = "#ffffff";
+    timerctx.save();
+    timerctx.font = "50px sans-serif";
+    timerctx.fillStyle = "#ffffff";
     var timeRemaining = "0:00";
     if (this.gameTime <= this.maxTime) {
         timeRemaining = Math.floor((this.maxTime - this.gameTime) / 60) + ":" +
@@ -1161,8 +1178,8 @@ Timer.prototype.render = function () {
     } else {
         g.gameOver = true;
     }
-    topctx.fillText(timeRemaining, topcanvas.width - 110, 50);
-    topctx.restore();
+    timerctx.fillText(timeRemaining, topcanvas.width - 110, 50);
+    timerctx.restore();
 };
 
 /**
@@ -1451,21 +1468,21 @@ var Game = function() {
      * Triggers when the window "hears" a key down event.
      * @param key_id The int value of the key that triggered this event.
      */
-    this.handleKeyDown = function (key_id) {
-
+    this.handleKeyDownEvent = function (key_id) {
+        //console.log(key_id);
         // 87, 83, 65, 68, 32
         if (key_id === SPACE_KEY || key_id === ENTER_KEY) { // Spacebar
             player.interact(interactNPC);
             console.log("space");
             //g.loadZone(2, 1, 8); // kirsten debug, tested zone loading via button press
         } else if (key_id === W_KEY || key_id === UP_KEY) {
-            player.facing = "north";
+           // player.facing = "north";
         } else if (key_id === A_KEY || key_id === LEFT_KEY) {
-            player.facing = "west";
+           // player.facing = "west";
         } else if (key_id === S_KEY || key_id === DOWN_KEY) {
-            player.facing = "south";
+           // player.facing = "south";
         } else if (key_id === D_KEY || key_id === RIGHT_KEY) {
-            player.facing = "east";
+           // player.facing = "east";
         } else if (key_id === DEBUG_KEY) {
             if (g.debug === true) {
                 g.debug = false;
@@ -1474,6 +1491,10 @@ var Game = function() {
                 g.debug = true;
                 console.log("DEBUG ON");
             }
+        } else if (key_id === P_KEY && g.debug === true) {
+            g.isPaused = true;
+            g.currentPuzzle = uwetech.puzzle_alden;
+
         } else {
             // do nothing
         }
@@ -1484,8 +1505,18 @@ var Game = function() {
      * Triggers when the window "hears" a key up event.
      * @param key_id
      */
-    this.handleKeyUp = function (key_id) {
+    this.handleKeyUpEvent = function (key_id) {
         // did we want to track when a key is released??
+    };
+
+    /**
+     * Triggers when the mouse canvas "hears" a mouse down event.
+     * @param mousePos .x and .y of mouse's location
+     */
+    this.handleMouseDown = function (mousePos) {
+        if (this.currentPuzzle !== undefined) {
+            this.currentPuzzle.handleMouseDown(mousePos);
+        }
     };
 
     /**
@@ -1516,6 +1547,8 @@ var Game = function() {
         var elapsedTime = 0;
         if (this.timer.isPaused === false) {
             elapsedTime = this.timer.tick();
+            timerctx.clearRect(0, 0, timercanvas.width, timercanvas.height);
+            this.timer.render();
         }
 
         if (g.currentPuzzle !== undefined) {
@@ -1565,7 +1598,6 @@ var Game = function() {
     this.render = function() {
         topctx.clearRect(0, 0, topcanvas.width, topcanvas.height);
         controller.render();
-        this.timer.render();
 
         midctx.clearRect(0, 0, midcanvas.width, midcanvas.height);
         midctx.save();
@@ -1749,3 +1781,5 @@ g.addEntityZoneEight(npc_Map8dummyFour);
         // somehow alert NPC stuff that the zone changed. Should they be checking? or should
         // a zone somehow store who its npcs are? Does THEIR state need to reset too? Errrm...
  */
+
+window.uwetech.game = g;

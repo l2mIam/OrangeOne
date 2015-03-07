@@ -5,7 +5,7 @@
 
   <meta charset="UTF-8">
 
-  <title>2D Map</title>
+  <title>U We Tech - TCSS 491</title>
 
   <link rel="stylesheet" href="css/main.css" />
   <link rel="stylesheet" href="css/fontfaces.css" />
@@ -57,7 +57,7 @@
   </canvas>
 
   <canvas id="controllerlayer"
-      style="z-index: 4;
+      style="z-index: 6;
       position:absolute;
       left:0px;
       top:0px;
@@ -70,7 +70,7 @@
   </canvas>
 
   <canvas id="dialoglayer"
-      style="z-index: 7;
+      style="z-index: 8;
       position:absolute;
       left:0px;
       top:0px;
@@ -83,7 +83,7 @@
   </canvas>
 
   <canvas id="puzzle"
-          style="z-index: 10;
+          style="z-index: 11;
       position:absolute;
       left:0px;
       top:0px;
@@ -94,6 +94,30 @@
       This text is displayed if your browser does not support HTML5 Canvas.
   </canvas>
 
+  <canvas id="puzzle-top"
+          style="z-index: 12;
+  position:absolute;
+  left:0px;
+  top:0px;
+  width: 100%;
+  max-width: 100%;
+  max-height: 100%"
+          height="352" width="608">
+      This text is displayed if your browser does not support HTML5 Canvas.
+  </canvas>
+
+  <canvas id="timerlayer"
+          style="z-index: 14;
+      position:absolute;
+      left:0px;
+      top:0px;
+      width: 100%;
+      max-width: 100%;
+      max-height: 100%"
+          height="352" width="608"
+          tag="canvas">
+      This text is displayed if your browser does not support HTML5 Canvas.
+  </canvas>
 
   <canvas id="loadlayer"
           style="z-index: 20;
@@ -108,6 +132,18 @@
       This text is displayed if your browser does not support HTML5 Canvas.
   </canvas>
 
+  <canvas id="mouselayer"
+          style="z-index: 30;
+      position:absolute;
+      left:0px;
+      top:0px;
+      width: 100%;
+      max-width: 100%;
+      max-height: 100%"
+          height="352" width="608"
+          tag="canvas">
+      This text is displayed if your browser does not support HTML5 Canvas.
+  </canvas>
 
 <!--<canvas id="mainCanvas" width="560" height="352" backgroundColor="black" ></canvas> &lt;!&ndash;640 width&ndash;&gt;-->
   <script src="fonts/Font.js"></script>
@@ -117,8 +153,9 @@
   <script src="js/modernizr.js"></script>
   <script src="js/input.js"></script>
   <script src="js/game.js"></script>
+  <script src="js/puzzle_alden.js"></script>
   <!--<script src="js/overlay.js"></script>-->
-  <script type='text/javascript' src='js/gamecontroller.js'></script>
+  <!--<script type='text/javascript' src='js/gamecontroller.js'></script>-->
   <!-- <script type='text/javascript'>
     $( function() { // jQuery *not* required - just be to call onload
       GameController.init();
@@ -127,7 +164,7 @@
 -->
 
   <!-- SOURCE: https://github.com/austinhallock/html5-virtual-game-controller/ -->
-  <script type='text/javascript'>
+  <!--<script type='text/javascript'>
     function loadController () {
       GameController.init( {
         forcePerformanceFriendly: true,
@@ -170,7 +207,7 @@
 
     }
 
-  </script>
+  </script>-->
 
 </body>
 
