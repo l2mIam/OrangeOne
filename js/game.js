@@ -665,6 +665,12 @@ var npc_Map8dummyOne = new Sprite();
 var npc_Map8dummyTwo = new Sprite();
 var npc_Map8dummyThree = new Sprite();
 var npc_Map8dummyFour = new Sprite();
+
+var npc_Map10dummyOne = new Sprite();
+var npc_Map10dummyTwo = new Sprite();
+var npc_Map10dummyThree = new Sprite();
+var npc_Map10dummyFour = new Sprite();
+var npc_Map10theAlden = new Sprite();
 //var background = new Sprite();
 
 // var alden_por = new Dialog();
@@ -720,7 +726,13 @@ npc_Map8dummyTwo.setOptions("./img/NPC/girlTwo.png", 0, 140, 64, 64, 150, 0, 62,
 npc_Map8dummyThree.setOptions("./img/NPC/girlThree.png", 0, 140, 64, 64, 350, 580, 62, 62, 2);
 npc_Map8dummyFour.setOptions("./img/NPC/monk.png", 0, 140, 64, 64, 500, 900, 62, 62, 2);
 
-npc_Map8dummyFour.puzzleName = "Alden";
+npc_Map10dummyOne.setOptions("./img/NPC/girlOne.png", 0, 140, 64, 64, 210, 260, 62, 62, 2);
+npc_Map10dummyTwo.setOptions("./img/NPC/girlTwo.png", 0, 140, 64, 64, 340, 260, 62, 62, 2);
+npc_Map10dummyThree.setOptions("./img/NPC/girlThree.png", 0, 140, 64, 64, 210, 180, 62, 62, 2);
+npc_Map10dummyFour.setOptions("./img/NPC/monk.png", 0, 140, 64, 64, 340, 180, 62, 62, 2);
+npc_Map10theAlden.setOptions("./img/NPC/alden.png", 0, 140, 64, 64, 530, 170, 62, 62, 2);
+
+npc_Map10theAlden.puzzleName = "Alden";
 
 npc_Alden.face = (function () {
     var temp = new Image();
@@ -784,6 +796,12 @@ npc_Map1StairWalker.image.onload = function() {
   npc_Map8dummyTwo.load = true;
   npc_Map8dummyThree.load = true;
   npc_Map8dummyFour.load = true;
+
+  npc_Map10dummyOne.load = true;
+  npc_Map10dummyTwo.load = true;
+  npc_Map10dummyThree.load = true;
+  npc_Map10dummyFour.load = true;
+  npc_Map10theAlden.load = true;
 
 };
 
@@ -1137,6 +1155,20 @@ npc_Map8dummyThree.update = function(clockTick) {
 npc_Map8dummyFour.update = function(clockTick) {
 
 }
+npc_Map10dummyTwo.dialog[0] = "I am testing";
+npc_Map10dummyFour.dialog[0] = "Can you see me?";
+npc_Map10dummyOne.update = function(clockTick) {
+}
+npc_Map10dummyTwo.update = function(clockTick) {
+}
+npc_Map10dummyThree.update = function(clockTick) {
+}
+npc_Map10dummyFour.update = function(clockTick) {
+
+}
+npc_Map10theAlden.update = function(clockTick) {
+
+}
 
 /** When player's spritesheet loads in browser, sets player.load to true. */
 player.image.onload = function() {
@@ -1399,6 +1431,8 @@ var Game = function() {
     this.entiteZones[6] = this.zoneSixEntites = [];
     this.entiteZones[7] = this.zoneSevenEntites = [];
     this.entiteZones[8] = this.zoneEightEntites = [];
+    this.entiteZones[9] = this.zoneNineEntites = [];
+    this.entiteZones[10] = this.zoneTenEntites = [];
 
     /**
      * Collection of methods to handle adding entities to specific zones.
@@ -1427,6 +1461,12 @@ var Game = function() {
     };
     this.addEntityZoneEight = function (entity) {
         this.zoneEightEntites.push(entity);
+    };
+    this.addEntityZoneNine = function (entity) {
+        this.zoneNineEntites.push(entity);
+    };
+    this.addEntityZoneTen = function (entity) {
+        this.zoneTenEntites.push(entity);
     };
 
     /**
@@ -1582,6 +1622,7 @@ var Game = function() {
     this.update = function(clockTick) {
         this.cam.getPosition(player);
         interactNPC = undefined;
+        console.log(this.puzzleWins);
         //player.bounds();
         player.movePlayer(clockTick);
         player.check_units();
@@ -1768,6 +1809,12 @@ g.addEntityZoneEight(npc_Map8dummyOne);
 g.addEntityZoneEight(npc_Map8dummyTwo);
 g.addEntityZoneEight(npc_Map8dummyThree);
 g.addEntityZoneEight(npc_Map8dummyFour);
+
+g.addEntityZoneTen(npc_Map10dummyOne);
+g.addEntityZoneTen(npc_Map10dummyTwo);
+g.addEntityZoneTen(npc_Map10dummyThree);
+g.addEntityZoneTen(npc_Map10dummyFour);
+g.addEntityZoneTen(npc_Map10theAlden);
 
 
 
