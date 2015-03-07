@@ -454,12 +454,18 @@ var Sprite = function() {
           }
           if (npc_Alden.talking === true) { // queues up some dialog since Alden is talking.
             //console.log(npc_Alden.face); // kirsten test code
-                g.queuedActions.push(function (){window.uwetech.dialog.show(
-                  "You hear students in the distance having fun without you.", npc_Alden.face);});
-            // kirsten test code
+            //    g.queuedActions.push(function (){window.uwetech.dialog.show(
+            //      "You hear students in the distance having fun without you.", npc_Alden.face);});
+            //// kirsten test code
+            //
+            //  g.queuedActions.push(function (){window.uwetech.dialog.showRight(
+            //      "Maybe you should go talk to them.", npc_Alden.face);});
+              g.queuedActions.push(function (){window.uwetech.dialog.showInner(
+                  "You hear students in the distance having fun without you.");});
+              // kirsten test code
 
-              g.queuedActions.push(function (){window.uwetech.dialog.showRight(
-                  "Maybe you should go talk to them.", npc_Alden.face);});
+              g.queuedActions.push(function (){window.uwetech.dialog.showInner(
+                  "Maybe you should go talk to them.");});
             // Of course, always make sure you call a dialog.hide() when you are done showing text!!
               g.queuedActions.push(function () {window.uwetech.dialog.hide();});
             //console.log(g.queuedActions[0]);
