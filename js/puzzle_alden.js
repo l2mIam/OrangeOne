@@ -1,5 +1,5 @@
 /**
-* puzzle1.js
+* puzzle_alden.js
 *
 * Puzzle challenge 1 Featuring Alden and Mobus
 *
@@ -14,13 +14,14 @@
 */
 
 // ISSUES TO RESOLVE:
-//   Is there a need/way to remove no longer needed images
-// UNDER GAME STATUS
+//
+// UNDER GAME STATUS (at the bottom)
 //   Implement Reset
 //   handle "unloading"/exiting puzzle
 //   Doesn't know about g.puzzleWins[0] yet so error on success
+//
 // TO DO:
-// Update puzzle_code on "mouseUp"/placing block
+//   Update puzzle_code on "mouseUp"/placing block
 
 
 
@@ -238,6 +239,20 @@ function getSelectedObject() {
   };
 }
 
+// getDropLocation
+// Determine if the block is being dropped in a 'bucket'
+// RETURN: -1 (not valid), index of 'bucket' (from left to right: 0 through 6)
+function getDropLocation() {
+  var retVal = -1;
+  var ctrX = lastX + 32;
+  var ctrY = lastY + 32;
+  if (ctrY > 96 && ctrY < 192 && ctrX > 16 && ctrX < 592) {
+    // Over the basket, get the index and return it
+    retVal = Math.floor( (ctrX - 24) / 80 );
+  }
+  return retVal;
+}
+
 function mouseDownListener(evt) {
   if(alden_state === 5) {
     // Puzzle play state
@@ -251,16 +266,14 @@ function mouseDownListener(evt) {
       dragging = true;
     }
 
-
-
     if (dragging) {
-      console.log("dragging");
+      // console.log("dragging");
 
       window.addEventListener("mousemove", mouseMoveListener, false);
     }
     alden_canvas_top.removeEventListener("mousedown", mouseDownListener, false);
     window.addEventListener("mouseup", mouseUpListener, false);
-    console.log("mouseUpAdded");
+    // console.log("mouseUpAdded");
 
     //code below prevents the mouse down from having an effect on the main browser window:
     if (evt.preventDefault) {
@@ -274,46 +287,45 @@ function mouseDownListener(evt) {
 }
 
 function mouseUpListener(evt) {
-  console.log("mouseUp");
+  // console.log("mouseUp");
 
   alden_canvas_top.addEventListener("mousedown", mouseDownListener, false);
   window.removeEventListener("mouseup", mouseUpListener, false);
   if (dragging) {
+    // Clear last drawn block
+    alden_ctx_top.clearRect(lastX, lastY, 64, 64);
+
+    var drop_index = getDropLocation();
+    if (drop_index < 0) {
+    } else {
+      // Mouse up, place block on lower canvas (overwrite previously placed block)
+      alden_ctx.drawImage(images.numbers, 0 + ( (dragObject.obj - 1) *64), 0, 64, 64, 32 + (drop_index * 80), 112, 64, 64);
+    }
+    // Mouse up, place block (overwrite previously placed block)
+    console.log(drop_index );
+    // set puzzle_code[i] = 0) incorrect, 1) correct
     dragging = false;
     window.removeEventListener("mousemove", mouseMoveListener, false);
   }
 }
 
 function mouseMoveListener(evt) {
-  console.log("mouseMove");
+  // console.log("mouseMove");
 
-  var posX;
-  var posY;
-  var minX = 64;
-  var maxX = alden_canvas_top.width - 64;
-  var minY = 64;
-  var maxY = alden_canvas_top.height - 64;
-
-  mouseX = Math.floor((evt.clientX - rect.left) * transX),
-  mouseY = Math.floor((evt.clientY - rect.top)  * transY)
-
-  //clamp x and y positions to prevent object from dragging outside of canvas
-  posX = mouseX - dragHoldX;
-  posX = (posX < minX) ? minX : ((posX > maxX) ? maxX : posX);
-  posY = mouseY - dragHoldY;
-  posY = (posY < minY) ? minY : ((posY > maxY) ? maxY : posY);
+  // mouseX = Math.floor((evt.clientX - rect.left) * transX),
+  // mouseY = Math.floor((evt.clientY - rect.top)  * transY)
 
   // Clear last drawn block before drawing next
   alden_ctx_top.clearRect(lastX, lastY, 64, 64);
-  lastX = mouseX - dragHoldX;
-  lastY = mouseY - dragHoldY;
+  // translate x,y from screen res to canvas to upper left corner of block
+  lastX = Math.floor((evt.clientX - rect.left) * transX) - dragHoldX;
+  lastY = Math.floor((evt.clientY - rect.top)  * transY) - dragHoldY;
+  // lastX = mouseX - dragHoldX;
+  // lastY = mouseY - dragHoldY;
   // Draw selected block on mouseDrag
   alden_ctx_top.drawImage(images.numbers, 0 + ( (dragObject.obj - 1) *64), 0, 64, 64, lastX, lastY, 64, 64);
 
 }
-
-// Mouse up, place block (overwrite previously placed block)
-// set puzzle_code[i] = 0) incorrect, 1) correct
 
 //////////////////////////////////////////////////////////////////////////
 // GAME STATUS
