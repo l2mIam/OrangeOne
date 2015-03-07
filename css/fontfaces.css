@@ -9,9 +9,16 @@
   font-weight: bold;
   font-style: bold;
   src: url("../fonts/IndieFlower.ttf") format("truetype");
-}@font-face {
+}
+@font-face {
   font-family: "Orbitron-Black";
   font-weight: normal;
   font-style: normal;
   src: url("../fonts/Orbitron-Black.ttf") format("truetype");
+}
+@font-face {
+  font-family: "typewriter";
+  font-weight: normal;
+  font-style: normal;
+  src: url("../fonts/typewriter.ttf") format("truetype");
 }
