@@ -1177,7 +1177,8 @@ npc_Map8dummyFour.update = function(clockTick) {
 }
 npc_Map10dummyOne.dialog[0] = "Looks like Mobus is sitting in our class for some reason today.";
 npc_Map10dummyTwo.dialog[0] = "Man this diagram, I just can't understand it... Maybe I should't be a Computer Science Major.";
-npc_Map10dummyThree.dialog[0] = "Apparently Alden has Jenny's number too.";
+npc_Map10dummyThree.dialog[0] = "Do you have the code?.. I don't";
+npc_Map10dummyThree.dialog[1] = "Apparently someone in the plaza has it.";
 npc_Map10dummyFour.dialog[0] = "I'm a mog - half man, half dog. I'm my own best friend.";
 
 npc_Map10dummyOne.update = function(clockTick) {
