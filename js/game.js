@@ -57,6 +57,7 @@ var btmcanvas = document.getElementById('bottomlayer'),
 var midcanvas = document.getElementById('middlelayer'),
     midctx = midcanvas.getContext('2d');
 
+<<<<<<< HEAD
 /** Top canvas will draw on top of bottom and middle canvas. */
 var topcanvas = document.getElementById('toplayer'),
     topctx = topcanvas.getContext('2d');
@@ -80,6 +81,41 @@ var timercanvas = document.getElementById('timerlayer'),
 var sign_screen_bounds = null;
 
 // Keeps the player in bounds -- Kirsten update: no longer being used.
+=======
+// zone #1's off limit areas
+var sign_screen_bounds = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                          [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                          [1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                          [1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1],
+                          [0,0,0,0,0,0,0,0,1,0,0,0,0,1,1,1,1,1,1],
+                          [0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
+                          [0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
+                          [0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
+                          [0,0,1,1,1,1,1,1,1,0,0,0,0,1,0,0,0,0,0],
+                          [0,1,1,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
+                          [0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],
+                          [0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],
+                          [0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],
+                          [0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],
+                          [0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0],
+                          [0,1,1,1,1,1,1,1,1,0,0,0,0,1,0,0,0,0,0],
+                          [0,0,0,0,1,1,1,1,1,0,0,0,0,1,0,0,0,0,0],
+                          [0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
+                          [0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
+                          [0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
+                          [0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0],
+                          [0,0,0,0,0,0,0,0,1,0,0,0,0,1,1,1,1,1,0],
+                          [0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,1,0],
+                          [0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0],
+                          [0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0],
+                          [0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0],
+                          [1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                          [1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+                          [1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                          [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]];
+
+// Keeps the player in bounds
+>>>>>>> gh-pages
 var math = function() {
   this.clamp = function(i, min, max) {
     return Math.max(Math.min(i, max),min);
@@ -780,6 +816,7 @@ npc_Map1StairWalker.image.onload = function() {
   npc_Map8dummyThree.load = true;
   npc_Map8dummyFour.load = true;
 
+<<<<<<< HEAD
 };
 
 /*
@@ -831,6 +868,25 @@ npc_Map1dummyTwo.update = function(clockTick) {
 };
 npc_Map1dummyThree.update = function(clockTick) {
 };
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+var background = new Sprite();
+background.setOptions("./img/UWTmap1.jpg", 0, 0, btmcanvas.width, btmcanvas.height,
+=======
+
+// Backgrounds
+background.setOptions("./img/UWTmap1.png", 0, 0, btmcanvas.width, btmcanvas.height,
+>>>>>>> gh-pages
+                                        0, 0, btmcanvas.width, btmcanvas.height, 0);
+=======
+var background = new Sprite();
+
+// Backgrounds
+background.setOptions("./img/UWTmap1.jpg", 0, 0, btmcanvas.width, btmcanvas.height,
+0, 0, btmcanvas.width, btmcanvas.height, 0);
+>>>>>>> 3c2076435ba4882d91518668a5fc902445444c26
+>>>>>>> gh-pages
 
 
 var chinFlip = 0;
