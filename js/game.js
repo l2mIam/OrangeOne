@@ -405,7 +405,7 @@ var Sprite = function() {
      * This code is triggered when the interact button/key was pressed.
      */
     this.interact = function(interactNPC) {
-      if(interactNPC.puzzleName === "Alden") {
+      if(interactNPC.puzzleName === "Alden" && g.puzzleWins[0] === false) {
         g.currentPuzzle = uwetech.puzzle_alden;
       }
 
@@ -999,21 +999,38 @@ dummyThree - the one furthest north
 bottomWalker - Walks left to right at the bottom of the stairs.. like a normal person.
 */
 
+npc_Map3dummyOne.dialog[0] = "...and then I said...";
+npc_Map3dummyOne.dialog[1] = "Would you mind? We are having a conversation about some cute boys.";
 npc_Map3dummyOne.update = function(clockTick) {
   this.spriteRoll(576, 1,  clockTick, 0.1);
 };
+npc_Map3dummyTwo.dialog[0] = "Did he really say that?";
 npc_Map3dummyTwo.update = function(clockTick) {
   this.spriteRoll(512, 1,  clockTick, 0.1);
 };
+npc_Map3dummyThree.dialog[0] = "He sounds so dreamy.";
 npc_Map3dummyThree.update = function(clockTick) {
   this.spriteRoll(900, 1,  clockTick, 0.1);
 };
+npc_Map3dummyFour.dialog[0] = "la, la, la, 867-5309. What was the rest of the song!?";
+npc_Map3dummyFour.dialog[1] = "That number would make an awesome secret code though.";
 npc_Map3dummyFour.update = function(clockTick) {
   this.spriteRoll(900, 1,  clockTick, 0.1);
 };
+
 npc_Map3dummyFive.update = function(clockTick) {
-  this.spriteRoll(900, 1,  clockTick, 0.1);
+  if(this.talkTo) {
+    this.spriteRoll(704, 8,  clockTick, 0.1);
+    this.x += this.speed;
+  }
+  if(!this.talkTo) {
+    this.spriteRoll(900, 1,  clockTick, 0.1);
+    npc_Map3dummyFive.dialog[0] = "Wait, when does this happen? Now?"
+    npc_Map3dummyFive.dialog[1] = "You mean what I’m doing now is actually happening right now?"
+  }
 };
+npc_Map3dummySix.dialog[0] = "Have you seen that girl known as Jenny?"
+npc_Map3dummySix.dialog[1] = "I hear her song is really catchy."
 npc_Map3dummySix.update = function(clockTick) {
   this.spriteRoll(900, 1,  clockTick, 0.1);
 };
@@ -1045,7 +1062,7 @@ npc_Map3Jay.update = function(clockTick) {
 npc_Map3SilentBob.update = function(clockTick) {
   this.spriteRoll(900, 1,  clockTick, 0.1);
 }
-
+npc_Map3BottomWalker.dialog[0] = "My "
 npc_Map3BottomWalker.update = function(clockTick) {
 
   var aldenX = Math.floor(this.x/32) + 1;
@@ -1145,7 +1162,10 @@ npc_Map7dummyThree.update = function(clockTick) {
 npc_Map7dummyFour.dialog[0] = "I have O(n^2) blueberries.  Katie prefers green apples and ham.  She has O(n) of them!"
 npc_Map7dummyFour.update = function(clockTick) {
 }
-
+npc_Map8dummyOne.dialog[0] ="Flying chickens in a barnyard!";
+npc_Map8dummyTwo.dialog[0] = "When you can balance a tack hammer on your head, you will head off your foes with a balanced attack";
+npc_Map8dummyThree.dialog[0] = "The early bird might get the worm, but the second mouse gets the cheese.";
+npc_Map8dummyFour.dialog[0] = "Nostalgia isn't what it used to be.";
 npc_Map8dummyOne.update = function(clockTick) {
 }
 npc_Map8dummyTwo.update = function(clockTick) {
@@ -1155,8 +1175,11 @@ npc_Map8dummyThree.update = function(clockTick) {
 npc_Map8dummyFour.update = function(clockTick) {
 
 }
-npc_Map10dummyTwo.dialog[0] = "I am testing";
-npc_Map10dummyFour.dialog[0] = "Can you see me?";
+npc_Map10dummyOne.dialog[0] = "Looks like Mobus is sitting in our class for some reason today.";
+npc_Map10dummyTwo.dialog[0] = "Man this diagram, I just can't understand it... Maybe I should't be a Computer Science Major.";
+npc_Map10dummyThree.dialog[0] = "Apparently Alden has Jenny's number too.";
+npc_Map10dummyFour.dialog[0] = "I'm a mog - half man, half dog. I'm my own best friend.";
+
 npc_Map10dummyOne.update = function(clockTick) {
 }
 npc_Map10dummyTwo.update = function(clockTick) {
@@ -1167,7 +1190,10 @@ npc_Map10dummyFour.update = function(clockTick) {
 
 }
 npc_Map10theAlden.update = function(clockTick) {
-
+  if(g.puzzleWins[0] === true) {
+    npc_Map10theAlden.dialog[0] = "The code, you have it...";
+    npc_Map10theAlden.dialog[1] = "keep it secret, keep it safe."
+  }
 }
 
 /** When player's spritesheet loads in browser, sets player.load to true. */
