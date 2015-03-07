@@ -1179,118 +1179,161 @@ var interactNPC;
 var Controller = function() {
     this.load = false;
 
-    var interactionButton = new Image();
-    interactionButton.src = './img/doButtonInactive.png';
-    interactionButton.onload = function () {
-        interactionButton.load = true;
-    };
+    /** Really wishing I had an asset manager right about now. Or a single button spritesheet! HAHAHA. */
+    var interactionButton_up = new Image();
+    interactionButton_up.src = './img/doButtonInactive.png';
+    interactionButton_up.onload = function () { interactionButton_up.load = true; };
 
-    var sButton = new Image();
-    sButton.src = './img/button_S.png';
-    sButton.onload = function () {
-        sButton.load = true;
-    };
+    var sButton_up = new Image();
+    sButton_up.src = './img/button_S.png';
+    sButton_up.onload = function () { sButton_up.load = true; };
 
-    var aButton = new Image();
-    aButton.src = './img/button_A.png';
-    aButton.onload = function () {
-        aButton.load = true;
-    };
+    var aButton_up = new Image();
+    aButton_up.src = './img/button_A.png';
+    aButton_up.onload = function () { aButton_up.load = true; };
 
-    var dButton = new Image();
-    dButton.src = './img/button_D.png';
-    dButton.onload = function () {
-        dButton.load = true;
-    };
+    var dButton_up = new Image();
+    dButton_up.src = './img/button_D.png';
+    dButton_up.onload = function () { dButton_up.load = true; };
 
-    var wButton = new Image();
-    wButton.src = './img/button_W.png';
-    wButton.onload = function () {
-        wButton.load = true;
-    };
+    var wButton_up = new Image();
+    wButton_up.src = './img/button_W.png';
+    wButton_up.onload = function () { wButton_up.load = true; };
 
+    var interactionButton_down = new Image();
+    interactionButton_down.src = './img/doButtonActive.png';
+    interactionButton_down.onload = function () { interactionButton_down.load = true; };
+
+    var sButton_down = new Image();
+    sButton_down.src = './img/pressed_S.png';
+    sButton_down.onload = function () { sButton_down.load = true; };
+
+    var aButton_down = new Image();
+    aButton_down.src = './img/pressed_A.png';
+    aButton_down.onload = function () { aButton_down.load = true; };
+
+    var dButton_down = new Image();
+    dButton_down.src = './img/pressed_D.png';
+    dButton_down.onload = function () { dButton_down.load = true; };
+
+    var wButton_down = new Image();
+    wButton_down.src = './img/pressed_W.png';
+    wButton_down.onload = function () { wButton_down.load = true; };
 
     this.render = function() {
-        if (this.load === false) {
-            if (interactionButton.load === true && sButton.load === true &&
-                aButton.load === true && dButton.load === true && wButton.load === true) {
+        if (this.load === false) { // check to see if the non-pressed buttons are loaded.
+            if (interactionButton_up.load === true && sButton_up.load === true &&
+                aButton_up.load === true && dButton_up.load === true && wButton_up.load === true) {
                 this.load = true;
             }
         }
 
         if (this.load) {
-            if (interactNPC === undefined) {
-                interactionButton.src = './img/doButtonInactive.png';
-                topctx.drawImage(interactionButton, 0, 0,
-                    interactionButton.width, interactionButton.height,
-                    topcanvas.width - (interactionButton.width * 1.5),
-                    topcanvas.height - (interactionButton.height * 1.2),
-                    interactionButton.width, interactionButton.height);
-            }
-            if (interactNPC !== undefined) {
-                interactionButton.src = './img/doButtonActive.png';
-                topctx.drawImage(interactionButton, 0, 0,
-                    interactionButton.width, interactionButton.height,
-                    topcanvas.width - (interactionButton.width * 1.5),
-                    topcanvas.height - (interactionButton.height * 1.2),
-                    interactionButton.width, interactionButton.height);
-            }
+            /** Check if the key is currently pressed or not */
+            var styled_interact = (interactNPC !== undefined) ? interactionButton_down : interactionButton_up;
+            var styled_w = (W_KEY in keys || UP_KEY in keys) ? wButton_down : wButton_up;
+            var styled_a = (A_KEY in keys || LEFT_KEY in keys) ? aButton_down: aButton_up;
+            var styled_s = (S_KEY in keys || DOWN_KEY in keys) ? sButton_down : sButton_up;
+            var styled_d = (D_KEY in keys || RIGHT_KEY in keys) ? dButton_down : dButton_up;
 
-            if (W_KEY in keys || UP_KEY in keys) {
-                wButton.src = './img/pressed_W.png';
-                topctx.drawImage(wButton, 0, 0, wButton.width, wButton.height,
-                    (wButton.width * 1.5),
-                    topcanvas.height - (wButton.height * 2),
-                    wButton.width, wButton.height);
-            } else {
-                wButton.src = './img/button_W.png';
-                topctx.drawImage(wButton, 0, 0, wButton.width, wButton.height,
-                    (wButton.width * 1.5),
-                    topcanvas.height - (wButton.height * 2),
-                    wButton.width, wButton.height);
-            }
+            topctx.drawImage(styled_interact, 0, 0,
+                styled_interact.width, styled_interact.height,
+                topcanvas.width - (interactionButton_up.width * 1.5),
+                topcanvas.height - (interactionButton_up.height * 1.2),
+                interactionButton_up.width, interactionButton_up.height);
 
-            if (S_KEY in keys || DOWN_KEY in keys) {
-                sButton.src = './img/pressed_S.png';
-                topctx.drawImage(sButton, 0, 0, sButton.width, sButton.height,
-                    (sButton.width * 1.5),
-                    topcanvas.height - sButton.height, sButton.width, sButton.height);
-            } else {
-                sButton.src = './img/button_S.png';
-                topctx.drawImage(sButton, 0, 0, sButton.width, sButton.height,
-                    (sButton.width * 1.5),
-                    topcanvas.height - sButton.height, sButton.width, sButton.height);
-            }
+            topctx.drawImage(styled_w, 0, 0, wButton_up.width, wButton_up.height,
+                (wButton_up.width * 1.5), topcanvas.height - (wButton_up.height * 2),
+                wButton_up.width, wButton_up.height);
 
-            if (A_KEY in keys || LEFT_KEY in keys) {
-                aButton.src = './img/pressed_A.png';
-                topctx.drawImage(aButton, 0, 0, aButton.width, aButton.height,
-                    (aButton.width * .5),
-                    topcanvas.height - (aButton.height * 1.5),
-                    aButton.width, aButton.height);
-            } else {
-                aButton.src = './img/button_A.png';
-                topctx.drawImage(aButton, 0, 0, aButton.width, aButton.height,
-                    (aButton.width * .5),
-                    topcanvas.height - (aButton.height * 1.5),
-                    aButton.width, aButton.height);
-            }
-            if (D_KEY in keys || RIGHT_KEY in keys) {
-                dButton.src = './img/pressed_D.png';
-                topctx.drawImage(dButton, 0, 0, dButton.width, dButton.height,
-                    (dButton.width * 2.5),
-                    topcanvas.height - (dButton.height * 1.5),
-                    dButton.width, dButton.height);
-            } else {
-                dButton.src = './img/button_D.png';
-                topctx.drawImage(dButton, 0, 0, dButton.width, dButton.height,
-                    (dButton.width * 2.5),
-                    topcanvas.height - (dButton.height * 1.5),
-                    dButton.width, dButton.height);
-            }
+
+            topctx.drawImage(styled_s, 0, 0, sButton_up.width, sButton_up.height,
+                (sButton_up.width * 1.5), topcanvas.height - sButton_up.height,
+                sButton_up.width, sButton_up.height);
+
+
+            topctx.drawImage(styled_a, 0, 0, aButton_up.width, aButton_up.height,
+                (aButton_up.width * 0.5), topcanvas.height - (aButton_up.height * 1.5),
+                aButton_up.width, aButton_up.height);
+
+
+            topctx.drawImage(styled_d, 0, 0, dButton_up.width, dButton_up.height,
+                (dButton_up.width * 2.5), topcanvas.height - (dButton_up.height * 1.5),
+                dButton_up.width, dButton_up.height);
+
+            /** old code. */ //TODO: delete this old code
+            //if (interactNPC === undefined) {
+            //    interactionButton_up.src = './img/doButtonInactive.png';
+            //    topctx.drawImage(interactionButton_up, 0, 0,
+            //        interactionButton_up.width, interactionButton_up.height,
+            //        topcanvas.width - (interactionButton_up.width * 1.5),
+            //        topcanvas.height - (interactionButton_up.height * 1.2),
+            //        interactionButton_up.width, interactionButton_up.height);
+            //}
+            //if (interactNPC !== undefined) {
+            //    interactionButton_up.src = './img/doButtonActive.png';
+            //    topctx.drawImage(interactionButton_up, 0, 0,
+            //        interactionButton_up.width, interactionButton_up.height,
+            //        topcanvas.width - (interactionButton_up.width * 1.5),
+            //        topcanvas.height - (interactionButton_up.height * 1.2),
+            //        interactionButton_up.width, interactionButton_up.height);
+            //}
+            //
+            //if (W_KEY in keys || UP_KEY in keys) {
+            //    wButton_up.src = './img/pressed_W.png';
+            //    topctx.drawImage(wButton_up, 0, 0, wButton_up.width, wButton_up.height,
+            //        (wButton_up.width * 1.5),
+            //        topcanvas.height - (wButton_up.height * 2),
+            //        wButton_up.width, wButton_up.height);
+            //} else {
+            //    wButton_up.src = './img/button_W.png';
+            //    topctx.drawImage(wButton_up, 0, 0, wButton_up.width, wButton_up.height,
+            //        (wButton_up.width * 1.5),
+            //        topcanvas.height - (wButton_up.height * 2),
+            //        wButton_up.width, wButton_up.height);
+            //}
+            //
+            //if (S_KEY in keys || DOWN_KEY in keys) {
+            //    sButton_up.src = './img/pressed_S.png';
+            //    topctx.drawImage(sButton_up, 0, 0, sButton_up.width, sButton_up.height,
+            //        (sButton_up.width * 1.5),
+            //        topcanvas.height - sButton_up.height, sButton_up.width, sButton_up.height);
+            //} else {
+            //    sButton_up.src = './img/button_S.png';
+            //    topctx.drawImage(sButton_up, 0, 0, sButton_up.width, sButton_up.height,
+            //        (sButton_up.width * 1.5),
+            //        topcanvas.height - sButton_up.height, sButton_up.width, sButton_up.height);
+            //}
+            //
+            //if (A_KEY in keys || LEFT_KEY in keys) {
+            //    aButton_up.src = './img/pressed_A.png';
+            //    topctx.drawImage(aButton_up, 0, 0, aButton_up.width, aButton_up.height,
+            //        (aButton_up.width * .5),
+            //        topcanvas.height - (aButton_up.height * 1.5),
+            //        aButton_up.width, aButton_up.height);
+            //} else {
+            //    aButton_up.src = './img/button_A.png';
+            //    topctx.drawImage(aButton_up, 0, 0, aButton_up.width, aButton_up.height,
+            //        (aButton_up.width * .5),
+            //        topcanvas.height - (aButton_up.height * 1.5),
+            //        aButton_up.width, aButton_up.height);
+            //}
+            //if (D_KEY in keys || RIGHT_KEY in keys) {
+            //    dButton_up.src = './img/pressed_D.png';
+            //    topctx.drawImage(dButton_up, 0, 0, dButton_up.width, dButton_up.height,
+            //        (dButton_up.width * 2.5),
+            //        topcanvas.height - (dButton_up.height * 1.5),
+            //        dButton_up.width, dButton_up.height);
+            //} else {
+            //    dButton_up.src = './img/button_D.png';
+            //    topctx.drawImage(dButton_up, 0, 0, dButton_up.width, dButton_up.height,
+            //        (dButton_up.width * 2.5),
+            //        topcanvas.height - (dButton_up.height * 1.5),
+            //        dButton_up.width, dButton_up.height);
+            //}
         }
-    }
-}
+    };
+};
 
 var controller = new Controller();
 
