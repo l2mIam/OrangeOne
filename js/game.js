@@ -1181,43 +1181,43 @@ var Controller = function() {
 
     /** Really wishing I had an asset manager right about now. Or a single button spritesheet! HAHAHA. */
     var interactionButton_up = new Image();
-    interactionButton_up.src = './img/doButtonInactive.png';
+    interactionButton_up.src = './img/controls/doButtonInactive.png';
     interactionButton_up.onload = function () { interactionButton_up.load = true; };
 
     var sButton_up = new Image();
-    sButton_up.src = './img/button_S.png';
+    sButton_up.src = './img/controls/button_S.png';
     sButton_up.onload = function () { sButton_up.load = true; };
 
     var aButton_up = new Image();
-    aButton_up.src = './img/button_A.png';
+    aButton_up.src = './img/controls/button_A.png';
     aButton_up.onload = function () { aButton_up.load = true; };
 
     var dButton_up = new Image();
-    dButton_up.src = './img/button_D.png';
+    dButton_up.src = './img/controls/button_D.png';
     dButton_up.onload = function () { dButton_up.load = true; };
 
     var wButton_up = new Image();
-    wButton_up.src = './img/button_W.png';
+    wButton_up.src = './img/controls/button_W.png';
     wButton_up.onload = function () { wButton_up.load = true; };
 
     var interactionButton_down = new Image();
-    interactionButton_down.src = './img/doButtonActive.png';
+    interactionButton_down.src = './img/controls/doButtonActive.png';
     interactionButton_down.onload = function () { interactionButton_down.load = true; };
 
     var sButton_down = new Image();
-    sButton_down.src = './img/pressed_S.png';
+    sButton_down.src = './img/controls/pressed_S.png';
     sButton_down.onload = function () { sButton_down.load = true; };
 
     var aButton_down = new Image();
-    aButton_down.src = './img/pressed_A.png';
+    aButton_down.src = './img/controls/pressed_A.png';
     aButton_down.onload = function () { aButton_down.load = true; };
 
     var dButton_down = new Image();
-    dButton_down.src = './img/pressed_D.png';
+    dButton_down.src = './img/controls/pressed_D.png';
     dButton_down.onload = function () { dButton_down.load = true; };
 
     var wButton_down = new Image();
-    wButton_down.src = './img/pressed_W.png';
+    wButton_down.src = './img/controls/pressed_W.png';
     wButton_down.onload = function () { wButton_down.load = true; };
 
     this.render = function() {
