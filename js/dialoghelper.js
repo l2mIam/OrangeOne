@@ -16,8 +16,10 @@ var Dialog = function () {
         isShown = false,
         dlgcanvas = document.getElementById('dialoglayer'),
         dlgctx = dlgcanvas.getContext('2d'),
-        smallBox = new Image();
+        smallBox = new Image(),
+        innerBox = new Image();
     smallBox.src = './img/OverlayDialogSmall.png';
+    innerBox.src = './img/InnerDialog.png';
     dlgctx.font = "bold 16px sans-serif";
     //var myFont = new Font();
     //myFont.fontFamily = "Indie Flower OFL";
@@ -86,6 +88,26 @@ var Dialog = function () {
     };
 
     /**
+     * Your inner dialogue.
+     * @param string_of_text The text to be displayed. Auto-word wrapped at 50 characters.
+     */
+    this.showInner = function(string_of_text) {
+        if (isShown === true) {
+            clearDialogCanvas(); // clear any previous dialog being displayed
+        }
+
+        isShown = true;
+        displayInnerBox(); // draw InnerDialog.png to dialog canvas
+
+        if (string_of_text !== undefined) { // a string was passed
+            writeText(string_of_text, 50, 90, -170); // write the string to dialog canvas
+        } else {
+            // Report an error! No arguments were passed.
+            console.log('Usage: dialog.showInner("Text to display")');
+        }
+    };
+
+    /**
      * Creates a function that calls showRight(text, image);
      */
     this.createShowRight = function (text, image) {
@@ -115,15 +137,23 @@ var Dialog = function () {
             0, 0, dlgcanvas.width, dlgcanvas.height);
     };
 
-    var writeText = function (string_of_text) {
+    var displayInnerBox = function () {
+        dlgctx.drawImage(innerBox, 0, 0, innerBox.width, innerBox.height,
+            0, 0, dlgcanvas.width, dlgcanvas.height);
+    };
+
+    var writeText = function (string_of_text, length, offsetx, offsety) {
         // break the string down into lines.
-        var wordwrap = string_of_text.wordWrap(75, '~', 3);
+        var maxChar = (length === undefined) ? 75 : length;
+        var offsetX = (offsetx === undefined) ? 0 : offsetx;
+        var offsetY = (offsety === undefined) ? 0 : offsety;
+        var wordwrap = string_of_text.wordWrap(maxChar, '~', 3);
         var lines = wordwrap.split("~");
 
         // display the lines (up to 4 displayed)
         for (var i = 0; i < lines.length && i < 4; i++) {
-            dlgctx.fillText(lines[i], dlgcanvas.width / 22,
-                (i * 18) + dlgcanvas.height - (dlgcanvas.height / 5 ) - 3);
+            dlgctx.fillText(lines[i], offsetX + dlgcanvas.width / 22,
+               offsetY + (i * 18) + dlgcanvas.height - (dlgcanvas.height / 5 ) - 3);
         }
     };
 
