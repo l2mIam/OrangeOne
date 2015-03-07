@@ -19,9 +19,6 @@
 //   Implement Reset
 //   handle "unloading"/exiting puzzle
 //   Doesn't know about g.puzzleWins[0] yet so error on success
-//
-// TO DO:
-//   Update puzzle_code on "mouseUp"/placing block
 
 
 
@@ -126,6 +123,7 @@ var alden_state;
 // Puzzle_code array tracks block input
 // value in each position represents 0) incorrect, 1) correct
 var puzzle_code = [0,0,0,0,0,0,0];
+var puzzle_solution = [8,6,7,5,3,4,9];
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -141,7 +139,7 @@ var dragHoldX;
 var dragHoldY;
 var rect = alden_canvas_top.getBoundingClientRect();
 var transX = alden_canvas_top.width /rect.width;
-var transY = alden_canvas_top.height / rect.height
+var transY = alden_canvas_top.height / rect.height;
 
 function getMousePos(alden_canvas_top, evt) {
   return {
@@ -296,14 +294,17 @@ function mouseUpListener(evt) {
     alden_ctx_top.clearRect(lastX, lastY, 64, 64);
 
     var drop_index = getDropLocation();
-    if (drop_index < 0) {
-    } else {
+    if (drop_index >= 0) {
       // Mouse up, place block on lower canvas (overwrite previously placed block)
       alden_ctx.drawImage(images.numbers, 0 + ( (dragObject.obj - 1) *64), 0, 64, 64, 32 + (drop_index * 80), 112, 64, 64);
+      // set puzzle_code[i] = 0) incorrect, 1) correct
+      if (puzzle_solution[drop_index] === dragObject.obj) {
+        puzzle_code[drop_index] = 1;
+      } else {
+        puzzle_code[drop_index] = 0;
+      }
     }
-    // Mouse up, place block (overwrite previously placed block)
-    console.log(drop_index );
-    // set puzzle_code[i] = 0) incorrect, 1) correct
+    // console.log(puzzle_code);
     dragging = false;
     window.removeEventListener("mousemove", mouseMoveListener, false);
   }
