@@ -1062,7 +1062,7 @@ npc_Map3Jay.update = function(clockTick) {
 npc_Map3SilentBob.update = function(clockTick) {
   this.spriteRoll(900, 1,  clockTick, 0.1);
 }
-npc_Map3BottomWalker.dialog[0] = "My "
+npc_Map3BottomWalker.dialog[0] = "Sunnyside is a place of ruin and despair, ruled by an evil bear who smells of strawberries!"
 npc_Map3BottomWalker.update = function(clockTick) {
 
   var aldenX = Math.floor(this.x/32) + 1;
@@ -1114,7 +1114,11 @@ npc_Map3BottomWalker.update = function(clockTick) {
     }
   }
 };
-
+npc_Map4theChin.face.src = "./img/Chin-plain.png"
+npc_Map4theChin.faceArray[0] = npc_Map4theChin.face;
+npc_Map4theChin.faceArray[1] = npc_Map4theChin.face;
+npc_Map4theChin.dialog[0] = "Uh.. I haven't finished my final exam quite yet."
+npc_Map4theChin.dialog[1] = "Visit me after final week and I might have an exam for you."
 npc_Map4theChin.update = function (clockTick) {
 
 }
@@ -1157,6 +1161,7 @@ npc_Map7dummyOne.update = function(clockTick) {
 npc_Map7dummyTwo.dialog[0] = "I like O(n) green apples and ham.  Sam prefers blueberries.  He has O(n^2) of them!"
 npc_Map7dummyTwo.update = function(clockTick) {
 }
+npc_Map7dummyThree.dialog[0] = "A liger...it's pretty much my favorite animal. It's like a lion and a tiger mixed - bred for its skills in magic."
 npc_Map7dummyThree.update = function(clockTick) {
 }
 npc_Map7dummyFour.dialog[0] = "I have O(n^2) blueberries.  Katie prefers green apples and ham.  She has O(n) of them!"
@@ -1649,7 +1654,7 @@ var Game = function() {
     this.update = function(clockTick) {
         this.cam.getPosition(player);
         interactNPC = undefined;
-        console.log(this.puzzleWins);
+        //console.log(this.puzzleWins);
         //player.bounds();
         player.movePlayer(clockTick);
         player.check_units();
