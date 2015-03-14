@@ -1628,7 +1628,13 @@ var Game = function() {
                 message = (g.puzzleWins[2]) ? message + "PASS" : message + "FAIL";
                 message = message + "] Fowler's Final                            ";
                 message = message + "                                                   ";
-                message = message + "You must pass all finals to earn your degree!";
+                if(g.puzzleWins[0] === true && g.puzzleWins[2] === true) {
+                  message = message + " Go talk to David Ross inorder to get your degree!";
+                } else {
+                  message = message + "Looks like you need to finish a few finals.";
+                  message = message + "                                                      ";
+                  message = message + "   You must pass all finals to earn your degree!";
+                }
                 console.log(message);
                 g.queuedActions.push((function (message) {
                     return function () {
