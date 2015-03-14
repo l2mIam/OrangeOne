@@ -808,7 +808,7 @@ BottomWalker - Walks left to right at the bottom of the stairs.. like a normal p
 npc_Map1StairWalker.face.src = "./img/people/dude1.png";
 npc_Map1StairWalker.faceArray[0] = npc_Map1StairWalker.face;
 npc_Map1StairWalker.faceArray[1] = npc_Map1StairWalker.face;
-npc_Map1StairWalker.dialog[0] = " Your code for Fowler's class? Yeah, I looked at it. Your problem was at row 3, column 3. You should really fix that code.";
+npc_Map1StairWalker.dialog[0] = "Your code for Fowler's class? Yeah, I looked at it. Your problem was at row 3, column 3. You should really fix that code.";
 npc_Map1StairWalker.dialog[1] = "You really should add javadoc next time.";
 
 npc_Map1dummyTwo.face.src = "./img/Chin-plain.png";
@@ -1021,9 +1021,7 @@ npc_Map3dummyThree.update = function(clockTick) {
 };
 npc_Map3dummyFour.face.src = "./img/people/Kirsten.png";
 npc_Map3dummyFour.faceArray[0] = npc_Map3dummyFour.face;
-npc_Map3dummyFour.faceArray[1] = npc_Map3dummyFour.face;
-npc_Map3dummyFour.dialog[0] = "la, la, la, 867-5309. What was the rest of the song!?";
-npc_Map3dummyFour.dialog[1] = "That number would make an awesome secret code though.";
+npc_Map3dummyFour.dialog[0] = "A liger...it's pretty much my favorite animal. It's like a lion and a tiger mixed - bred for its skills in magic.";
 npc_Map3dummyFour.update = function(clockTick) {
   this.spriteRoll(900, 1,  clockTick, 0.1);
 };
@@ -1177,18 +1175,37 @@ npc_Map6lib.faceArray[0] = npc_Map6lib.face;
 npc_Map6lib.dialog[0] = "Yeah, yeah, I looked over your code. What a mess! You better make changes to row 5, column 2 before you turn that in to Fowler!"
 npc_Map6lib.update = function(clockTick) {
 }
+npc_Map7dummyOne.face.src = "./img/people/gal1.png";
+npc_Map7dummyOne.faceArray[0] = npc_Map7dummyOne.face;
 npc_Map7dummyOne.dialog[0] = "These schnazberries taste like schnazberries!. I could eat O(n!) schnazberries."
 npc_Map7dummyOne.update = function(clockTick) {
 }
+npc_Map7dummyTwo.face.src = "./img/people/dudes.png";
+npc_Map7dummyTwo.faceArray[0] = npc_Map7dummyTwo.face;
 npc_Map7dummyTwo.dialog[0] = "I like O(n) green apples and ham.  Sam prefers blueberries.  He has O(n^2) of them!"
 npc_Map7dummyTwo.update = function(clockTick) {
 }
-npc_Map7dummyThree.dialog[0] = "A liger...it's pretty much my favorite animal. It's like a lion and a tiger mixed - bred for its skills in magic."
+npc_Map7dummyThree.face.src = "./img/people/Dylan.png";
+npc_Map7dummyThree.faceArray[0] = npc_Map7dummyThree.face;
+npc_Map7dummyThree.faceArray[1] = npc_Map7dummyThree.face;
+npc_Map7dummyThree.dialog[0] = "la, la, la, 867-5309. What was the rest of the song!?";
+npc_Map7dummyThree.dialog[1] = "That number would make an awesome secret code though.";
 npc_Map7dummyThree.update = function(clockTick) {
 }
+npc_Map7dummyFour.face.src = "./img/people/dudes.png";
+npc_Map7dummyFour.faceArray[0] = npc_Map7dummyFour.face;
 npc_Map7dummyFour.dialog[0] = "I have O(n^2) blueberries.  Katie prefers green apples and ham.  She has O(n) of them!"
 npc_Map7dummyFour.update = function(clockTick) {
 }
+npc_Map8dummyOne.face.src = "./img/people/dude7.png";
+npc_Map8dummyOne.faceArray[0] = npc_Map8dummyOne.face;
+
+npc_Map8dummyFour.face.src = "./img/people/dude3.png";
+npc_Map8dummyFour.faceArray[0] = npc_Map8dummyFour.face;
+
+npc_Map8dummyThree.face.src = "./img/people/dude4.png";
+npc_Map8dummyThree.faceArray[0] = npc_Map8dummyThree.face;
+
 npc_Map8dummyOne.dialog[0] ="Flying chickens in a barnyard!";
 npc_Map8dummyTwo.dialog[0] = "When you can balance a tack hammer on your head, you will head off your foes with a balanced attack";
 npc_Map8dummyThree.dialog[0] = "The early bird might get the worm, but the second mouse gets the cheese.";
@@ -1205,7 +1222,7 @@ npc_Map8dummyFour.update = function(clockTick) {
 npc_Map10dummyOne.dialog[0] = "Looks like Mobus is sitting in our class for some reason today.";
 npc_Map10dummyTwo.dialog[0] = "Man this diagram, I just can't understand it... Maybe I should't be a Computer Science Major.";
 npc_Map10dummyThree.dialog[0] = "Do you have the code?.. I don't";
-npc_Map10dummyThree.dialog[1] = "Apparently someone in the plaza has it.";
+npc_Map10dummyThree.dialog[1] = "Apparently someone on or near the staircase knows it.";
 npc_Map10dummyFour.dialog[0] = "I'm a mog - half man, half dog. I'm my own best friend.";
 
 npc_Map10dummyOne.update = function(clockTick) {
