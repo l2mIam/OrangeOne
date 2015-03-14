@@ -1630,6 +1630,8 @@ var Game = function() {
                 message = message + "                                                   ";
                 if(g.puzzleWins[0] === true && g.puzzleWins[2] === true) {
                   message = message + " Go talk to David Ross inorder to get your degree!";
+                  message = message + "                                                      ";
+                  message = message + "(He's located next to Fowler in Cherry Parks)";
                 } else {
                   message = message + "Looks like you need to finish a few finals.";
                   message = message + "                                                      ";
