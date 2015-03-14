@@ -130,20 +130,21 @@ var puzzle_fowler = function () {
         var oy = mousePos.y;
         switch (puzzleState) {
             case 1:
-                this.render();
+                //this.render();
                 puzzleState = 2;
                 break;
             case 2:
-                this.render();
+                //this.render();
                 puzzleState = 3;
                 break;
             case 3:
-                this.render();
+                //this.render();
                 //check where they clicked
-                if (mousePos.x > 300 && mousePos.x < 560 && mousePos.y > 30 && mousePos.y < 80) {
+
+                if (mousePos.x > 375 && mousePos.x < 600 && mousePos.y > 75 && mousePos.y < 165) {
                     // NOPE clicked: cancel puzzle (return to game)
                     puzzle_done(-1);
-                } else if (mousePos.x > 400 && mousePos.x < 530 && mousePos.y > 150 && mousePos.y < 215) {
+                } else if (mousePos.x > 167 && mousePos.x < 353 && mousePos.y > 27 && mousePos.y < 97) {
                     // OK clicked
                     //alden_ctx.drawImage(images.puzzle1,0,0);
                     puzzleState = 4;
@@ -157,6 +158,8 @@ var puzzle_fowler = function () {
                 //var pos = $("#canvas").position();
                 //var ox = e.pageX - pos.left;
                 //var oy = e.pageY - pos.top;
+
+                pzlmidctx.strokeRect(482, 245, 123, 102);
 
                 var magicx = Math.floor(puzzlemid.width / 6);
                 var magicy = Math.floor(puzzlemid.height / 6);
@@ -193,6 +196,9 @@ var puzzle_fowler = function () {
                         lightField[yField][xField + 1] =
                             lightField[yField][xField + 1] === "x" ? "o" : "x";
                     }
+                } else if (mousePos.x > 482 && mousePos.x < 605 && mousePos.y > 245 && mousePos.y < 347) {
+                    // NOPE clicked: cancel puzzle (return to game)
+                    puzzle_done(-1);
                 }
                 break;
             case 5:
@@ -214,6 +220,9 @@ var puzzle_fowler = function () {
                 break;
             case 3:
                 pzlmidctx.drawImage(intro3, 0, 0);
+                pzlmidctx.strokeRect(167, 27, 186, 70);
+                pzlmidctx.strokeRect(375, 75, 225, 90);
+
                 break;
             case 4:
                 renderPuzzle();
@@ -277,12 +286,14 @@ var puzzle_fowler = function () {
                     pzlmidctx.strokeStyle = "#000000";
 
                     // Actual draw of the border
-                    pzlmidctx.stroke();
+                    //pzlmidctx.stroke();
                     pzlmidctx.strokeRect((xoffset) + j * magicy + 0.5, (yoffset) + i * magicy + 0.5,
                         magicy, magicy);
 
                 }
             }
+
+            pzltopctx.strokeRect(482, 245, 123, 102);
 
             // debug code TODO
             //pzltopctx.fillStyle = "#000000";
@@ -292,6 +303,7 @@ var puzzle_fowler = function () {
             if (allLightsAreOff) {
                 //// User can't click anymore
                 //userCanClick = false;
+                clear();
                 puzzleState = 5;
                 // Show message
                 // alert("All lights are off, you finished the game!");
