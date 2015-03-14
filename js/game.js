@@ -40,6 +40,7 @@ var W_KEY = 87;
 var S_KEY = 83;
 var A_KEY = 65;
 var D_KEY = 68;
+var O_KEY = 79;
 var P_KEY = 80;
 var LEFT_KEY  = 37;
 var UP_KEY    = 38;
@@ -1577,7 +1578,7 @@ var Game = function() {
      * @param key_id The int value of the key that triggered this event.
      */
     this.handleKeyDownEvent = function (key_id) {
-        //console.log(key_id);
+        console.log(key_id);
         // 87, 83, 65, 68, 32
         if (key_id === SPACE_KEY || key_id === ENTER_KEY) { // Spacebar
             player.interact(interactNPC);
@@ -1603,7 +1604,11 @@ var Game = function() {
             g.isPaused = true;
             g.currentPuzzle = uwetech.puzzle_alden;
 
-        } else {
+        } else if (key_id === O_KEY && g.debug === true) {
+            g.isPaused = true;
+            g.currentPuzzle = uwetech.puzzle_fowler;
+
+        }    else {
             // do nothing
         }
 
