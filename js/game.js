@@ -808,8 +808,8 @@ BottomWalker - Walks left to right at the bottom of the stairs.. like a normal p
 npc_Map1StairWalker.face.src = "./img/people/dude1.png";
 npc_Map1StairWalker.faceArray[0] = npc_Map1StairWalker.face;
 npc_Map1StairWalker.faceArray[1] = npc_Map1StairWalker.face;
-npc_Map1StairWalker.dialog[0] = "I feel so animated! Running up! Running down!";
-npc_Map1StairWalker.dialog[1] = "Up down, up down! Whoo, such an animated feeling!";
+npc_Map1StairWalker.dialog[0] = " Your code for Fowler's class? Yeah, I looked at it. Your problem was at row 3, column 3. You should really fix that code.";
+npc_Map1StairWalker.dialog[1] = "You really should add javadoc next time.";
 
 npc_Map1dummyTwo.face.src = "./img/Chin-plain.png";
 npc_Map1dummyTwo.faceArray[0] = npc_Map1dummyTwo.face;
@@ -1078,9 +1078,11 @@ npc_Map3Jay.update = function(clockTick) {
 npc_Map3SilentBob.update = function(clockTick) {
   this.spriteRoll(900, 1,  clockTick, 0.1);
 }
-npc_Map3BottomWalker.face.src =  "./img/people/Aaron.png";
+npc_Map3BottomWalker.face.src =  "./img/people/dude5.png";
 npc_Map3BottomWalker.faceArray[0] = npc_Map3BottomWalker.face;
-npc_Map3BottomWalker.dialog[0] = "Sunnyside is a place of ruin and despair, ruled by an evil bear who smells of strawberries!"
+npc_Map3BottomWalker.faceArray[1] = npc_Map3BottomWalker.face;
+npc_Map3BottomWalker.dialog[0] = "I took a look at your code for Fowler; I'm pretty sure you'll want to make changes to row 2, column 4."
+npc_Map3BottomWalker.dialog[1] = "But you didn't hear that from me!"
 npc_Map3BottomWalker.update = function(clockTick) {
 
   var aldenX = Math.floor(this.x/32) + 1;
@@ -1170,7 +1172,9 @@ npc_Map5dummyOne.update = function (clockTick) {
 npc_Map5theFowler.update = function(clockTick) {
 
 }
-
+npc_Map6lib.face.src = "./img/people/dude6.png";
+npc_Map6lib.faceArray[0] = npc_Map6lib.face;
+npc_Map6lib.dialog[0] = "Yeah, yeah, I looked over your code. What a mess! You better make changes to row 5, column 2 before you turn that in to Fowler!"
 npc_Map6lib.update = function(clockTick) {
 }
 npc_Map7dummyOne.dialog[0] = "These schnazberries taste like schnazberries!. I could eat O(n!) schnazberries."
