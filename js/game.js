@@ -40,6 +40,7 @@ var W_KEY = 87;
 var S_KEY = 83;
 var A_KEY = 65;
 var D_KEY = 68;
+var O_KEY = 79;
 var P_KEY = 80;
 var LEFT_KEY  = 37;
 var UP_KEY    = 38;
@@ -48,6 +49,7 @@ var DOWN_KEY  = 40;
 var ENTER_KEY = 13;
 var SPACE_KEY = 32;
 var DEBUG_KEY = 192;  // ` key ~ key  is the debug key
+var ESC_KEY = 27;
 
 /** Bottom canvas is for the background. NO ANIMATIONS. */
 var btmcanvas = document.getElementById('bottomlayer'),
@@ -197,7 +199,8 @@ var Sprite = function() {
                                 // O is left 1 is right
             this.faceArray = []; // Used to check which face you want to show
             this.face = new Image();
-            this.visualRadius = 50; // TODO: What is this?
+            this.visualRadius = 50;
+            this.puzzleName = ""; // TODO: What is this?
                                     // ^^ If I remember correctly this was for Duncan's
                                     // bounding box, so if the npc is within 50 of you
                                     // he will stop.
@@ -404,47 +407,22 @@ var Sprite = function() {
      * This code is triggered when the interact button/key was pressed.
      */
     this.interact = function(interactNPC) {
-
-        /** Dylan/Duncan code. */
-        //if(this.facing === "north") {
-        //    var space = this.y * 32 + 32
-        //} else if (this.facing === "south") {
-        //    var space = this.y * 32 - 32
-        //} else if (this.facing === "west") {
-        //    var space = this.x * 32 + 32
-        //} else {
-        //    var space = this.x * 32 - 32
-        //}
-            /*
-              Kirsten's Interaction Code
-            */
-        // /** Kirsten testing queued actions for multiple text pop-ups.*/
-        //   if (npc_Alden.talking === undefined) {
-        //       npc_Alden.talking = true;   // test code forces Alden to start talking.
-        //   }
-        //   if (npc_Alden.talking === true) { // queues up some dialog since Alden is talking.
-        //     //console.log(npc_Alden.face); // kirsten test code
-        //         g.queuedActions.push(function (){window.uwetech.dialog.show(
-        //           "I am testing the word wrap functionality of the dialog.show method. If everything " +
-        //           "works out, then this should word wrap in a very nice way. This box displays, at most, " +
-        //           "four lines of text, with words being wrapped after 75 characters.", npc_Alden.face);});
-        //     // kirsten test code
-        //
-        //       g.queuedActions.push(function (){window.uwetech.dialog.showRight(
-        //           "This dialog box is for showing how queuedActions could work with multiple dialog " +
-        //           "boxes you want to display in a series. I am also showing the functionality of" +
-        //           "aligning a portrait to the right instead of the left. Neat huh?", npc_Alden.face);});
-        //     // Of course, always make sure you call a dialog.hide() when you are done showing text!!
-        //       g.queuedActions.push(function () {window.uwetech.dialog.hide();});
-        //     //console.log(g.queuedActions[0]);
-        //       npc_Alden.talking = false;
-        //   } else if (npc_Alden.talking === false) {
-        //     // test code to start alden talking again if the queue will be empty after this cycle.
-        //       if (g.queuedActions.length <= 1) {
-        //           npc_Alden.talking = true; // make him talk on next spacebar press
-        //       }
-        //   }
-
+      if(interactNPC !== undefined &&
+          interactNPC.puzzleName === "Alden" &&
+          g.puzzleWins[0] === false) {
+        g.currentPuzzle = uwetech.puzzle_alden;
+      }
+      if(interactNPC !== undefined &&
+          interactNPC.puzzleName === "Fowler" &&
+          g.puzzleWins[2] === false) {
+        g.currentPuzzle = uwetech.puzzle_fowler;
+      }
+      if(interactNPC !== undefined &&
+          interactNPC.puzzleName === "Ross" &&
+          g.puzzleWins[2] === true &&
+          g.puzzleWins[0] === true) {
+            window.open("http://l2miam.github.io/OrangeOne/menu-finish");
+      }
 
         if(interactNPC === undefined) {
 
@@ -515,6 +493,26 @@ var Sprite = function() {
             }
         }
       }
+
+        this.checkQueue();
+        ///** This logic will check if any actions are currently queued and pause the game.
+        // * Then the action at the front of the queue is called. If the action just called
+        // * results in the queue now being empty, the game is also un-paused. */
+        //if (g.queuedActions.length > 0 && g.queuedActions !== undefined) {
+        //    g.isPaused = true;
+        //    g.timer.isPaused = true;
+        //    g.queuedActions.shift()();
+        //
+        //    if (g.queuedActions.length === 0) {
+        //        g.isPaused = false;
+        //        g.timer.isPaused = false;
+        //    }
+        //}
+
+
+    };
+
+    this.checkQueue = function() {
         /** This logic will check if any actions are currently queued and pause the game.
          * Then the action at the front of the queue is called. If the action just called
          * results in the queue now being empty, the game is also un-paused. */
@@ -528,9 +526,7 @@ var Sprite = function() {
                 g.timer.isPaused = false;
             }
         }
-
-
-    };
+    }
 
     /**
      * TODO: Add comments about what spriteRoll is.
@@ -648,7 +644,7 @@ var npc_Map4middleStudentTwo = new Sprite();
 var npc_Map4backStudentOne = new Sprite();
 
 var npc_Map5dummyOne = new Sprite();
-var npc_Map5dummyTwo = new Sprite();
+var npc_Map5theFowler = new Sprite();
 
 var npc_Map6lib = new Sprite();
 
@@ -661,6 +657,12 @@ var npc_Map8dummyOne = new Sprite();
 var npc_Map8dummyTwo = new Sprite();
 var npc_Map8dummyThree = new Sprite();
 var npc_Map8dummyFour = new Sprite();
+
+var npc_Map10dummyOne = new Sprite();
+var npc_Map10dummyTwo = new Sprite();
+var npc_Map10dummyThree = new Sprite();
+var npc_Map10dummyFour = new Sprite();
+var npc_Map10theAlden = new Sprite();
 //var background = new Sprite();
 
 // var alden_por = new Dialog();
@@ -702,7 +704,7 @@ npc_Map4middleStudentTwo.setOptions("./img/NPC/Skeleton.png", 0, 140, 64, 64, 37
 npc_Map4backStudentOne.setOptions("./img/NPC/Skeleton.png", 0, 140, 64, 64, 250,100, 62, 62, 0);
 
 npc_Map5dummyOne.setOptions("./img/NPC/chin.png", 0, 140, 64, 64, 110,260, 62, 62, 0);
-npc_Map5dummyTwo.setOptions("./img/NPC/chin.png", 0, 140, 64, 64, 20,20, 62, 62, 0);
+npc_Map5theFowler.setOptions("./img/NPC/chin.png", 0, 140, 64, 64, 20,20, 62, 62, 0);
 
 npc_Map6lib.setOptions("./img/NPC/chin.png", 0, 140, 64, 64, 150,145, 62, 62, 0);
 
@@ -716,6 +718,15 @@ npc_Map8dummyTwo.setOptions("./img/NPC/girlTwo.png", 0, 140, 64, 64, 150, 0, 62,
 npc_Map8dummyThree.setOptions("./img/NPC/girlThree.png", 0, 140, 64, 64, 350, 580, 62, 62, 2);
 npc_Map8dummyFour.setOptions("./img/NPC/monk.png", 0, 140, 64, 64, 500, 900, 62, 62, 2);
 
+npc_Map10dummyOne.setOptions("./img/NPC/girlOne.png", 0, 140, 64, 64, 210, 260, 62, 62, 2);
+npc_Map10dummyTwo.setOptions("./img/NPC/girlTwo.png", 0, 140, 64, 64, 340, 260, 62, 62, 2);
+npc_Map10dummyThree.setOptions("./img/NPC/girlThree.png", 0, 140, 64, 64, 210, 180, 62, 62, 2);
+npc_Map10dummyFour.setOptions("./img/NPC/monk.png", 0, 140, 64, 64, 340, 180, 62, 62, 2);
+npc_Map10theAlden.setOptions("./img/NPC/alden.png", 0, 140, 64, 64, 530, 170, 62, 62, 2);
+
+npc_Map10theAlden.puzzleName = "Alden";
+npc_Map5theFowler.puzzleName = "Fowler";
+npc_Map5dummyOne.puzzleName = "Ross";
 
 npc_Alden.face = (function () {
     var temp = new Image();
@@ -766,7 +777,7 @@ npc_Map1StairWalker.image.onload = function() {
   npc_Map4backStudentOne.load = true;
 
   npc_Map5dummyOne.load = true;
-  npc_Map5dummyTwo.load = true;
+  npc_Map5theFowler.load = true;
 
   npc_Map6lib.load = true;
 
@@ -780,6 +791,12 @@ npc_Map1StairWalker.image.onload = function() {
   npc_Map8dummyThree.load = true;
   npc_Map8dummyFour.load = true;
 
+  npc_Map10dummyOne.load = true;
+  npc_Map10dummyTwo.load = true;
+  npc_Map10dummyThree.load = true;
+  npc_Map10dummyFour.load = true;
+  npc_Map10theAlden.load = true;
+
 };
 
 /*
@@ -788,15 +805,27 @@ Blocker - If the player gets close he block you from going around.
 Stairwalker - Walks up and down the stairs.. like a normal person.
 BottomWalker - Walks left to right at the bottom of the stairs.. like a normal person.
 */
-npc_Map1StairWalker.dialog[0] = "I feel so animated! Running up! Running down!";
-npc_Map1StairWalker.dialog[1] = "Up down, up down! Whoo, such an animated feeling!";
+npc_Map1StairWalker.face.src = "./img/people/dude1.png";
+npc_Map1StairWalker.faceArray[0] = npc_Map1StairWalker.face;
+npc_Map1StairWalker.faceArray[1] = npc_Map1StairWalker.face;
+npc_Map1StairWalker.dialog[0] = "Your code for Fowler's class? Yeah, I looked at it. Your problem was at row 3, column 3. You should really fix that code.";
+npc_Map1StairWalker.dialog[1] = "You really should add javadoc next time.";
 
+npc_Map1dummyTwo.face.src = "./img/Chin-plain.png";
+npc_Map1dummyTwo.faceArray[0] = npc_Map1dummyTwo.face;
+npc_Map1dummyTwo.faceArray[1] = npc_Map1dummyTwo.face;
 npc_Map1dummyTwo.dialog[0] = "Can you direct me to WCG?  I'm looking for Dr. Chinn.  He's lost his marbles...or was it spilled his fruit."
 npc_Map1dummyTwo.dialog[1] = "Anyway, he needs some help solving this mystery.  I heard he gives easy A's."
 
+npc_Map1dummyOne.face.src = "./img/Alden-plain.png";
+npc_Map1dummyOne.faceArray[0] = npc_Map1dummyOne.face;
+npc_Map1dummyOne.faceArray[1] = npc_Map1dummyOne.face;
 npc_Map1dummyOne.dialog[0] = "Do you know where the Science Building is?  Professor Alden is up there exposing the inner workings of something called..."
 npc_Map1dummyOne.dialog[1] = "computers, yeah that's it.  I heard there's a secret code to solving his puzzle."
 
+npc_Map1dummyThree.face.src = "./img/Fowler-plain.png";
+npc_Map1dummyThree.faceArray[0] = npc_Map1dummyThree.face;
+npc_Map1dummyThree.faceArray[1] = npc_Map1dummyThree.face;
 npc_Map1dummyThree.dialog[0] = "Professor Fowler is over in Cherry Parks.  He said my code is...how did he put it..."
 npc_Map1dummyThree.dialog[1] = "'Your code is strange and unexpected. It is full of bugs.  Debug them if you can'"
 
@@ -804,8 +833,9 @@ npc_Map1BottomWalker.dialog[0] = "This stream of cars is never ending and the wa
                                  "I'll never be able to cross. I suggest you don't try either!";
 npc_Map1BottomWalker.faceArray[0] = npc_Map1BottomWalker.face;
 npc_Map1BottomWalker.face.src =  "./img/Robert.png";
-npc_Map1StairWalker.face.src =  "./img/Alden-plain.png";
 
+npc_Map1Blocker.face.src = "./img/people/monika.png";
+npc_Map1Blocker.faceArray[0] = npc_Map1Blocker.face;
 npc_Map1Blocker.update = function(clockTick) {
   //console.log(this.talkTo);
   if(this.talkTo) {
@@ -976,27 +1006,51 @@ dummyThree - the one furthest north
 bottomWalker - Walks left to right at the bottom of the stairs.. like a normal person.
 */
 
+npc_Map3dummyOne.dialog[0] = "...and then I said...";
+npc_Map3dummyOne.dialog[1] = "Would you mind? We are having a conversation about some cute boys.";
 npc_Map3dummyOne.update = function(clockTick) {
   this.spriteRoll(576, 1,  clockTick, 0.1);
 };
+npc_Map3dummyTwo.dialog[0] = "Did he really say that?";
 npc_Map3dummyTwo.update = function(clockTick) {
   this.spriteRoll(512, 1,  clockTick, 0.1);
 };
+npc_Map3dummyThree.dialog[0] = "He sounds so dreamy.";
 npc_Map3dummyThree.update = function(clockTick) {
   this.spriteRoll(900, 1,  clockTick, 0.1);
 };
+npc_Map3dummyFour.face.src = "./img/people/Kirsten.png";
+npc_Map3dummyFour.faceArray[0] = npc_Map3dummyFour.face;
+npc_Map3dummyFour.dialog[0] = "A liger...it's pretty much my favorite animal. It's like a lion and a tiger mixed - bred for its skills in magic.";
 npc_Map3dummyFour.update = function(clockTick) {
   this.spriteRoll(900, 1,  clockTick, 0.1);
 };
+
+npc_Map3dummyFive.face.src = "./img/people/dude2.png";
+npc_Map3dummyFive.faceArray[0] = npc_Map3dummyFive.face;
+npc_Map3dummyFive.faceArray[1] = npc_Map3dummyFive.face;
 npc_Map3dummyFive.update = function(clockTick) {
-  this.spriteRoll(900, 1,  clockTick, 0.1);
+  if(this.talkTo) {
+    this.spriteRoll(704, 8,  clockTick, 0.1);
+    this.x += this.speed;
+  }
+  if(!this.talkTo) {
+    this.spriteRoll(900, 1,  clockTick, 0.1);
+    npc_Map3dummyFive.dialog[0] = "Wait, when does this happen? Now?"
+    npc_Map3dummyFive.dialog[1] = "You mean what I’m doing now is actually happening right now?"
+  }
 };
+npc_Map3dummySix.face.src = "./img/people/Daniel.png";
+npc_Map3dummySix.faceArray[0] = npc_Map3dummySix.face;
+npc_Map3dummySix.faceArray[1] = npc_Map3dummySix.face;
+npc_Map3dummySix.dialog[0] = "Have you seen that girl known as Jenny?"
+npc_Map3dummySix.dialog[1] = "I hear her song is really catchy."
 npc_Map3dummySix.update = function(clockTick) {
   this.spriteRoll(900, 1,  clockTick, 0.1);
 };
 
 // Kirsten and Loren veto'd cussing. We found a different jay/silent bob quote.
-npc_Map3Jay.face.src =  "./img/Robert.png";
+npc_Map3Jay.face.src =  "./img/people/Joel.png";
 npc_Map3Jay.dialog[0] = "See those two over there? Yeah, they had a Star Wars themed wedding. ";
 npc_Map3Jay.dialog[1] = ".......";
 npc_Map3Jay.dialog[2] = "AND they tied the knot dressed as Storm Troopers!";
@@ -1005,7 +1059,7 @@ npc_Map3Jay.faceArray[1] = npc_Map3SilentBob.face;
 npc_Map3Jay.faceArray[2] = npc_Map3Jay.face;
 
 npc_Map3SilentBob.faceSpot = 1;
-npc_Map3SilentBob.face.src =  "./img/Alden-plain.png";
+npc_Map3SilentBob.face.src =  "./img/people/Aaron.png";
 npc_Map3SilentBob.dialog[0] = "See those two over there? Yeah, they had a Star Wars themed wedding. ";
 npc_Map3SilentBob.dialog[1] = ".......";
 npc_Map3SilentBob.dialog[2] = "AND they tied the knot dressed as Storm Troopers!";
@@ -1022,7 +1076,11 @@ npc_Map3Jay.update = function(clockTick) {
 npc_Map3SilentBob.update = function(clockTick) {
   this.spriteRoll(900, 1,  clockTick, 0.1);
 }
-
+npc_Map3BottomWalker.face.src =  "./img/people/dude5.png";
+npc_Map3BottomWalker.faceArray[0] = npc_Map3BottomWalker.face;
+npc_Map3BottomWalker.faceArray[1] = npc_Map3BottomWalker.face;
+npc_Map3BottomWalker.dialog[0] = "I took a look at your code for Fowler; I'm pretty sure you'll want to make changes to row 2, column 4."
+npc_Map3BottomWalker.dialog[1] = "But you didn't hear that from me!"
 npc_Map3BottomWalker.update = function(clockTick) {
 
   var aldenX = Math.floor(this.x/32) + 1;
@@ -1074,7 +1132,11 @@ npc_Map3BottomWalker.update = function(clockTick) {
     }
   }
 };
-
+npc_Map4theChin.face.src = "./img/Chin-plain.png"
+npc_Map4theChin.faceArray[0] = npc_Map4theChin.face;
+npc_Map4theChin.faceArray[1] = npc_Map4theChin.face;
+npc_Map4theChin.dialog[0] = "Uh.. I haven't finished my final exam quite yet."
+npc_Map4theChin.dialog[1] = "Visit me after final week and I might have an exam for you."
 npc_Map4theChin.update = function (clockTick) {
 
 }
@@ -1105,24 +1167,49 @@ npc_Map4backStudentOne.update = function (clockTick) {
 npc_Map5dummyOne.update = function (clockTick) {
   this.spriteRoll(512, 1, clockTick, 0.1);
 }
-npc_Map5dummyTwo.update = function(clockTick) {
+npc_Map5theFowler.update = function(clockTick) {
 
 }
-
+npc_Map6lib.face.src = "./img/people/dude6.png";
+npc_Map6lib.faceArray[0] = npc_Map6lib.face;
+npc_Map6lib.dialog[0] = "Yeah, yeah, I looked over your code. What a mess! You better make changes to row 5, column 2 before you turn that in to Fowler!"
 npc_Map6lib.update = function(clockTick) {
 }
+npc_Map7dummyOne.face.src = "./img/people/gal1.png";
+npc_Map7dummyOne.faceArray[0] = npc_Map7dummyOne.face;
 npc_Map7dummyOne.dialog[0] = "These schnazberries taste like schnazberries!. I could eat O(n!) schnazberries."
 npc_Map7dummyOne.update = function(clockTick) {
 }
+npc_Map7dummyTwo.face.src = "./img/people/dudes.png";
+npc_Map7dummyTwo.faceArray[0] = npc_Map7dummyTwo.face;
 npc_Map7dummyTwo.dialog[0] = "I like O(n) green apples and ham.  Sam prefers blueberries.  He has O(n^2) of them!"
 npc_Map7dummyTwo.update = function(clockTick) {
 }
+npc_Map7dummyThree.face.src = "./img/people/Dylan.png";
+npc_Map7dummyThree.faceArray[0] = npc_Map7dummyThree.face;
+npc_Map7dummyThree.faceArray[1] = npc_Map7dummyThree.face;
+npc_Map7dummyThree.dialog[0] = "la, la, la, 867-5309. What was the rest of the song!?";
+npc_Map7dummyThree.dialog[1] = "That number would make an awesome secret code though.";
 npc_Map7dummyThree.update = function(clockTick) {
 }
+npc_Map7dummyFour.face.src = "./img/people/dudes.png";
+npc_Map7dummyFour.faceArray[0] = npc_Map7dummyFour.face;
 npc_Map7dummyFour.dialog[0] = "I have O(n^2) blueberries.  Katie prefers green apples and ham.  She has O(n) of them!"
 npc_Map7dummyFour.update = function(clockTick) {
 }
+npc_Map8dummyOne.face.src = "./img/people/dude7.png";
+npc_Map8dummyOne.faceArray[0] = npc_Map8dummyOne.face;
 
+npc_Map8dummyFour.face.src = "./img/people/dude3.png";
+npc_Map8dummyFour.faceArray[0] = npc_Map8dummyFour.face;
+
+npc_Map8dummyThree.face.src = "./img/people/dude4.png";
+npc_Map8dummyThree.faceArray[0] = npc_Map8dummyThree.face;
+
+npc_Map8dummyOne.dialog[0] ="Flying chickens in a barnyard!";
+npc_Map8dummyTwo.dialog[0] = "When you can balance a tack hammer on your head, you will head off your foes with a balanced attack";
+npc_Map8dummyThree.dialog[0] = "The early bird might get the worm, but the second mouse gets the cheese.";
+npc_Map8dummyFour.dialog[0] = "Nostalgia isn't what it used to be.";
 npc_Map8dummyOne.update = function(clockTick) {
 }
 npc_Map8dummyTwo.update = function(clockTick) {
@@ -1130,6 +1217,28 @@ npc_Map8dummyTwo.update = function(clockTick) {
 npc_Map8dummyThree.update = function(clockTick) {
 }
 npc_Map8dummyFour.update = function(clockTick) {
+
+}
+npc_Map10dummyOne.dialog[0] = "Looks like Mobus is sitting in our class for some reason today.";
+npc_Map10dummyTwo.dialog[0] = "Man this diagram, I just can't understand it... Maybe I should't be a Computer Science Major.";
+npc_Map10dummyThree.dialog[0] = "Do you have the code?.. I don't";
+npc_Map10dummyThree.dialog[1] = "Apparently someone on or near the staircase knows it.";
+npc_Map10dummyFour.dialog[0] = "I'm a mog - half man, half dog. I'm my own best friend.";
+
+npc_Map10dummyOne.update = function(clockTick) {
+}
+npc_Map10dummyTwo.update = function(clockTick) {
+}
+npc_Map10dummyThree.update = function(clockTick) {
+}
+npc_Map10dummyFour.update = function(clockTick) {
+
+}
+npc_Map10theAlden.update = function(clockTick) {
+  if(g.puzzleWins[0] === true) {
+    npc_Map10theAlden.dialog[0] = "The code, you have it...";
+    npc_Map10theAlden.dialog[1] = "keep it secret, keep it safe."
+  }
 }
 
 /** When player's spritesheet loads in browser, sets player.load to true. */
@@ -1393,6 +1502,8 @@ var Game = function() {
     this.entiteZones[6] = this.zoneSixEntites = [];
     this.entiteZones[7] = this.zoneSevenEntites = [];
     this.entiteZones[8] = this.zoneEightEntites = [];
+    this.entiteZones[9] = this.zoneNineEntites = [];
+    this.entiteZones[10] = this.zoneTenEntites = [];
 
     /**
      * Collection of methods to handle adding entities to specific zones.
@@ -1421,6 +1532,12 @@ var Game = function() {
     };
     this.addEntityZoneEight = function (entity) {
         this.zoneEightEntites.push(entity);
+    };
+    this.addEntityZoneNine = function (entity) {
+        this.zoneNineEntites.push(entity);
+    };
+    this.addEntityZoneTen = function (entity) {
+        this.zoneTenEntites.push(entity);
     };
 
     /**
@@ -1475,20 +1592,20 @@ var Game = function() {
      * @param key_id The int value of the key that triggered this event.
      */
     this.handleKeyDownEvent = function (key_id) {
-        //console.log(key_id);
+        console.log(key_id);
         // 87, 83, 65, 68, 32
         if (key_id === SPACE_KEY || key_id === ENTER_KEY) { // Spacebar
             player.interact(interactNPC);
             console.log("space");
             //g.loadZone(2, 1, 8); // kirsten debug, tested zone loading via button press
         } else if (key_id === W_KEY || key_id === UP_KEY) {
-           // player.facing = "north";
+            // player.facing = "north";
         } else if (key_id === A_KEY || key_id === LEFT_KEY) {
-           // player.facing = "west";
+            // player.facing = "west";
         } else if (key_id === S_KEY || key_id === DOWN_KEY) {
-           // player.facing = "south";
+            // player.facing = "south";
         } else if (key_id === D_KEY || key_id === RIGHT_KEY) {
-           // player.facing = "east";
+            // player.facing = "east";
         } else if (key_id === DEBUG_KEY) {
             if (g.debug === true) {
                 g.debug = false;
@@ -1497,11 +1614,62 @@ var Game = function() {
                 g.debug = true;
                 console.log("DEBUG ON");
             }
+        } else if (key_id === ESC_KEY){
+            console.log("O!!");
+            if (g.queuedActions.length === 0) {
+                var message = "                             Report Card          " +
+                    "[";
+                message = (g.puzzleWins[0]) ? message + "PASS" : message + "FAIL";
+                message = message + "] Alden's Final                           " +
+                "[";
+                // message = (g.puzzleWins[1]) ? message + "PASS" : message + "FAIL";
+                // message = message + "] Chinn's Final                           " +
+                // "[";
+                message = (g.puzzleWins[2]) ? message + "PASS" : message + "FAIL";
+                message = message + "] Fowler's Final                            ";
+                message = message + "                                                   ";
+                if(g.puzzleWins[0] === true && g.puzzleWins[2] === true) {
+                  message = message + " Go talk to David Ross inorder to get your degree!";
+                  message = message + "                                                      ";
+                  message = message + "(He's located next to Fowler in Cherry Parks)";
+                } else {
+                  message = message + "Looks like you need to finish a few finals.";
+                  message = message + "                                                      ";
+                  message = message + "   You must pass all finals to earn your degree!";
+                }
+                console.log(message);
+                g.queuedActions.push((function (message) {
+                    return function () {
+                        window.uwetech.dialog.showInner(message);
+                    };
+                })(message));
+                g.queuedActions.push(function () {window.uwetech.dialog.hide();});
+            }
+            player.checkQueue();
         } else if (key_id === P_KEY && g.debug === true) {
             g.isPaused = true;
             g.currentPuzzle = uwetech.puzzle_alden;
 
-        } else {
+        } else if (key_id === O_KEY && g.debug === true) {
+            g.isPaused = true;
+            g.currentPuzzle = uwetech.puzzle_fowler;
+            //console.log("O!!");
+            //var message = "                             Report Card          " +
+            //    "[";
+            //message = (g.puzzleWins[0]) ? message + "PASS" : message + "FAIL";
+            //message = message + "] Alden's Final                           " +
+            //    "[";
+            //message = (g.puzzleWins[1]) ? message + "PASS" : message + "FAIL";
+            //message = message + "] Chinn's Final                           " +
+            //    "[";
+            //message = (g.puzzleWins[2]) ? message + "PASS" : message + "FAIL";
+            //message = message + "] Fowler's Final                            ";
+            //message = message + "                                                   ";
+            //message = message + "You must pass all three finals to earn your degree!";
+            ////console.log(message);
+            //window.uwetech.dialog.showInner(message);
+
+        }    else {
             // do nothing
         }
 
@@ -1576,6 +1744,7 @@ var Game = function() {
     this.update = function(clockTick) {
         this.cam.getPosition(player);
         interactNPC = undefined;
+        //console.log(this.puzzleWins);
         //player.bounds();
         player.movePlayer(clockTick);
         player.check_units();
@@ -1749,7 +1918,7 @@ g.addEntityZoneFour(npc_Map4middleStudentTwo);
 g.addEntityZoneFour(npc_Map4backStudentOne);
 
 g.addEntityZoneFive(npc_Map5dummyOne);
-g.addEntityZoneFive(npc_Map5dummyTwo);
+g.addEntityZoneFive(npc_Map5theFowler);
 
 g.addEntityZoneSix(npc_Map6lib);
 
@@ -1762,6 +1931,12 @@ g.addEntityZoneEight(npc_Map8dummyOne);
 g.addEntityZoneEight(npc_Map8dummyTwo);
 g.addEntityZoneEight(npc_Map8dummyThree);
 g.addEntityZoneEight(npc_Map8dummyFour);
+
+g.addEntityZoneTen(npc_Map10dummyOne);
+g.addEntityZoneTen(npc_Map10dummyTwo);
+g.addEntityZoneTen(npc_Map10dummyThree);
+g.addEntityZoneTen(npc_Map10dummyFour);
+g.addEntityZoneTen(npc_Map10theAlden);
 
 
 
