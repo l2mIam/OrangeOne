@@ -412,47 +412,17 @@ var Sprite = function() {
           g.puzzleWins[0] === false) {
         g.currentPuzzle = uwetech.puzzle_alden;
       }
-
-        /** Dylan/Duncan code. */
-        //if(this.facing === "north") {
-        //    var space = this.y * 32 + 32
-        //} else if (this.facing === "south") {
-        //    var space = this.y * 32 - 32
-        //} else if (this.facing === "west") {
-        //    var space = this.x * 32 + 32
-        //} else {
-        //    var space = this.x * 32 - 32
-        //}
-            /*
-              Kirsten's Interaction Code
-            */
-        // /** Kirsten testing queued actions for multiple text pop-ups.*/
-        //   if (npc_Alden.talking === undefined) {
-        //       npc_Alden.talking = true;   // test code forces Alden to start talking.
-        //   }
-        //   if (npc_Alden.talking === true) { // queues up some dialog since Alden is talking.
-        //     //console.log(npc_Alden.face); // kirsten test code
-        //         g.queuedActions.push(function (){window.uwetech.dialog.show(
-        //           "I am testing the word wrap functionality of the dialog.show method. If everything " +
-        //           "works out, then this should word wrap in a very nice way. This box displays, at most, " +
-        //           "four lines of text, with words being wrapped after 75 characters.", npc_Alden.face);});
-        //     // kirsten test code
-        //
-        //       g.queuedActions.push(function (){window.uwetech.dialog.showRight(
-        //           "This dialog box is for showing how queuedActions could work with multiple dialog " +
-        //           "boxes you want to display in a series. I am also showing the functionality of" +
-        //           "aligning a portrait to the right instead of the left. Neat huh?", npc_Alden.face);});
-        //     // Of course, always make sure you call a dialog.hide() when you are done showing text!!
-        //       g.queuedActions.push(function () {window.uwetech.dialog.hide();});
-        //     //console.log(g.queuedActions[0]);
-        //       npc_Alden.talking = false;
-        //   } else if (npc_Alden.talking === false) {
-        //     // test code to start alden talking again if the queue will be empty after this cycle.
-        //       if (g.queuedActions.length <= 1) {
-        //           npc_Alden.talking = true; // make him talk on next spacebar press
-        //       }
-        //   }
-
+      if(interactNPC !== undefined &&
+          interactNPC.puzzleName === "Fowler" &&
+          g.puzzleWins[2] === false) {
+        g.currentPuzzle = uwetech.puzzle_fowler;
+      }
+      if(interactNPC !== undefined &&
+          interactNPC.puzzleName === "Ross" &&
+          g.puzzleWins[2] === true &&
+          g.puzzleWins[0] === true) {
+            window.open("http://l2miam.github.io/OrangeOne/menu-finish");
+      }
 
         if(interactNPC === undefined) {
 
@@ -674,7 +644,7 @@ var npc_Map4middleStudentTwo = new Sprite();
 var npc_Map4backStudentOne = new Sprite();
 
 var npc_Map5dummyOne = new Sprite();
-var npc_Map5dummyTwo = new Sprite();
+var npc_Map5theFowler = new Sprite();
 
 var npc_Map6lib = new Sprite();
 
@@ -734,7 +704,7 @@ npc_Map4middleStudentTwo.setOptions("./img/NPC/Skeleton.png", 0, 140, 64, 64, 37
 npc_Map4backStudentOne.setOptions("./img/NPC/Skeleton.png", 0, 140, 64, 64, 250,100, 62, 62, 0);
 
 npc_Map5dummyOne.setOptions("./img/NPC/chin.png", 0, 140, 64, 64, 110,260, 62, 62, 0);
-npc_Map5dummyTwo.setOptions("./img/NPC/chin.png", 0, 140, 64, 64, 20,20, 62, 62, 0);
+npc_Map5theFowler.setOptions("./img/NPC/chin.png", 0, 140, 64, 64, 20,20, 62, 62, 0);
 
 npc_Map6lib.setOptions("./img/NPC/chin.png", 0, 140, 64, 64, 150,145, 62, 62, 0);
 
@@ -755,6 +725,8 @@ npc_Map10dummyFour.setOptions("./img/NPC/monk.png", 0, 140, 64, 64, 340, 180, 62
 npc_Map10theAlden.setOptions("./img/NPC/alden.png", 0, 140, 64, 64, 530, 170, 62, 62, 2);
 
 npc_Map10theAlden.puzzleName = "Alden";
+npc_Map5theFowler.puzzleName = "Fowler";
+npc_Map5dummyOne.puzzleName = "Ross";
 
 npc_Alden.face = (function () {
     var temp = new Image();
@@ -805,7 +777,7 @@ npc_Map1StairWalker.image.onload = function() {
   npc_Map4backStudentOne.load = true;
 
   npc_Map5dummyOne.load = true;
-  npc_Map5dummyTwo.load = true;
+  npc_Map5theFowler.load = true;
 
   npc_Map6lib.load = true;
 
@@ -1195,7 +1167,7 @@ npc_Map4backStudentOne.update = function (clockTick) {
 npc_Map5dummyOne.update = function (clockTick) {
   this.spriteRoll(512, 1, clockTick, 0.1);
 }
-npc_Map5dummyTwo.update = function(clockTick) {
+npc_Map5theFowler.update = function(clockTick) {
 
 }
 
@@ -1629,13 +1601,13 @@ var Game = function() {
                 message = (g.puzzleWins[0]) ? message + "PASS" : message + "FAIL";
                 message = message + "] Alden's Final                           " +
                 "[";
-                message = (g.puzzleWins[1]) ? message + "PASS" : message + "FAIL";
-                message = message + "] Chinn's Final                           " +
-                "[";
+                // message = (g.puzzleWins[1]) ? message + "PASS" : message + "FAIL";
+                // message = message + "] Chinn's Final                           " +
+                // "[";
                 message = (g.puzzleWins[2]) ? message + "PASS" : message + "FAIL";
                 message = message + "] Fowler's Final                            ";
                 message = message + "                                                   ";
-                message = message + "You must pass all three finals to earn your degree!";
+                message = message + "You must pass all finals to earn your degree!";
                 console.log(message);
                 g.queuedActions.push((function (message) {
                     return function () {
@@ -1917,7 +1889,7 @@ g.addEntityZoneFour(npc_Map4middleStudentTwo);
 g.addEntityZoneFour(npc_Map4backStudentOne);
 
 g.addEntityZoneFive(npc_Map5dummyOne);
-g.addEntityZoneFive(npc_Map5dummyTwo);
+g.addEntityZoneFive(npc_Map5theFowler);
 
 g.addEntityZoneSix(npc_Map6lib);
 
