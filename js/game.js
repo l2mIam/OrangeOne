@@ -812,15 +812,27 @@ Blocker - If the player gets close he block you from going around.
 Stairwalker - Walks up and down the stairs.. like a normal person.
 BottomWalker - Walks left to right at the bottom of the stairs.. like a normal person.
 */
+npc_Map1StairWalker.face.src = "./img/people/dude1.png";
+npc_Map1StairWalker.faceArray[0] = npc_Map1StairWalker.face;
+npc_Map1StairWalker.faceArray[1] = npc_Map1StairWalker.face;
 npc_Map1StairWalker.dialog[0] = "I feel so animated! Running up! Running down!";
 npc_Map1StairWalker.dialog[1] = "Up down, up down! Whoo, such an animated feeling!";
 
+npc_Map1dummyTwo.face.src = "./img/Chin-plain.png";
+npc_Map1dummyTwo.faceArray[0] = npc_Map1dummyTwo.face;
+npc_Map1dummyTwo.faceArray[1] = npc_Map1dummyTwo.face;
 npc_Map1dummyTwo.dialog[0] = "Can you direct me to WCG?  I'm looking for Dr. Chinn.  He's lost his marbles...or was it spilled his fruit."
 npc_Map1dummyTwo.dialog[1] = "Anyway, he needs some help solving this mystery.  I heard he gives easy A's."
 
+npc_Map1dummyOne.face.src = "./img/Alden-plain.png";
+npc_Map1dummyOne.faceArray[0] = npc_Map1dummyOne.face;
+npc_Map1dummyOne.faceArray[1] = npc_Map1dummyOne.face;
 npc_Map1dummyOne.dialog[0] = "Do you know where the Science Building is?  Professor Alden is up there exposing the inner workings of something called..."
 npc_Map1dummyOne.dialog[1] = "computers, yeah that's it.  I heard there's a secret code to solving his puzzle."
 
+npc_Map1dummyThree.face.src = "./img/Fowler-plain.png";
+npc_Map1dummyThree.faceArray[0] = npc_Map1dummyThree.face;
+npc_Map1dummyThree.faceArray[1] = npc_Map1dummyThree.face;
 npc_Map1dummyThree.dialog[0] = "Professor Fowler is over in Cherry Parks.  He said my code is...how did he put it..."
 npc_Map1dummyThree.dialog[1] = "'Your code is strange and unexpected. It is full of bugs.  Debug them if you can'"
 
@@ -828,8 +840,9 @@ npc_Map1BottomWalker.dialog[0] = "This stream of cars is never ending and the wa
                                  "I'll never be able to cross. I suggest you don't try either!";
 npc_Map1BottomWalker.faceArray[0] = npc_Map1BottomWalker.face;
 npc_Map1BottomWalker.face.src =  "./img/Robert.png";
-npc_Map1StairWalker.face.src =  "./img/Alden-plain.png";
 
+npc_Map1Blocker.face.src = "./img/people/monika.png";
+npc_Map1Blocker.faceArray[0] = npc_Map1Blocker.face;
 npc_Map1Blocker.update = function(clockTick) {
   //console.log(this.talkTo);
   if(this.talkTo) {
@@ -1013,12 +1026,18 @@ npc_Map3dummyThree.dialog[0] = "He sounds so dreamy.";
 npc_Map3dummyThree.update = function(clockTick) {
   this.spriteRoll(900, 1,  clockTick, 0.1);
 };
+npc_Map3dummyFour.face.src = "./img/people/Kirsten.png";
+npc_Map3dummyFour.faceArray[0] = npc_Map3dummyFour.face;
+npc_Map3dummyFour.faceArray[1] = npc_Map3dummyFour.face;
 npc_Map3dummyFour.dialog[0] = "la, la, la, 867-5309. What was the rest of the song!?";
 npc_Map3dummyFour.dialog[1] = "That number would make an awesome secret code though.";
 npc_Map3dummyFour.update = function(clockTick) {
   this.spriteRoll(900, 1,  clockTick, 0.1);
 };
 
+npc_Map3dummyFive.face.src = "./img/people/dude2.png";
+npc_Map3dummyFive.faceArray[0] = npc_Map3dummyFive.face;
+npc_Map3dummyFive.faceArray[1] = npc_Map3dummyFive.face;
 npc_Map3dummyFive.update = function(clockTick) {
   if(this.talkTo) {
     this.spriteRoll(704, 8,  clockTick, 0.1);
@@ -1030,6 +1049,9 @@ npc_Map3dummyFive.update = function(clockTick) {
     npc_Map3dummyFive.dialog[1] = "You mean what I’m doing now is actually happening right now?"
   }
 };
+npc_Map3dummySix.face.src = "./img/people/Daniel.png";
+npc_Map3dummySix.faceArray[0] = npc_Map3dummySix.face;
+npc_Map3dummySix.faceArray[1] = npc_Map3dummySix.face;
 npc_Map3dummySix.dialog[0] = "Have you seen that girl known as Jenny?"
 npc_Map3dummySix.dialog[1] = "I hear her song is really catchy."
 npc_Map3dummySix.update = function(clockTick) {
@@ -1037,7 +1059,7 @@ npc_Map3dummySix.update = function(clockTick) {
 };
 
 // Kirsten and Loren veto'd cussing. We found a different jay/silent bob quote.
-npc_Map3Jay.face.src =  "./img/Robert.png";
+npc_Map3Jay.face.src =  "./img/people/Joel.png";
 npc_Map3Jay.dialog[0] = "See those two over there? Yeah, they had a Star Wars themed wedding. ";
 npc_Map3Jay.dialog[1] = ".......";
 npc_Map3Jay.dialog[2] = "AND they tied the knot dressed as Storm Troopers!";
@@ -1046,7 +1068,7 @@ npc_Map3Jay.faceArray[1] = npc_Map3SilentBob.face;
 npc_Map3Jay.faceArray[2] = npc_Map3Jay.face;
 
 npc_Map3SilentBob.faceSpot = 1;
-npc_Map3SilentBob.face.src =  "./img/Alden-plain.png";
+npc_Map3SilentBob.face.src =  "./img/people/Aaron.png";
 npc_Map3SilentBob.dialog[0] = "See those two over there? Yeah, they had a Star Wars themed wedding. ";
 npc_Map3SilentBob.dialog[1] = ".......";
 npc_Map3SilentBob.dialog[2] = "AND they tied the knot dressed as Storm Troopers!";
@@ -1063,7 +1085,9 @@ npc_Map3Jay.update = function(clockTick) {
 npc_Map3SilentBob.update = function(clockTick) {
   this.spriteRoll(900, 1,  clockTick, 0.1);
 }
-npc_Map3BottomWalker.dialog[0] = "My "
+npc_Map3BottomWalker.face.src =  "./img/people/Aaron.png";
+npc_Map3BottomWalker.faceArray[0] = npc_Map3BottomWalker.face;
+npc_Map3BottomWalker.dialog[0] = "Sunnyside is a place of ruin and despair, ruled by an evil bear who smells of strawberries!"
 npc_Map3BottomWalker.update = function(clockTick) {
 
   var aldenX = Math.floor(this.x/32) + 1;
@@ -1115,7 +1139,11 @@ npc_Map3BottomWalker.update = function(clockTick) {
     }
   }
 };
-
+npc_Map4theChin.face.src = "./img/Chin-plain.png"
+npc_Map4theChin.faceArray[0] = npc_Map4theChin.face;
+npc_Map4theChin.faceArray[1] = npc_Map4theChin.face;
+npc_Map4theChin.dialog[0] = "Uh.. I haven't finished my final exam quite yet."
+npc_Map4theChin.dialog[1] = "Visit me after final week and I might have an exam for you."
 npc_Map4theChin.update = function (clockTick) {
 
 }
@@ -1158,6 +1186,7 @@ npc_Map7dummyOne.update = function(clockTick) {
 npc_Map7dummyTwo.dialog[0] = "I like O(n) green apples and ham.  Sam prefers blueberries.  He has O(n^2) of them!"
 npc_Map7dummyTwo.update = function(clockTick) {
 }
+npc_Map7dummyThree.dialog[0] = "A liger...it's pretty much my favorite animal. It's like a lion and a tiger mixed - bred for its skills in magic."
 npc_Map7dummyThree.update = function(clockTick) {
 }
 npc_Map7dummyFour.dialog[0] = "I have O(n^2) blueberries.  Katie prefers green apples and ham.  She has O(n) of them!"
