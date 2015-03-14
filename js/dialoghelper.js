@@ -100,12 +100,29 @@ var Dialog = function () {
         displayInnerBox(); // draw InnerDialog.png to dialog canvas
 
         if (string_of_text !== undefined) { // a string was passed
-            writeText(string_of_text, 50, 90, -170); // write the string to dialog canvas
+            writeText(string_of_text, 50, 90, -170, 7); // write the string to dialog canvas
         } else {
             // Report an error! No arguments were passed.
             console.log('Usage: dialog.showInner("Text to display")');
         }
     };
+
+
+    //this.status = function(puzzle1, puzzle2, puzzle3) {
+    //    if (isShown === true) {
+    //        clearDialogCanvas(); // clear any previous dialog being displayed
+    //    }
+    //
+    //    isShown = true;
+    //    displayInnerBox(); // draw InnerDialog.png to dialog canvas
+    //
+    //    if (string_of_text !== undefined) { // a string was passed
+    //        writeText(string_of_text, 50, 90, -170); // write the string to dialog canvas
+    //    } else {
+    //        // Report an error! No arguments were passed.
+    //        console.log('Usage: dialog.showInner("Text to display")');
+    //    }
+    //};
 
     /**
      * Creates a function that calls showRight(text, image);
@@ -142,16 +159,17 @@ var Dialog = function () {
             0, 0, dlgcanvas.width, dlgcanvas.height);
     };
 
-    var writeText = function (string_of_text, length, offsetx, offsety) {
+    var writeText = function (string_of_text, length, offsetx, offsety, numlines) {
         // break the string down into lines.
         var maxChar = (length === undefined) ? 75 : length;
         var offsetX = (offsetx === undefined) ? 0 : offsetx;
         var offsetY = (offsety === undefined) ? 0 : offsety;
+        var numLines = (numlines === undefined) ? 4 : numlines;
         var wordwrap = string_of_text.wordWrap(maxChar, '~', 3);
         var lines = wordwrap.split("~");
 
         // display the lines (up to 4 displayed)
-        for (var i = 0; i < lines.length && i < 4; i++) {
+        for (var i = 0; i < lines.length && i < numLines; i++) {
             dlgctx.fillText(lines[i], offsetX + dlgcanvas.width / 22,
                offsetY + (i * 18) + dlgcanvas.height - (dlgcanvas.height / 5 ) - 3);
         }

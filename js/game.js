@@ -49,6 +49,7 @@ var DOWN_KEY  = 40;
 var ENTER_KEY = 13;
 var SPACE_KEY = 32;
 var DEBUG_KEY = 192;  // ` key ~ key  is the debug key
+var ESC_KEY = 27;
 
 /** Bottom canvas is for the background. NO ANIMATIONS. */
 var btmcanvas = document.getElementById('bottomlayer'),
@@ -406,7 +407,9 @@ var Sprite = function() {
      * This code is triggered when the interact button/key was pressed.
      */
     this.interact = function(interactNPC) {
-      if(interactNPC.puzzleName === "Alden" && g.puzzleWins[0] === false) {
+      if(interactNPC !== undefined &&
+          interactNPC.puzzleName === "Alden" &&
+          g.puzzleWins[0] === false) {
         g.currentPuzzle = uwetech.puzzle_alden;
       }
 
@@ -520,6 +523,26 @@ var Sprite = function() {
             }
         }
       }
+
+        this.checkQueue();
+        ///** This logic will check if any actions are currently queued and pause the game.
+        // * Then the action at the front of the queue is called. If the action just called
+        // * results in the queue now being empty, the game is also un-paused. */
+        //if (g.queuedActions.length > 0 && g.queuedActions !== undefined) {
+        //    g.isPaused = true;
+        //    g.timer.isPaused = true;
+        //    g.queuedActions.shift()();
+        //
+        //    if (g.queuedActions.length === 0) {
+        //        g.isPaused = false;
+        //        g.timer.isPaused = false;
+        //    }
+        //}
+
+
+    };
+
+    this.checkQueue = function() {
         /** This logic will check if any actions are currently queued and pause the game.
          * Then the action at the front of the queue is called. If the action just called
          * results in the queue now being empty, the game is also un-paused. */
@@ -533,9 +556,7 @@ var Sprite = function() {
                 g.timer.isPaused = false;
             }
         }
-
-
-    };
+    }
 
     /**
      * TODO: Add comments about what spriteRoll is.
@@ -1585,13 +1606,13 @@ var Game = function() {
             console.log("space");
             //g.loadZone(2, 1, 8); // kirsten debug, tested zone loading via button press
         } else if (key_id === W_KEY || key_id === UP_KEY) {
-           // player.facing = "north";
+            // player.facing = "north";
         } else if (key_id === A_KEY || key_id === LEFT_KEY) {
-           // player.facing = "west";
+            // player.facing = "west";
         } else if (key_id === S_KEY || key_id === DOWN_KEY) {
-           // player.facing = "south";
+            // player.facing = "south";
         } else if (key_id === D_KEY || key_id === RIGHT_KEY) {
-           // player.facing = "east";
+            // player.facing = "east";
         } else if (key_id === DEBUG_KEY) {
             if (g.debug === true) {
                 g.debug = false;
@@ -1600,6 +1621,30 @@ var Game = function() {
                 g.debug = true;
                 console.log("DEBUG ON");
             }
+        } else if (key_id === ESC_KEY){
+            console.log("O!!");
+            if (g.queuedActions.length === 0) {
+                var message = "                             Report Card          " +
+                    "[";
+                message = (g.puzzleWins[0]) ? message + "PASS" : message + "FAIL";
+                message = message + "] Alden's Final                           " +
+                "[";
+                message = (g.puzzleWins[1]) ? message + "PASS" : message + "FAIL";
+                message = message + "] Chinn's Final                           " +
+                "[";
+                message = (g.puzzleWins[2]) ? message + "PASS" : message + "FAIL";
+                message = message + "] Fowler's Final                            ";
+                message = message + "                                                   ";
+                message = message + "You must pass all three finals to earn your degree!";
+                console.log(message);
+                g.queuedActions.push((function (message) {
+                    return function () {
+                        window.uwetech.dialog.showInner(message);
+                    };
+                })(message));
+                g.queuedActions.push(function () {window.uwetech.dialog.hide();});
+            }
+            player.checkQueue();
         } else if (key_id === P_KEY && g.debug === true) {
             g.isPaused = true;
             g.currentPuzzle = uwetech.puzzle_alden;
@@ -1607,6 +1652,21 @@ var Game = function() {
         } else if (key_id === O_KEY && g.debug === true) {
             g.isPaused = true;
             g.currentPuzzle = uwetech.puzzle_fowler;
+            //console.log("O!!");
+            //var message = "                             Report Card          " +
+            //    "[";
+            //message = (g.puzzleWins[0]) ? message + "PASS" : message + "FAIL";
+            //message = message + "] Alden's Final                           " +
+            //    "[";
+            //message = (g.puzzleWins[1]) ? message + "PASS" : message + "FAIL";
+            //message = message + "] Chinn's Final                           " +
+            //    "[";
+            //message = (g.puzzleWins[2]) ? message + "PASS" : message + "FAIL";
+            //message = message + "] Fowler's Final                            ";
+            //message = message + "                                                   ";
+            //message = message + "You must pass all three finals to earn your degree!";
+            ////console.log(message);
+            //window.uwetech.dialog.showInner(message);
 
         }    else {
             // do nothing
