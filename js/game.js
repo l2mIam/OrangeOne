@@ -658,6 +658,9 @@ var npc_Map8dummyTwo = new Sprite();
 var npc_Map8dummyThree = new Sprite();
 var npc_Map8dummyFour = new Sprite();
 
+var npc_Map9metroGuy = new Sprite();
+var npc_Map9metroGirl = new Sprite();
+
 var npc_Map10dummyOne = new Sprite();
 var npc_Map10dummyTwo = new Sprite();
 var npc_Map10dummyThree = new Sprite();
@@ -717,6 +720,9 @@ npc_Map8dummyOne.setOptions("./img/NPC/girlOne.png", 0, 140, 64, 64, 50, 700, 62
 npc_Map8dummyTwo.setOptions("./img/NPC/girlTwo.png", 0, 140, 64, 64, 150, 0, 62, 62, 2);
 npc_Map8dummyThree.setOptions("./img/NPC/girlThree.png", 0, 140, 64, 64, 350, 580, 62, 62, 2);
 npc_Map8dummyFour.setOptions("./img/NPC/monk.png", 0, 140, 64, 64, 500, 900, 62, 62, 2);
+
+npc_Map9metroGirl.setOptions("./img/NPC/girlTwo.png", 0, 140, 64, 64, 190, 160, 62, 62, 2);
+npc_Map9metroGuy.setOptions("./img/NPC/guyThree.png", 0, 140, 64, 64, 330, 50, 62, 62, 2);
 
 npc_Map10dummyOne.setOptions("./img/NPC/girlOne.png", 0, 140, 64, 64, 210, 260, 62, 62, 2);
 npc_Map10dummyTwo.setOptions("./img/NPC/girlTwo.png", 0, 140, 64, 64, 340, 260, 62, 62, 2);
@@ -790,6 +796,9 @@ npc_Map1StairWalker.image.onload = function() {
   npc_Map8dummyTwo.load = true;
   npc_Map8dummyThree.load = true;
   npc_Map8dummyFour.load = true;
+
+  npc_Map9metroGirl.load = true;
+  npc_Map9metroGuy.load = true;
 
   npc_Map10dummyOne.load = true;
   npc_Map10dummyTwo.load = true;
@@ -1217,6 +1226,23 @@ npc_Map8dummyTwo.update = function(clockTick) {
 npc_Map8dummyThree.update = function(clockTick) {
 }
 npc_Map8dummyFour.update = function(clockTick) {
+
+}
+npc_Map9metroGirl.face.src = "./img/people/metro_gal.png";
+npc_Map9metroGirl.faceArray[0] = npc_Map9metroGirl.face;
+npc_Map9metroGirl.faceArray[1] = npc_Map9metroGirl.face;
+npc_Map9metroGirl.dialog[0] = "Hi welcome to Metro, we have the best coffee around.";
+npc_Map9metroGirl.dialog[1] = "Oh... You want some charbucks?...";
+
+npc_Map9metroGuy.face.src = "./img/people/metro_guy.png";
+npc_Map9metroGuy.faceArray[0] = npc_Map9metroGuy.face;
+npc_Map9metroGuy.faceArray[1] = npc_Map9metroGuy.face;
+npc_Map9metroGuy.dialog[0] = "Hi welcome to Metro, we have the best coffee around.";
+npc_Map9metroGuy.dialog[1] = "Oh... You want some charbucks?...";
+npc_Map9metroGirl.update = function(clockTick) {
+  this.spriteRoll(704, 0,  clockTick, 0.1);
+}
+npc_Map9metroGuy.update = function(clockTick) {
 
 }
 npc_Map10dummyOne.dialog[0] = "Looks like Mobus is sitting in our class for some reason today.";
@@ -1931,6 +1957,9 @@ g.addEntityZoneEight(npc_Map8dummyOne);
 g.addEntityZoneEight(npc_Map8dummyTwo);
 g.addEntityZoneEight(npc_Map8dummyThree);
 g.addEntityZoneEight(npc_Map8dummyFour);
+
+g.addEntityZoneNine(npc_Map9metroGuy);
+g.addEntityZoneNine(npc_Map9metroGirl);
 
 g.addEntityZoneTen(npc_Map10dummyOne);
 g.addEntityZoneTen(npc_Map10dummyTwo);
